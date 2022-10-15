@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>博客文章编写方式</title>
+    <url>/2022/10/15/17-44-40/</url>
+    <content><![CDATA[<p>你好</p>
+<p>博客的创建方式是先</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+</search>
