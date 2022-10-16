@@ -5,6 +5,14 @@
     <url>/2022/10/15/17-58-19/</url>
     <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
 
+
+
+<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
 <h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
 <p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
 <p>然后就是上传图片的操作了</p>
@@ -29,5 +37,11 @@
 <p>最后放上我可爱的草神:</p>
 <p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
 ]]></content>
+      <categories>
+        <category>使用说明</category>
+      </categories>
+      <tags>
+        <tag>hexo博客搭建说明</tag>
+      </tags>
   </entry>
 </search>
