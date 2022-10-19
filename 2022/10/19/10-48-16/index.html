@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito.top","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="新开一章主要用来记载ctf比赛的学习在开始前我们得知道什么是ctfctf是属网络信息安全夺旗赛 一般有两种模式解题模式解题模式一般就是入侵网站或者靶机，攻击成功后系统会显示flag或者在某个目录 文件 数据库寻找 Flag，提交到答题系统得分。 此类比赛的赛题形式如下:123456789101112131415 CTF比赛通常包含的题目类型包括MISC、PPC、CRYPTO、PWN、REVERSE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ctf学习笔记">
+<meta property="og:url" content="http://mosquito.top/2022/10/19/10-48-16/index.html">
+<meta property="og:site_name" content="mosquito的博客">
+<meta property="og:description" content="新开一章主要用来记载ctf比赛的学习在开始前我们得知道什么是ctfctf是属网络信息安全夺旗赛 一般有两种模式解题模式解题模式一般就是入侵网站或者靶机，攻击成功后系统会显示flag或者在某个目录 文件 数据库寻找 Flag，提交到答题系统得分。 此类比赛的赛题形式如下:123456789101112131415 CTF比赛通常包含的题目类型包括MISC、PPC、CRYPTO、PWN、REVERSE">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E4%BA%8C%E7%BB%B4%E7%A0%81.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221019181239.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221019182134.png">
+<meta property="article:published_time" content="2022-10-19T02:48:16.000Z">
+<meta property="article:modified_time" content="2022-10-19T11:48:42.075Z">
+<meta property="article:author" content="mosquito">
+<meta property="article:tag" content="ctf学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E4%BA%8C%E7%BB%B4%E7%A0%81.png">
+
+
+<link rel="canonical" href="http://mosquito.top/2022/10/19/10-48-16/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://mosquito.top/2022/10/19/10-48-16/","path":"2022/10/19/10-48-16/","title":"ctf学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ctf学习笔记 | mosquito的博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">mosquito的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B0%E5%BC%80%E4%B8%80%E7%AB%A0%E4%B8%BB%E8%A6%81%E7%94%A8%E6%9D%A5%E8%AE%B0%E8%BD%BDctf%E6%AF%94%E8%B5%9B%E7%9A%84%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.</span> <span class="nav-text">新开一章主要用来记载ctf比赛的学习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8%E5%BC%80%E5%A7%8B%E5%89%8D%E6%88%91%E4%BB%AC%E5%BE%97%E7%9F%A5%E9%81%93%E4%BB%80%E4%B9%88%E6%98%AFctf"><span class="nav-number">2.</span> <span class="nav-text">在开始前我们得知道什么是ctf</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">一般有两种模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.1.</span> <span class="nav-text">解题模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A4%E7%B1%BB%E6%AF%94%E8%B5%9B%E7%9A%84%E8%B5%9B%E9%A2%98%E5%BD%A2%E5%BC%8F%E5%A6%82%E4%B8%8B"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">此类比赛的赛题形式如下:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%BB%E9%98%B2%E8%B5%9B"><span class="nav-number">2.1.2.</span> <span class="nav-text">攻防赛</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E7%A7%AF%E7%B4%AF%E8%B6%B3%E5%A4%9F%E7%9A%84%E9%98%B2%E5%AE%88%E6%96%B9%E6%A1%88%E5%92%8C-EXP-%E6%94%BB%E5%87%BB%E8%84%9A%E6%9C%AC"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">需要积累足够的防守方案和 EXP 攻击脚本</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MISC%E6%9D%82%E9%A1%B9"><span class="nav-number">3.</span> <span class="nav-text">MISC杂项:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">4.1.</span> <span class="nav-text">文件操作:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E9%9A%90%E5%86%99"><span class="nav-number">4.2.</span> <span class="nav-text">文件隐写:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99%E7%9A%84%E5%B8%B8%E8%A7%81%E9%9A%90%E5%86%99%E6%96%B9%E6%B3%95"><span class="nav-number">4.2.1.</span> <span class="nav-text">图片隐写的常见隐写方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%9B%BE%E7%89%87%E4%BF%AE%E5%A4%8D%E9%A2%98%E7%9B%AE"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">记一次图片修复题目:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7"><span class="nav-number">4.2.2.</span> <span class="nav-text">图片隐写常用工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E9%9A%90%E5%86%99"><span class="nav-number">4.2.3.</span> <span class="nav-text">音频隐写</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E9%9A%90%E5%86%99%E4%BE%8B%E5%AD%90"><span class="nav-number">4.2.3.1.</span> <span class="nav-text">音频隐写例子:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E9%9A%90%E5%86%99%E5%88%86%E7%B1%BB"><span class="nav-number">4.2.3.2.</span> <span class="nav-text">音频隐写分类:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%B7%A5%E5%85%B7"><span class="nav-number">4.2.3.2.1.</span> <span class="nav-text">常见工具</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">4.2.3.2.2.</span> <span class="nav-text">解题思路</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%A4%B4"><span class="nav-number">4.2.3.2.2.1.</span> <span class="nav-text">文件头</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%B3%A2%E5%BD%A2%E5%9B%BE"><span class="nav-number">4.2.3.2.2.2.</span> <span class="nav-text">波形图</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%A2%91%E8%B0%B1%E5%9B%BE"><span class="nav-number">4.2.3.2.2.3.</span> <span class="nav-text">频谱图</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9C%89key%E7%9A%84%E9%9A%90%E5%86%99"><span class="nav-number">4.2.3.2.2.4.</span> <span class="nav-text">有key的隐写</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%8B%A8%E5%8F%B7%E9%9A%90%E5%86%99"><span class="nav-number">4.2.3.2.2.5.</span> <span class="nav-text">拨号隐写</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#SSTV"><span class="nav-number">4.2.3.2.2.6.</span> <span class="nav-text">SSTV</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#DIFF"><span class="nav-number">4.2.3.2.2.7.</span> <span class="nav-text">DIFF</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#MP3%E9%9A%90%E5%86%99"><span class="nav-number">4.2.3.2.2.8.</span> <span class="nav-text">MP3隐写</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5"><span class="nav-number">4.2.3.2.3.</span> <span class="nav-text">原文链接:</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86"><span class="nav-number">4.3.</span> <span class="nav-text">压缩文件处理:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E5%8F%96%E8%AF%81%E6%8A%80%E6%9C%AF"><span class="nav-number">4.4.</span> <span class="nav-text">流量取证技术:</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito"
+      src="/images/android-chrome-256x256.png">
+  <p class="site-author-name" itemprop="name">mosquito</p>
+  <div class="site-description" itemprop="description">学海无涯苦作舟</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mosquito.top/2022/10/19/10-48-16/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/android-chrome-256x256.png">
+      <meta itemprop="name" content="mosquito">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mosquito的博客">
+      <meta itemprop="description" content="学海无涯苦作舟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ctf学习笔记 | mosquito的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ctf学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-10-19 10:48:16 / 修改时间：19:48:42" itemprop="dateCreated datePublished" datetime="2022-10-19T10:48:16+08:00">2022-10-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ctf/" itemprop="url" rel="index"><span itemprop="name">ctf</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="新开一章主要用来记载ctf比赛的学习"><a href="#新开一章主要用来记载ctf比赛的学习" class="headerlink" title="新开一章主要用来记载ctf比赛的学习"></a>新开一章主要用来记载ctf比赛的学习</h1><h1 id="在开始前我们得知道什么是ctf"><a href="#在开始前我们得知道什么是ctf" class="headerlink" title="在开始前我们得知道什么是ctf"></a>在开始前我们得知道什么是ctf</h1><p>ctf是属网络信息安全夺旗赛</p>
+<h2 id="一般有两种模式"><a href="#一般有两种模式" class="headerlink" title="一般有两种模式"></a>一般有两种模式</h2><h3 id="解题模式"><a href="#解题模式" class="headerlink" title="解题模式"></a>解题模式</h3><p>解题模式一般就是入侵网站或者靶机，攻击成功后系统会显示flag或者在某个目录 文件 数据库寻找 Flag，提交到答题系统得分。</p>
+<h4 id="此类比赛的赛题形式如下"><a href="#此类比赛的赛题形式如下" class="headerlink" title="此类比赛的赛题形式如下:"></a>此类比赛的赛题形式如下:</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> CTF比赛通常包含的题目类型包括MISC、PPC、CRYPTO、PWN、REVERSE、WEB、STEGA。</span><br><span class="line">  MISC(Miscellaneous)类型，即安全杂项，题目或涉及流量分析、电子取证、人肉搜索、数据分析等等。</span><br><span class="line"></span><br><span class="line">PPC(Professionally Program Coder)类型，即编程类题目，题目涉及到编程算法，相比ACM较为容易。</span><br><span class="line"></span><br><span class="line">CRYPTO(Cryptography)类型，即密码学，题目考察各种加解密技术，包括古典加密技术、现代加密技术甚至出题者自创加密技术。</span><br><span class="line"></span><br><span class="line">PWN类型，PWN在黑客俚语中代表着攻破、取得权限，多为溢出类题目。</span><br><span class="line"></span><br><span class="line">REVERSE类型，即逆向工程，题目涉及到软件逆向、破解技术。</span><br><span class="line"></span><br><span class="line">STEGA(Steganography)类型，即隐写术，题目的Flag会隐藏到图片、音频、视频等各类数据载体中供参赛者获取。</span><br><span class="line"></span><br><span class="line">WEB类型，即题目会涉及到常见的Web漏洞，诸如注入、XSS、文件包含、代码执行等漏洞。 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在其中MISC杂项STEGA(隐写术)属实是让人意想不到,初次接触我就被吓到了,此类题目一般以文本加密隐写,声音音频隐写,图像加密隐写等等,在后文我会详细学习记录这方面的内容</p>
+<p><strong>注:隐写项目对于真实环境渗透测试提升不大,不必花大量时间去将其原理弄懂,只求在比赛时能基础分辨其属于什么方面的隐写类型,用什么工具解决,确实不懂时可以遇到时百度.</strong></p>
+<h3 id="攻防赛"><a href="#攻防赛" class="headerlink" title="攻防赛"></a>攻防赛</h3><p>需要在一场比赛里要扮演攻击方和防守方，攻者得分，失守者会被扣分.(听fly师傅说这种类型的比赛可能需要邀请函.)</p>
+<p>此类比赛模式非常激烈,准备需要非常充足,</p>
+<h4 id="需要积累足够的防守方案和-EXP-攻击脚本"><a href="#需要积累足够的防守方案和-EXP-攻击脚本" class="headerlink" title="需要积累足够的防守方案和 EXP 攻击脚本"></a>需要积累足够的防守方案和 EXP 攻击脚本</h4><p>(或许我也可以准备这一类的方案,从小开始这样以后也能在工作时给出一个防御方案或者攻击方案,或许是一个不错的主意.)</p>
+<h1 id="MISC杂项"><a href="#MISC杂项" class="headerlink" title="MISC杂项:"></a>MISC杂项:</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接:"></a>参考链接:</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_44204058/article/details/119963209"> CTF学习-MISC杂项解题思路_菜鸟-传奇的博客-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_53105813/article/details/125604924?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-125604924-blog-119963209.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-125604924-blog-119963209.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=2">CTF MISC解题思路总结篇_Dalean.的博客-CSDN博客_ctf misc解题思路</a></p>
+<p>我抄,不搜不知道,一搜吓一跳,光这杂项就分为:</p>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作:"></a>文件操作:</h2><p> 判断文件类型     </p>
+<p>文件头残缺/错误 </p>
+<p>文件分离操作</p>
+<p>文件合并操作</p>
+<h2 id="文件隐写"><a href="#文件隐写" class="headerlink" title="文件隐写:"></a>文件隐写:</h2><h3 id="图片隐写的常见隐写方法"><a href="#图片隐写的常见隐写方法" class="headerlink" title="图片隐写的常见隐写方法"></a>图片隐写的常见隐写方法</h3><p>1.细微的颜色差别<br>2.GIF图多帧隐藏<br>1.颜色通道隐藏<br>2.不同帧图信息隐藏<br>3.不同帧对比隐写<br>3.Exif信息隐藏<br>4.图片修复<br>1.图片头修<br>2.图片尾修复<br>3.CRC校验修复<br>4.长、宽、高度修复<br>5.最低有效位LSB隐写<br>6.图片加密</p>
+<h4 id="记一次图片修复题目"><a href="#记一次图片修复题目" class="headerlink" title="记一次图片修复题目:"></a>记一次图片修复题目:</h4><p>首先是题目链接:</p>
+<p><a target="_blank" rel="noopener" href="https://adworld.xctf.org.cn/challenges/details?hash=ba10541a-1310-11ed-9802-fa163e4fa66d&amp;task_category_id=1">https://adworld.xctf.org.cn/challenges/details?hash=ba10541a-1310-11ed-9802-fa163e4fa66d&amp;task_category_id=1</a></p>
+<p>此次题目是二维码图片被垂直剪切为50份,我们要做的就是找出这50份之间的规律,此次题目文件排布规律是按日期排列.</p>
+<p>使用线上图片合并网站<a target="_blank" rel="noopener" href="https://cdkm.com/cn/">https://cdkm.com/cn/</a></p>
+<p>进行图片的水平合并,上传文件时需要我们对文件进行一个按日期升序操作,传入图片合并后我们得到一个二维码</p>
+<img src="/imgs/$%7Bfiilename%7D/%E4%BA%8C%E7%BB%B4%E7%A0%81.png" style="zoom:50%;" />
+
+<p>调亮亮度后扫描二维码就能得到flag了</p>
+<p>flag{You Can Repair A Picture From Splices Baesd On Entropy}</p>
+<h3 id="图片隐写常用工具"><a href="#图片隐写常用工具" class="headerlink" title="图片隐写常用工具"></a>图片隐写常用工具</h3><p><strong>Our Secret</strong></p>
+<p>一款用于文件加密的软件</p>
+<p><strong>Firework</strong></p>
+<p>查看隐写的图片文件，多帧gif啥的都可以使用此工具查看</p>
+<p><strong>Stegsove</strong></p>
+<p> 两张图片大小外观像素等基本相同时可以考虑对两个文件进行像素RGB值 XOB ADD SUB等操作，查看是否有有用的信息<br>等等…..</p>
+<p>用到的时候可以直接百度</p>
+<h3 id="音频隐写"><a href="#音频隐写" class="headerlink" title="音频隐写"></a>音频隐写</h3><h4 id="音频隐写例子"><a href="#音频隐写例子" class="headerlink" title="音频隐写例子:"></a>音频隐写例子:</h4><p>音频隐写在我第一次打ctf练习题就遇见了,还是第一个遇见的题目,是攻防世界里的来自银河的声音(<a target="_blank" rel="noopener" href="https://adworld.xctf.org.cn/challenges/details?hash=dffc332e-3b29-11ed-9802-fa163e4fa66d&amp;task_category_id=1">https://adworld.xctf.org.cn/challenges/details?hash=dffc332e-3b29-11ed-9802-fa163e4fa66d&amp;task_category_id=1</a>)</p>
+<p>当时做这题时我听了两遍一开始不知道是什么类型的题目,看攻略得知mp3格式的音频文件使用MP3Stego工具进行加解密,然后我真的傻乎乎的按操作方法进行加解密,最后半个小时弄明白了这个工具的使用方法加解密后从这段音频里得到了 Hello Warld! 这句话,提交后发现不对,再进行分析搜索攻略后才发现flag藏在音频信号里,然后又去下了个MMSSTV工具,专门用于音频信号转换.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221019181239.png"></p>
+<p>最后转换出的图片中就包含flag,但这flag是采用栅栏密码加密的,所以图上文字栅栏密码解密就得到flag</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221019182134.png"></p>
+<p>**付栅栏密码:**栅栏密码是一种简单的移动字符位置的加密方法，规则简单，容易破解。栅栏密码的加密方式：把文本按照一定的字数分成多个组，取每组第一个字连起来得到密文1，再取每组第二个字连起来得到密文2……最后把密文1、密文2……连成整段密文。</p>
+<p><strong>付攻略链接:</strong><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_62046273/article/details/127096230">( 攻防世界Misc-来自银河的信号_MUFFINHEAD！的博客-CSDN博客</a></p>
+<h4 id="音频隐写分类"><a href="#音频隐写分类" class="headerlink" title="音频隐写分类:"></a>音频隐写分类:</h4><h5 id="常见工具"><a href="#常见工具" class="headerlink" title="常见工具"></a>常见工具</h5><p>Audacity，Adobe Audition(简称au)，SilentEye，DeepSound，MMSSTV，e2eSoft，mp3stego。</p>
+<h5 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h5><p>第一步当然是先听一下有没有什么关键的信息，比如摩斯电码（有间隔的长短电波），SSTV（连续刺耳的电波），拨号隐写之类的。如果不知道是什么声音先自行百度，听过就不会忘。然后打开以上工具看一看是否存在什么隐写，如果都没有办法的话可以欣赏一下音乐就下号了。</p>
+<h6 id="文件头"><a href="#文件头" class="headerlink" title="文件头"></a>文件头</h6><p>wav文件头：<code>52494646E6AD250357415645666D7420</code></p>
+<h6 id="波形图"><a href="#波形图" class="headerlink" title="波形图"></a>波形图</h6><p><strong>使用工具：Audacity/Adobe Audition</strong><br><strong>文件类型：wav</strong><br>直接放大即可观察波形图即可。<br>可能存在摩斯电码，或者根据波峰波谷然后转换01二进制</p>
+<h6 id="频谱图"><a href="#频谱图" class="headerlink" title="频谱图"></a>频谱图</h6><p><strong>使用工具：Audacity</strong><br><strong>文件类型：wav</strong><br>查看多视图</p>
+<h6 id="有key的隐写"><a href="#有key的隐写" class="headerlink" title="有key的隐写"></a>有key的隐写</h6><p><strong>使用工具：silenteye、deepsound</strong><br><strong>文件类型：wav</strong><br>傻瓜式操作，知道这个软件就可以解出来，不知道就解不出。这两种隐写不一定需要key，但是有key一定要考虑这两种隐写。</p>
+<h6 id="拨号隐写"><a href="#拨号隐写" class="headerlink" title="拨号隐写"></a>拨号隐写</h6><p>经常打10086的时候对方可能说需要XX服务请按1，需要XX服务请按2，对于不同的数字有不同的声音，就可以隐写一些数据。可以通过DTMF提取出来。<br>DTMF脚本地址：<a target="_blank" rel="noopener" href="https://github.com/ribt/dtmf-decoder">https://github.com/ribt/dtmf-decoder</a></p>
+<h6 id="SSTV"><a href="#SSTV" class="headerlink" title="SSTV"></a>SSTV</h6><p>慢扫描电视（Slow-scan television 简称SSTV）是业余无线电爱好者的一种主要图片传输方法，慢扫描电视通过无线电传输和接收单色或彩色静态图片。<br>表示这玩意真的出烂了，傻瓜式操作<br><strong>使用工具：</strong>MMSSTV，e2eSoft<br>文件类型：wav<br>这里强推虚拟声卡e2eSoft这个工具。SSTV正常解法需要一台设备播放一台设备收音，还容易收到杂音的干扰，虚拟声卡就可以很好的避免这个问题。</p>
+<h6 id="DIFF"><a href="#DIFF" class="headerlink" title="DIFF"></a>DIFF</h6><p><strong>使用工具：Adobe Audition</strong><br><strong>文件类型：wav</strong></p>
+<h6 id="MP3隐写"><a href="#MP3隐写" class="headerlink" title="MP3隐写"></a>MP3隐写</h6><p><strong>使用工具：mp3stego</strong><br><strong>文件类型：mp3</strong></p>
+<p>工具使用方法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 隐藏信息</span><br><span class="line"># —E 读取隐藏信息文件的内容，-P 设置密码</span><br><span class="line">encode.exe -E hidden_text.txt -P pass svega.wav svega_stego.mp3</span><br><span class="line"># 解密信息</span><br><span class="line">decode.exe -X svega_stego.mp3 -P pass</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="原文链接"><a href="#原文链接" class="headerlink" title="原文链接:"></a>原文链接:</h5><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_51652400/article/details/123504708">(CTFmisc常见音频隐写总结_vlan103的博客-CSDN博客_ctf音频隐写</a></p>
+<h2 id="压缩文件处理"><a href="#压缩文件处理" class="headerlink" title="压缩文件处理:"></a>压缩文件处理:</h2><p>1.伪加密</p>
+<p>2.暴力破解</p>
+<p>3.RAR文件格式错误，导致解压不完全</p>
+<h2 id="流量取证技术"><a href="#流量取证技术" class="headerlink" title="流量取证技术:"></a>流量取证技术:</h2><p> 工具Wireshark的使用</p>
+<p>无线流量</p>
+<p>usb键盘流量</p>
+<p>键盘流量脚本</p>
+<p>usb鼠标流量分析</p>
+<p>鼠标流量分析脚本</p>
+<p>https流量包分析</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ctf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># ctf学习笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/10/17/17-43-58/" rel="prev" title="web基础">
+                  <i class="fa fa-chevron-left"></i> web基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/19/10-49-13/" rel="next" title="内网学习笔记">
+                  内网学习笔记 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
