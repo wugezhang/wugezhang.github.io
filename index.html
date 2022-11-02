@@ -156,7 +156,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -196,6 +196,121 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://mosquito.top/2022/11/02/17-48-47/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/android-chrome-256x256.png">
+      <meta itemprop="name" content="mosquito">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mosquito的博客">
+      <meta itemprop="description" content="学海无涯苦作舟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | mosquito的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/11/02/17-48-47/" class="post-title-link" itemprop="url">vlunhub-tiki靶场</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-11-02 17:48:47 / 修改时间：19:11:28" itemprop="dateCreated datePublished" datetime="2022-11-02T17:48:47+08:00">2022-11-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%B6%E5%9C%BA/" itemprop="url" rel="index"><span itemprop="name">靶场</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="vlunhub-tiki靶场（简单）"><a href="#vlunhub-tiki靶场（简单）" class="headerlink" title="vlunhub-tiki靶场（简单）"></a>vlunhub-tiki靶场（简单）</h1><h1 id="首先是遇到的问题"><a href="#首先是遇到的问题" class="headerlink" title="首先是遇到的问题"></a>首先是遇到的问题</h1><p>整次打靶过程可以说很顺利，可以很快速的达到自己想要的目的，但最重要的一点就是语言不通，进入后台后一直找不到ssh账号密码存在点，如果是实际渗透测试，可能花费的时间会更多。</p>
+<p>此外还在里面留了个坑，在本次的靶机里有一个文件上传点，要在里面测试能否实现木马后门传递。</p>
+<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><p>老规矩先使用ifconfig查找自己的IP</p>
+<p>使用netdiscover -r 192.168.50.1/24 探测靶机IP地址</p>
+<h2 id="注"><a href="#注" class="headerlink" title="注:"></a>注:</h2><p><img src=""><img src="/imgs/$%7Bfiilename%7D/image-20221102180434475-1667383526051.png" alt="image-20221102180434475"></p>
+<p>192.168.50.1   192.168.50.2     192.168.50.254 都是默认IP</p>
+<h2 id="使用nmap进行扫描"><a href="#使用nmap进行扫描" class="headerlink" title="使用nmap进行扫描"></a>使用nmap进行扫描</h2><p>命令:nmap -A</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102180946.png"></p>
+<p>如标注所示,在80端口找到突破点.</p>
+<p>这里的ssh历史我怀疑就是后面我们能凭借网站后台得到的账号密码登陆的原因</p>
+<p>或者是从这个ssh历史猜测</p>
+<p>我们得到的账号密码就能考虑为ssh的登录账号密码</p>
+<h2 id="网站显示"><a href="#网站显示" class="headerlink" title="网站显示"></a>网站显示</h2><p>依据扫描得到的robots.txt</p>
+<p>我们进入robots.txt界面</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182447.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182622.png"></p>
+<p>在进入箭头指示的地址界面就能得到一个登陆界面</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182803.png"></p>
+<p>在登录点尝试弱口令无果后,依据网站的Wiki cms,搜索曾经爆出的漏洞</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102183030.png"></p>
+<p>此cms曾爆出过漏洞,而且作者也明确了存在该漏洞.</p>
+<h2 id="Wiki-cms-漏洞利用"><a href="#Wiki-cms-漏洞利用" class="headerlink" title="Wiki cms 漏洞利用"></a>Wiki cms 漏洞利用</h2><p>依据漏洞poc进行测试</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102183900.png"></p>
+<p>设定password为变量,设置payloads后就可以爆破了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184104.png"></p>
+<h3 id="爆破成功"><a href="#爆破成功" class="headerlink" title="爆破成功"></a>爆破成功</h3><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184431.png"></p>
+<p>如图,在爆破达到一定数量后,我们使用burp抓包修改为空密码就能登陆进去了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184453.png"></p>
+<p>登陆进去</p>
+<p>在 Wiki =&gt;last changes里面找到了ssh的账号密码</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102185130.png"></p>
+<p> ssh账号密码: silky:Agy8Y7SPJNXQzqA </p>
+<h1 id="ssh登录"><a href="#ssh登录" class="headerlink" title="ssh登录:"></a>ssh登录:</h1><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102185939.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102190314.png"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>该靶场的难度并不大,还是</p>
+<p>信息收集,检测利用,得到ssh账号密码,ssh远程登录,权限查询,得到flag</p>
+<p>还考了我们burp的使用</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
