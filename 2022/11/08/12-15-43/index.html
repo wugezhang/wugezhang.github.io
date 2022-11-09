@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito.top","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="linux系统渗透测试常用命令及基础知识在打靶时发现自己对于Linux系统的基本指令及常识缺乏严重以至于当自己在进入靶机后无从下手。现就此简单学习记录一下。 参考文章链接：  Linux常用命令大全（非常全！！！）_木头大左的博客-CSDN博客_linux常用命令 详细|Linux内网渗透基础篇 (qq.com) 飞书东方隐侠团队文档 基础判断理解当我们进入目标机器拿到权限时我们第一时间要判断的就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux系统渗透测试常用命令及基础知识">
+<meta property="og:url" content="http://mosquito.top/2022/11/08/12-15-43/index.html">
+<meta property="og:site_name" content="mosquito的博客">
+<meta property="og:description" content="linux系统渗透测试常用命令及基础知识在打靶时发现自己对于Linux系统的基本指令及常识缺乏严重以至于当自己在进入靶机后无从下手。现就此简单学习记录一下。 参考文章链接：  Linux常用命令大全（非常全！！！）_木头大左的博客-CSDN博客_linux常用命令 详细|Linux内网渗透基础篇 (qq.com) 飞书东方隐侠团队文档 基础判断理解当我们进入目标机器拿到权限时我们第一时间要判断的就">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108125019.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108132748.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108132804.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108134115.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221109115544.png">
+<meta property="article:published_time" content="2022-11-08T04:15:43.000Z">
+<meta property="article:modified_time" content="2022-11-09T10:20:20.164Z">
+<meta property="article:author" content="mosquito">
+<meta property="article:tag" content="基础知识">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108125019.png">
+
+
+<link rel="canonical" href="http://mosquito.top/2022/11/08/12-15-43/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://mosquito.top/2022/11/08/12-15-43/","path":"2022/11/08/12-15-43/","title":"linux系统渗透测试常用命令及基础知识"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>linux系统渗透测试常用命令及基础知识 | mosquito的博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">mosquito的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux%E7%B3%BB%E7%BB%9F%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%8F%8A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">linux系统渗透测试常用命令及基础知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E5%88%A4%E6%96%AD%E7%90%86%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">基础判断理解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E5%88%A9%E7%94%A8%E7%9A%84%E6%80%9D%E8%B7%AF"><span class="nav-number">3.</span> <span class="nav-text">权限利用的思路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%89%E6%88%91%E7%9B%AE%E5%89%8D%E7%9A%84%E7%9F%A5%E8%AF%86%E7%9C%BC%E7%95%8C%E6%9D%A5"><span class="nav-number">3.1.</span> <span class="nav-text">按我目前的知识眼界来:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux%E7%94%A8%E6%88%B7%E5%8C%BA%E5%88%86"><span class="nav-number">3.1.1.</span> <span class="nav-text">linux用户区分:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%E8%B4%A6%E5%8F%B7"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">管理用户和组账号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">用户</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E5%88%A4%E6%96%AD"><span class="nav-number">3.2.</span> <span class="nav-text">权限判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">3.3.</span> <span class="nav-text">信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E7%82%B9%EF%BC%9A"><span class="nav-number">3.3.1.</span> <span class="nav-text">信息收集点：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%EF%BC%9A"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">系统信息收集：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">用户和组的信息:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90%E4%BF%A1%E6%81%AF"><span class="nav-number">3.3.1.3.</span> <span class="nav-text">用户和权限信息:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%86%85%E7%8E%AF%E5%A2%83%E4%BF%A1%E6%81%AF%EF%BC%9A"><span class="nav-number">3.3.1.4.</span> <span class="nav-text">系统内环境信息：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BF%A1%E6%81%AF"><span class="nav-number">3.3.1.5.</span> <span class="nav-text">网络信息:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%9C%89%E7%94%A8%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">3.3.1.6.</span> <span class="nav-text">查找有用的信息:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE"><span class="nav-number">3.3.1.7.</span> <span class="nav-text">敏感文件查找:</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%B8%B8%E8%A7%81%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="nav-number">4.</span> <span class="nav-text">web应用服务常见配置文件路径:</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito"
+      src="/images/android-chrome-256x256.png">
+  <p class="site-author-name" itemprop="name">mosquito</p>
+  <div class="site-description" itemprop="description">学海无涯苦作舟</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mosquito.top/2022/11/08/12-15-43/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/android-chrome-256x256.png">
+      <meta itemprop="name" content="mosquito">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mosquito的博客">
+      <meta itemprop="description" content="学海无涯苦作舟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="linux系统渗透测试常用命令及基础知识 | mosquito的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux系统渗透测试常用命令及基础知识
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-08 12:15:43" itemprop="dateCreated datePublished" datetime="2022-11-08T12:15:43+08:00">2022-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-11-09 18:20:20" itemprop="dateModified" datetime="2022-11-09T18:20:20+08:00">2022-11-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" itemprop="url" rel="index"><span itemprop="name">基础知识</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="linux系统渗透测试常用命令及基础知识"><a href="#linux系统渗透测试常用命令及基础知识" class="headerlink" title="linux系统渗透测试常用命令及基础知识"></a>linux系统渗透测试常用命令及基础知识</h1><p>在打靶时发现自己对于Linux系统的基本指令及常识缺乏严重以至于当自己在进入靶机后无从下手。现就此简单学习记录一下。</p>
+<p>参考文章链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/luansj/article/details/97272672"> Linux常用命令大全（非常全！！！）_木头大左的博客-CSDN博客_linux常用命令</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzg2ODYxMzY3OQ==&mid=2247489896&idx=1&sn=f3b0d372f3ec62b3bbdef15e5a8c33fa&chksm=cea8f228f9df7b3e5057215e521cbad9147fedd1313a01237fa10ea2b2ad03d3cb8273f833f1#rd">详细|Linux内网渗透基础篇 (qq.com)</a></p>
+<p>飞书东方隐侠团队文档</p>
+<h1 id="基础判断理解"><a href="#基础判断理解" class="headerlink" title="基础判断理解"></a>基础判断理解</h1><p>当我们进入目标机器拿到权限时我们第一时间要判断的就是我们的权限是什么</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108125019.png"></p>
+<p>如图,我使用我打过的一个靶机举例:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#:管理员</span><br><span class="line">$:普通用户</span><br><span class="line">@:之前表示登录的用户名称，之后表示主机名，再之后表示当前所在目录</span><br><span class="line">/:表示根目录  </span><br><span class="line">~:表示当前用户家目录</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">使用cd 命令不加参数,默认回到当前用户家目录</span><br><span class="line">使用cd / 命令,可回到/目录下</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在上图中我通过ssh远程连接到的主机拿到的权限就是普通用户,目前位于该用户的文件夹目录下.</p>
+<h1 id="权限利用的思路"><a href="#权限利用的思路" class="headerlink" title="权限利用的思路"></a>权限利用的思路</h1><p>当我们进入到受害机后应该有一个完整的思路.</p>
+<h2 id="按我目前的知识眼界来"><a href="#按我目前的知识眼界来" class="headerlink" title="按我目前的知识眼界来:"></a>按我目前的知识眼界来:</h2><p>一般当我们进入到受害机时拿到的权限都是不同的,所以这时我们的第一思路都是提权,但不同的用户提权都不一样</p>
+<h3 id="linux用户区分"><a href="#linux用户区分" class="headerlink" title="linux用户区分:"></a>linux用户区分:</h3><p>id：查看当前用户UID</p>
+<ul>
+<li><h4 id="管理用户和组账号"><a href="#管理用户和组账号" class="headerlink" title="管理用户和组账号"></a>管理用户和组账号</h4></li>
+<li><ul>
+<li><p> 用户账号分为       </p>
+</li>
+<li><p> 超级用户、普通用户、程序用户 </p>
+</li>
+<li><p>组账号分为     </p>
+</li>
+<li><p>   基本组(私有组)、附加组(公共组)</p>
+</li>
+<li><p> UID和GID   </p>
+</li>
+<li><p> UID(用户标识符)    GID(组标识符)</p>
+</li>
+<li><ul>
+<li>0：系统的管理员用户</li>
+<li>1~999：Linux为了避免某个服务程序出现漏洞被攻击者提权至整个服务器，所以默认服务程序会有独立的系统用户负责运行</li>
+<li><code>&gt;=</code>1000：管理员创建，用于日常工作的用户</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h4><ul>
+<li><p>一个账号只能有一个基本组，但是可以有多个附加组</p>
+</li>
+<li><p>用户的账号信息存储在/etc/passwd</p>
+</li>
+<li><p>用户密码信息存储在/etc/shadow</p>
+</li>
+<li><p>当用户在/etc/shadow中的密码信息前有一个或两个！时表示用户被锁定</p>
+</li>
+</ul>
+<h2 id="权限判断"><a href="#权限判断" class="headerlink" title="权限判断"></a>权限判断</h2><p>当我们进入受害机时首先就是要判断我们拿到的用户能干嘛</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cat /etc/passwd     列出系统上的所有用户</span><br><span class="line">cat /etc/shadow     查看用户Hash</span><br><span class="line">cat /etc/group      列出系统上的所有组</span><br><span class="line">groups              当前用户所在的组</span><br><span class="line">groups test         test用户所在的组</span><br><span class="line">getent group xxx      xxx组里的用户</span><br><span class="line"></span><br><span class="line">grep -v -E &quot;^#&quot; /etc/passwd | awk -F: &#x27;$3 == 0 &#123; print $1&#125;&#x27;      列出所有的超级用户账户</span><br><span class="line">awk -F: &#x27;length($2)==0 &#123;print $1&#125;&#x27; /etc/shadow  #查看是否存在空口令用户</span><br><span class="line">awk &#x27;/\$1|\$6/&#123;print $1&#125;&#x27; /etc/shadow #查看远程登录的账号 </span><br><span class="line"></span><br><span class="line">whoami              查看当前用户</span><br><span class="line">w                   谁目前已登录，他们正在做什么</span><br><span class="line">who                 命令用于显示系统中有哪些使用者正在上面</span><br><span class="line">last                最后登录用户的列表</span><br><span class="line">lastlog             所有用户上次登录的信息</span><br><span class="line">lastlog –u %username%  有关指定用户上次登录的信息</span><br></pre></td></tr></table></figure>
+
+<p>使用靶机举例:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108132748.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108132804.png"></p>
+<p>silky用户位于sudo组下,我们可以尝试 sudo su root 命令直接提权到root权限.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108134115.png"></p>
+<p>如图所示,我们成功拿到root权限,</p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>但我们并不可能像菜鸡靶机一样,随随便便就能拿到一个在adm组,sudo组里的用户,所以在得到我们的用户不属于那种直接就能提权的用户后.我们就需要对受害机进行信息收集.看看有没有可以利用的漏洞缺陷.</p>
+<h3 id="信息收集点："><a href="#信息收集点：" class="headerlink" title="信息收集点："></a>信息收集点：</h3><p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/bring_coco/article/details/114262148"> Linux信息收集_番茄酱料的博客-CSDN博客</a></p>
+<h4 id="系统信息收集："><a href="#系统信息收集：" class="headerlink" title="系统信息收集："></a>系统信息收集：</h4><p>命令：</p>
+<p>命令：uname -r<br>作用：打印内核版本信息</p>
+<p>命令：uname -n<br>作用：系统主机名字</p>
+<p>命令：uname -n<br>作用：系统主机名字</p>
+<p>命令：uname -m<br>作用：系统架构</p>
+<p>命令：uname -a<br>作用：打印所有可用的系统信息，包括查看内核/操作系统/信息等</p>
+<p>命令：cat /proc/version<br>作用：查看内核信息</p>
+<p>命令：cat /proc/cpuinfo<br>作用：查看CPU详情</p>
+<p>命令：cat /etc/*-release 注：这里的是因为不同系统名称不同<br>作用：查看发布信息</p>
+<p>命令：df -a<br>作用：文件系统信息</p>
+<h4 id="用户和组的信息"><a href="#用户和组的信息" class="headerlink" title="用户和组的信息:"></a>用户和组的信息:</h4><p>上文已经介绍过一部分了,现在更详细一点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd     列出系统上的所有用户</span><br><span class="line">cat /etc/shadow     查看用户Hash(需要root权限)</span><br><span class="line">cat /etc/group      列出系统上的所有组</span><br><span class="line">groups              当前用户所在的组</span><br><span class="line">groups test         test用户所在的组</span><br><span class="line">getent group xxx      xxx组里的用户</span><br><span class="line"></span><br><span class="line">grep -v -E &quot;^#&quot; /etc/passwd | awk -F: &#x27;$3 == 0 &#123; print $1&#125;&#x27;      列出所有的超级用户账户</span><br><span class="line">awk -F: &#x27;length($2)==0 &#123;print $1&#125;&#x27; /etc/shadow  #查看是否存在空口令用户</span><br><span class="line">awk &#x27;/\$1|\$6/&#123;print $1&#125;&#x27; /etc/shadow #查看远程登录的账号 </span><br><span class="line"></span><br><span class="line">whoami              查看当前用户</span><br><span class="line">w                   谁目前已登录，他们正在做什么</span><br><span class="line">who                 命令用于显示系统中有哪些使用者正在上面</span><br><span class="line">last                最后登录用户的列表</span><br><span class="line">lastlog             所有用户上次登录的信息</span><br><span class="line">lastlog –u %username%  有关指定用户上次登录的信息</span><br></pre></td></tr></table></figure>
+
+<h4 id="用户和权限信息"><a href="#用户和权限信息" class="headerlink" title="用户和权限信息:"></a>用户和权限信息:</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：whoami</span><br><span class="line">作用：查看当前用户</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：id</span><br><span class="line">作用：查看当前用户信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：cat /etc/sudoers</span><br><span class="line">作用：可以使用sudo提升到root用户（需要root权限）</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：sudo</span><br><span class="line">作用：允许普通用户执行一些或者全部的root命令的一个工具</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：sudo -l</span><br><span class="line">作用：列出目前用户可执行与无法执行的指令</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：su 用户（指定要切换身份的目标用户）</span><br><span class="line">作用：切换当前用户身份到其他用户身份</span><br></pre></td></tr></table></figure>
+
+<h4 id="系统内环境信息："><a href="#系统内环境信息：" class="headerlink" title="系统内环境信息："></a>系统内环境信息：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v命令：env</span><br><span class="line">作用：打印系统环境信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：echo $USER</span><br><span class="line">作用：输出上述环境变量中的信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：history</span><br><span class="line">作用：打印历史命令</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：pwd</span><br><span class="line">作用：显示当前路径</span><br></pre></td></tr></table></figure>
+
+<h4 id="网络信息"><a href="#网络信息" class="headerlink" title="网络信息:"></a>网络信息:</h4><p>或许是判断主机是否外联或组成域的关键</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：ifconfig</span><br><span class="line">作用：查看所有网络接口的属性</span><br></pre></td></tr></table></figure>
+
+<p>主机防火墙,但我们打的靶机一般是不会有滴</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">命令：iptables -L</span><br><span class="line">作用：查看防火墙设置</span><br><span class="line">查看防火墙状态：</span><br><span class="line">systemctl status firewalld</span><br><span class="line">service iptables status</span><br><span class="line">暂时关闭防火墙:</span><br><span class="line">systemctl stop firewalld</span><br><span class="line">service iptables stop</span><br><span class="line">永久关闭防火墙：</span><br><span class="line">systemctl disable firewalld</span><br><span class="line">chkconfig iptables off</span><br><span class="line">重启防火墙：</span><br><span class="line">systemctl enable firewalld</span><br><span class="line">service iptables restart</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221109115544.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">命令：route -n</span><br><span class="line">作用：查看路由表</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>下面两个命令最常用了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：netstat -lntp</span><br><span class="line">作用：查看所有监听端口</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：netstat -antp</span><br><span class="line">作用：查看所有已经建立的连接</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：netstat -an</span><br><span class="line">作用：打印本地端口开放信息</span><br></pre></td></tr></table></figure>
+
+<p><strong>端口映射：</strong>端口映射就是将内网中的主机的一个端口映射到外网主机的一个端口，提供相应的服务。当用户访问外网IP的这个端口时，服务器自动将请求映射到对应局域网内部的机器上。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令：cat /etc/services</span><br><span class="line">作用：查看端口服务映射</span><br></pre></td></tr></table></figure>
+
+<h4 id="查找有用的信息"><a href="#查找有用的信息" class="headerlink" title="查找有用的信息:"></a>查找有用的信息:</h4><p>查找能写或执行的目录</p>
+<p>该命令是根据当前用户的权限所列出的该用户可操作文件目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">find / -writable -type d 2&gt;/dev/null</span><br><span class="line">find / -perm -o+w -type d 2&gt;/dev/null</span><br><span class="line">find / -perm -o+x -type d 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<h4 id="敏感文件查找"><a href="#敏感文件查找" class="headerlink" title="敏感文件查找:"></a>敏感文件查找:</h4><p>find命令 -o参数 表示 <strong>或者</strong> 的意思 (可以按该命令格式改一下我们想查找的文件)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -type f -iname &quot;*.bash_history&quot; -o -iname &quot;*config*&quot; -o -iname &quot;web.xml&quot; -o -iname &quot;*database*&quot; -o -iname &quot;*pass*&quot; 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<p>查找SSH密钥:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -name &quot;id_dsa*&quot; -o -name &quot;id_rsa*&quot; -o -name &quot;known_hosts&quot; -o -name &quot;authorized_hosts&quot; -o -name &quot;authorized_keys&quot; 2&gt;/dev/null |xargs -r ls</span><br></pre></td></tr></table></figure>
+
+<h1 id="web应用服务常见配置文件路径"><a href="#web应用服务常见配置文件路径" class="headerlink" title="web应用服务常见配置文件路径:"></a>web应用服务常见配置文件路径:</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">/apache/apache/conf/httpd.conf</span><br><span class="line">/apache/apache2/conf/httpd.conf</span><br><span class="line">/apache/php/php.ini</span><br><span class="line">/bin/php.ini</span><br><span class="line">/etc/apache/apache.conf</span><br><span class="line">/etc/apache/httpd.conf</span><br><span class="line">/etc/apache2/apache.conf</span><br><span class="line">/etc/apache2/httpd.conf</span><br><span class="line">/etc/apache2/sites-available/default</span><br><span class="line">/etc/apache2/vhosts.d/00_default_vhost.conf</span><br><span class="line">/etc/httpd/conf.d/httpd.conf</span><br><span class="line">/etc/httpd/conf.d/php.conf</span><br><span class="line">/etc/httpd/conf/httpd.conf</span><br><span class="line">/etc/httpd/php.ini</span><br><span class="line">/etc/init.d/httpd</span><br><span class="line">/etc/php.ini</span><br><span class="line">/etc/php/apache/php.ini</span><br><span class="line">/etc/php/apache2/php.ini</span><br><span class="line">/etc/php/cgi/php.ini</span><br><span class="line">/etc/php/php.ini</span><br><span class="line">/etc/php/php4/php.ini</span><br><span class="line">/etc/php4.4/fcgi/php.ini</span><br><span class="line">/etc/php4/apache/php.ini</span><br><span class="line">/etc/php4/apache2/php.ini</span><br><span class="line">/etc/php4/cgi/php.ini</span><br><span class="line">/etc/php5/apache/php.ini</span><br><span class="line">/etc/php5/apache2/php.ini</span><br><span class="line">/etc/php5/cgi/php.ini</span><br><span class="line">/etc/phpmyadmin/config.inc.php</span><br><span class="line">/home/apache/conf/httpd.conf</span><br><span class="line">/home/apache2/conf/httpd.conf</span><br><span class="line">/home/bin/stable/apache/php.ini</span><br><span class="line">/home2/bin/stable/apache/php.ini</span><br><span class="line">/NetServer/bin/stable/apache/php.ini</span><br><span class="line">/opt/www/conf/httpd.conf</span><br><span class="line">/opt/xampp/etc/php.ini</span><br><span class="line">/PHP/php.ini</span><br><span class="line">/php/php.ini</span><br><span class="line">/php4/php.ini</span><br><span class="line">/php5/php.ini</span><br><span class="line">/usr/lib/php.ini</span><br><span class="line">/etc/nginx/nginx.conf</span><br><span class="line">/usr/lib/php/php.ini</span><br><span class="line">/usr/local/apache/conf/httpd.conf</span><br><span class="line">/usr/local/apache/conf/php.ini</span><br><span class="line">/usr/local/apache2/conf/httpd.conf</span><br><span class="line">/usr/local/apache2/conf/php.ini</span><br><span class="line">/usr/local/etc/php.ini</span><br><span class="line">/usr/local/httpd/conf/httpd.conf</span><br><span class="line">/usr/local/lib/php.ini</span><br><span class="line">/usr/local/php/lib/php.ini</span><br><span class="line">/usr/local/php4/lib/php.ini</span><br><span class="line">/usr/local/php4/lib/php.ini</span><br><span class="line">/usr/local/php4/php.ini</span><br><span class="line">/usr/local/php5/etc/php.ini</span><br><span class="line">/usr/local/php5/lib/php.ini</span><br><span class="line">/usr/local/php5/php5.ini</span><br><span class="line">/usr/local/share/examples/php/php.ini</span><br><span class="line">/usr/local/share/examples/php4/php.ini</span><br><span class="line">/usr/local/Zend/etc/php.ini</span><br><span class="line">/var/apache2/config.inc</span><br><span class="line">/var/httpd/conf/httpd.conf</span><br><span class="line">/var/httpd/conf/php.ini</span><br><span class="line">/var/httpd/conf/php.ini</span><br><span class="line">/var/local/www/conf/httpd.conf</span><br><span class="line">/var/local/www/conf/php.ini</span><br><span class="line">/var/www/conf/httpd.conf</span><br><span class="line">/web/conf/php.ini</span><br><span class="line">/www/conf/httpd.conf</span><br><span class="line">/www/php/php.ini</span><br><span class="line">/www/php4/php.ini</span><br><span class="line">/www/php5/php.ini</span><br><span class="line">/xampp/apache/bin/php.ini</span><br><span class="line">/xampp/apache/conf/httpd.conf</span><br></pre></td></tr></table></figure>
+
+<p>数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/mysql</span><br><span class="line">/etc/my.cnf</span><br><span class="line">/etc/mysql/my.cnf</span><br><span class="line">/etc/mysql/my.cnf</span><br><span class="line">/var/lib/mysql/my.cnf</span><br><span class="line">/var/lib/mysql/mysql/user.MYD</span><br><span class="line">/usr/local/mysql/bin/mysql</span><br><span class="line">/usr/local/mysql/my.cnf</span><br><span class="line">/usr/share/mysql/my.cnf</span><br></pre></td></tr></table></figure>
+
+<p>埋个坑,找找自动化脚本,我记得小迪视频里就有</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/06/15-57-44/" rel="prev" title="vlunhub-darkhole靶场">
+                  <i class="fa fa-chevron-left"></i> vlunhub-darkhole靶场
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

