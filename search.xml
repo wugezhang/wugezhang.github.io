@@ -1094,4 +1094,28 @@
         <tag>漏洞库</tag>
       </tags>
   </entry>
+  <entry>
+    <title>shiro反序列化漏洞</title>
+    <url>/2022/12/13/13-29-51/</url>
+    <content><![CDATA[<h1 id="Shrio反序列化导致命令执行"><a href="#Shrio反序列化导致命令执行" class="headerlink" title="Shrio反序列化导致命令执行"></a>Shrio<a href="https://so.csdn.net/so/search?q=%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96&spm=1001.2101.3001.7020">反序列化</a>导致命令执行</h1><h2 id="漏洞编号：CVE-2016-4437"><a href="#漏洞编号：CVE-2016-4437" class="headerlink" title="漏洞编号：CVE-2016-4437"></a>漏洞编号：CVE-2016-4437</h2><h2 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h2><p><a href="https://blog.csdn.net/Aaron_Miller/article/details/106475088"> Shiro反序列化漏洞_風月长情的博客-CSDN博客_shiro反序列化漏洞</a></p>
+<h2 id="漏洞简介"><a href="#漏洞简介" class="headerlink" title="漏洞简介"></a>漏洞简介</h2><p>  Apache Shiro是一款开源企业常见JAVA安全框架，提供身份验证、授权、密码学和会话管理。java中的权限框架有SpringSecurity和Shiro，由于Spring功能强大但复杂，Shiro的简单强大，扩展性好因此用的还是很多。</p>
+<h2 id="影响版本"><a href="#影响版本" class="headerlink" title="影响版本"></a>影响版本</h2><p>Apache Shiro &lt; 1.2.4</p>
+<h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><p>  Apache Shiro框架提供了记住我的功能（RememberMe），用户登录成功后会生成经过加密并编码的cookie。cookie的key为RememberMe，cookie的值是经过相关信息进行序列化，然后使用AES加密（对称），最后再使用Base64编码处理。服务端在接收cookie时：</p>
+<p>1.检索RememberMe Cookie的值<br>2.Base 64解码<br>3.AES解密（加密密钥硬编码）<br>4.进行反序列化操作（未过滤处理）</p>
+<p>攻击者可以使用Shiro的默认密钥构造恶意序列化对象进行编码来伪造用户的Cookie，服务端反序列化时触发漏洞，从而执行命令。</p>
+<h2 id="漏洞特征"><a href="#漏洞特征" class="headerlink" title="漏洞特征:"></a>漏洞特征:</h2><p>最主要的特征就是登录返回包中含有<strong>rememberMe=deleteMe</strong>字段</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221213141911.png"></p>
+<p>准备充足在搞,先做好在本地复现的准备,安全第一</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用:"></a>漏洞利用:</h2><p>1.一键利用工具：</p>
+<p>链接：<a href="https://pan.baidu.com/s/1kvQEMrMP-PZ4K1eGwAP0_Q?pwd=zbgp">https://pan.baidu.com/s/1kvQEMrMP-PZ4K1eGwAP0_Q?pwd=zbgp</a><br>提取码：zbgp</p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20221213144910895.png" alt="image-20221213144910895"></p>
+<p>工具使用：<a href="https://www.iculture.cc/forum-post/17719.html">加强版图形界面shiro反序列化漏洞利用工具 shiro_attack-网络攻防学习社区-安全圈子-FancyPig’s blog (iculture.cc)</a></p>
+]]></content>
+      <categories>
+        <category>RCE</category>
+      </categories>
+      <tags>
+        <tag>漏洞库</tag>
+      </tags>
+  </entry>
 </search>
